@@ -1,0 +1,29 @@
+linux:
+    tags:
+        - linux
+    image: gocnak/steam-runtime-i386
+    script:
+        - cd code/src
+        - ./createlfe
+        - make -f tf_coop_extended.mak
+    artifacts:
+        name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHA"
+        paths:
+            - code/game/tf_coop_extended/bin/*.so
+            - code/game/tf_coop_extended/bin/*.dbg
+            
+windows:
+    tags:
+        - windows
+        - not-shared
+    script:
+        - cd code/src
+        - call createlfe.bat
+        - copy tf_coop_extended.sln+sln_fix.txt tf_coop_extended.sln
+        - call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\Tools\VsDevCmd.bat"
+        - msbuild /p:Configuration=Release
+    artifacts:
+        name: "%CI_JOB_NAME%-%CI_COMMIT_REF_NAME%-%CI_COMMIT_SHA%"
+        paths:
+            - code/game/tf_coop_extended/bin/*.dll
+            - code/game/tf_coop_extended/bin/*.pdb

@@ -1,0 +1,44 @@
+//-----------------------------------------------------------------------------
+//	PROJECTS.VGC
+//
+//	Project Configurations for all Source(TM) Projects
+//-----------------------------------------------------------------------------
+
+/////////////////////////
+// Project definitions //
+/////////////////////////
+
+$Project "client"
+{
+	"game\client\client_tf_coop_extended.vpc"		[($WIN32||$POSIX) && $TF_COOP_EXTENDED]
+}
+
+$Project "game_shader_dx9"
+{
+	"materialsystem\stdshaders\game_shader_dx9_tf_coop_extended.vpc" [$TF_COOP_EXTENDED]
+}
+
+$Project "server"
+{
+	"game\server\server_tf_coop_extended.vpc"		[($WIN32||$POSIX) && $TF_COOP_EXTENDED]
+}
+
+$Project "mathlib"
+{
+	"mathlib\mathlib.vpc" [$WINDOWS||$X360||$POSIX]
+}
+
+$Project "raytrace"
+{
+	"raytrace\raytrace.vpc" [$WIN32||$X360||$POSIX]
+}
+
+$Project "tier1"
+{
+	"tier1\tier1.vpc" 	[$WINDOWS || $X360||$POSIX]
+}
+
+$Project "vgui_controls"
+{
+	"vgui2\vgui_controls\vgui_controls.vpc" [$WIN32||$X360||$POSIX]
+}
