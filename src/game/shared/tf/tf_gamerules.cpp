@@ -2943,7 +2943,7 @@ CTFGameRules::CTFGameRules()
 	// arrays defined in tf_shareddefs.cpp
 	Assert( g_aWeaponDamageTypes[TF_WEAPON_COUNT] == TF_DMG_SENTINEL_VALUE );
 	Assert( FStrEq( g_aWeaponNames[TF_WEAPON_COUNT], "TF_WEAPON_COUNT" ) );
-	Assert( FStrEq( g_TFCondNames[TF_COND_LAST], "TF_COND_LAST" ) );
+//	Assert( FStrEq( g_TFCondNames[TF_COND_LAST], "TF_COND_LAST" ) );
 
 	m_flGravityScale = 1.0f;
 

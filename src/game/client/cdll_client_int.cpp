@@ -149,7 +149,7 @@
 #endif
 
 #if defined( TF_CLASSIC_CLIENT )
-#include "lfe_discordrpc.h"
+//#include "lfe_discordrpc.h"
 #include "rtime.h"
 #include "gamemounter.h"
 #include "../engine/audio/public/sound.h"
@@ -1116,7 +1116,7 @@ int CHLClient::Init( CreateInterfaceFn appSystemFactory, CreateInterfaceFn physi
 #endif
 
 #ifdef TF_CLASSIC_CLIENT
-	g_discordrpc.Init();
+	//g_discordrpc.Init();
 
 	// force tf2 lang load
 	//g_pVGuiLocalize->AddFile( "resource/tf_%language%.txt" , "GAME", true );
@@ -1247,7 +1247,7 @@ void CHLClient::Shutdown( void )
 #endif
 
 #ifdef TF_CLASSIC_CLIENT
-	g_discordrpc.Shutdown();
+	//g_discordrpc.Shutdown();
 #endif
 
 	// This call disconnects the VGui libraries which we rely on later in the shutdown path, so don't do it
@@ -1320,7 +1320,7 @@ void CHLClient::HudUpdate( bool bActive )
 	C_BaseTempEntity::CheckDynamicTempEnts();
 
 #ifdef TF_CLASSIC_CLIENT
-	g_discordrpc.RunFrame();
+	//g_discordrpc.RunFrame();
 #endif
 
 #ifdef SIXENSE
@@ -1672,7 +1672,7 @@ void CHLClient::LevelInitPreEntity( char const* pMapName )
 	gHUD.LevelInit();
 
 #ifdef TF_CLASSIC_CLIENT
-	g_discordrpc.Reset();
+	//g_discordrpc.Reset();
 #endif
 
 #if defined( REPLAY_ENABLED )
@@ -1767,7 +1767,7 @@ void CHLClient::LevelShutdown( void )
 	messagechars->Clear();
 
 #ifdef TF_CLASSIC_CLIENT
-	g_discordrpc.Reset();
+	//g_discordrpc.Reset();
 #endif
 
 #if !( defined( TF_CLIENT_DLL ) || defined( TF_CLASSIC_CLIENT ) )

@@ -55,7 +55,7 @@
 #include "usermessages.h"
 #include "utlvector.h"
 #include "props_shared.h"
-#include "lfe_discordrpc.h"
+//#include "lfe_discordrpc.h"
 
 #include "c_basehlplayer.h"
 
@@ -136,7 +136,7 @@ void CTFModeManager::LevelInit( const char *newmap )
 
 	g_ThirdPersonManager.Init();
 
-	g_discordrpc.LevelInit( newmap );
+	//g_discordrpc.LevelInit( newmap );
 }
 
 void CTFModeManager::LevelShutdown( void )
