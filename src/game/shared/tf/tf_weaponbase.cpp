@@ -518,11 +518,43 @@ void C_TFWeaponBase::UpdateViewModel( void )
 				vm->RemoveViewmodelAddon( 1 );
 			}
 		}
+		if (pTFPlayer)
+		{
+			for (int i = 0; i < pTFPlayer->GetNumWearables(); i++)
+			{
+				CEconWearable *pWearable = pTFPlayer->GetWearable(i);
+
+				if (!pWearable)
+					continue;
+
+
+				if (pWearable && pWearable->GetItem()->GetStaticData()->attach_to_hands_vm_only)
+				{
+					vmType = pWearable->GetItem()->GetStaticData()->attach_to_hands_vm_only;
+					if (vmType == VMTYPE_TF2)
+					{
+						pszModel = pWearable->GetItem()->GetPlayerDisplayModel(pTFPlayer->GetPlayerClass()->GetClassIndex());
+						pWearable->AddEFlags(32); //Hide the wearable in third person (maybe)
+					}
+
+					if (pszModel && pszModel[5] != '\0')
+					{
+						vm->UpdateViewmodelAddon(pszModel, 5);
+						pWearable->AddEFlags(32);
+					}
+					else
+					{
+						vm->RemoveViewmodelAddon(5);
+					}
+				}
+			}
+		}
 	}
 	else
 	{
 		vm->RemoveViewmodelAddon( 0 );
 		vm->RemoveViewmodelAddon( 1 );
+		vm->RemoveViewmodelAddon(5);
 	}
 }
 
@@ -2645,6 +2677,10 @@ void CTFWeaponBase::ApplyOnHitAttributes( CBaseEntity *pVictim, CTFPlayer *pAtta
 		if ( nMarkForDeath )
 			pPlayer->m_Shared.AddCond( TF_COND_MARKEDFORDEATH, 15 );
 	}
+//	int nAddDmgType = CAttributeManager::AttribHookValue<int>( 0, "add_damage_type", this );
+//	if (nAddDmgType){
+//		this->Type;
+//}
 	else if ( pVictim->IsNPC() )
 	{
 		if ( ( info.GetDamageType() & DMG_BURN ) ||

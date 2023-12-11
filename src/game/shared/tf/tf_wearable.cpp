@@ -44,32 +44,54 @@ void CTFWearable::Equip( CBaseEntity *pEntity )
 //---------------------------------------------------------------------------- -
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CTFWearable::UpdateModelToClass( void )
+void CTFWearable::UpdateModelToClass(void)
 {
-	if ( m_bExtraWearable && GetItem()->GetStaticData() )
+	if (m_bExtraWearable && GetItem()->GetStaticData())
 	{
-		SetModel( GetItem()->GetStaticData()->extra_wearable );
+		SetModel(GetItem()->GetStaticData()->extra_wearable);
 		string_t strUnusual = NULL_STRING;
-		CALL_ATTRIB_HOOK_STRING( strUnusual, set_attached_particle_name );
-		if ( strUnusual != NULL_STRING )
-			SetParticle( STRING( strUnusual ) );
+		CALL_ATTRIB_HOOK_STRING(strUnusual, set_attached_particle_name);
+		if (strUnusual != NULL_STRING)
+			SetParticle(STRING(strUnusual));
 	}
 	else
 	{
-		CTFPlayer *pOwner = ToTFPlayer( GetOwnerEntity() );
-		if ( pOwner )
+		CTFPlayer *pOwner = ToTFPlayer(GetOwnerEntity());
+		if (pOwner)
 		{
-			const char *pszModel = GetItem()->GetPlayerDisplayModel( pOwner->GetPlayerClass()->GetClassIndex() );
-			if ( pszModel[0] != '\0' )
-			{
-				SetModel( pszModel );
-			string_t strUnusual = NULL_STRING;
-			CALL_ATTRIB_HOOK_STRING( strUnusual, set_attached_particle_name );
-			if ( strUnusual != NULL_STRING )
-				SetParticle( STRING( strUnusual ) );
+			const char *pszModel = GetItem()->GetPlayerDisplayModel(pOwner->GetPlayerClass()->GetClassIndex());
+
+			if (GetItem()->GetStaticData()) {
+
+				CEconItemDefinition *pItemDef = GetItem()->GetStaticData();
+				int iClass = pOwner->GetDesiredPlayerClassIndex();
+				// Hacky response stuff that should ABSOLUTELY be somewhere else tbh
+				// TODO: Find a way to clear contexts when this is run
+				// pOwner->InputClearContext(); (errors, what is inputdata?)
+				//string_t strResponseCriteria = NULL_STRING;
+				//CALL_ATTRIB_HOOK_STRING(strResponseCriteria, additional_halloween_response_criteria_name);
+				//if (strResponseCriteria != NULL_STRING)
+				//pOwner->AddContext(STRING(strResponseCriteria));
+
+				// This needs to also reset if there are no wearables with custom model defined.
+				if (pItemDef->model_world[iClass] != '\0') {
+					Q_snprintf(pOwner->m_iszCustomModel.GetForModify(), MAX_PATH, pItemDef->model_world);
+					pOwner->UpdateModel();
+				}
 			}
+
+			if (pszModel[0] != '\0')
+			{
+				SetModel(pszModel);
+				string_t strUnusual = NULL_STRING;
+				CALL_ATTRIB_HOOK_STRING(strUnusual, set_attached_particle_name);
+				if (strUnusual != NULL_STRING)
+					SetParticle(STRING(strUnusual));
+
+			}
+			}
+
 		}
-	}
 }
 
 #else
@@ -86,7 +108,17 @@ int C_TFWearable::InternalDrawModel( int flags )
 
 	if ( bUseInvulnMaterial )
 		modelrender->ForcedMaterialOverride( NULL );
+	if (GetItem()->GetStaticData()) {
 
+		CEconItemDefinition *pItemDef = GetItem()->GetStaticData();
+		int iClass = pOwner->m_Shared.GetDesiredPlayerClassIndex();
+
+		if (pItemDef->model_world[iClass] != '\0') {
+			Q_snprintf(pOwner->m_iszCustomModel, MAX_PATH, pItemDef->model_world);
+			pOwner->PrecacheModel(pItemDef->model_world);
+			pOwner->SetModel(pItemDef->model_world);
+		}
+	}
 	return ret;
 }
 
