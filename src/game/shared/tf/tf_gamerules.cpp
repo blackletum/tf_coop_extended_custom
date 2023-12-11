@@ -518,7 +518,7 @@ Vector g_TFClassViewVectors[TF_CLASS_COUNT_ALL] =
 	Vector( 0, 0, 65 ),		// TF_CLASS_CIVILIAN,
 	Vector( 0, 0, 65 ),		// TF_CLASS_COMBINE,
 	Vector( 0, 0, 65 ),		// TF_CLASS_ZOMBIEFAST,
-	Vector( 0, 0, 55 ),		// TF_CLASS_ANTLION,
+	Vector( 0, 0, 65 ),		// TF_CLASS_ANTLION,
 };
 
 const CViewVectors *CTFGameRules::GetViewVectors() const

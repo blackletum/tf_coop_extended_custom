@@ -1781,7 +1781,7 @@ void CWeaponPhysCannon::SetViewModel( void )
 		{
 			vm->SetWeaponModel(PHYSCANNON_MODEL_SPY, this);
 		}
-		else if (pOwner->IsPlayerClass(TF_CLASS_ANTLION))
+		else if (pOwner->IsPlayerClass(TF_CLASS_WILDCARD))
 		{
 			vm->SetWeaponModel(PHYSCANNON_MODEL_ANTLION, this);
 		}
@@ -1847,7 +1847,7 @@ void CWeaponPhysCannon::SetViewModel( void )
 		{
 			vm->SetWeaponModel(MEGACANNON_MODEL_SPY, this);
 		}
-		else if (pOwner->IsPlayerClass(TF_CLASS_ANTLION))
+		else if (pOwner->IsPlayerClass(TF_CLASS_WILDCARD))
 		{
 			vm->SetWeaponModel(MEGACANNON_MODEL_ANTLION, this);
 		}

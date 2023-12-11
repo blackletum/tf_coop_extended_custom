@@ -129,7 +129,7 @@ const char *g_aPlayerClassNames[] =
 	"#TF_Class_Name_Civilian",
 	"#TF_Class_Name_Combine",
 	"#TF_Class_Name_ZombieFast",
-	"#TF_Class_Name_Antlion",
+	"#TF_Class_Name_Wildcard",
 };
 
 const char *g_aPlayerClassEmblems[] =
@@ -146,7 +146,7 @@ const char *g_aPlayerClassEmblems[] =
 	"../hud/leaderboard_class_civilian",
 	"../hud/leaderboard_class_combine",
 	"../hud/leaderboard_class_zombiefast",
-	"../hud/leaderboard_class_antlion",
+	"../hud/leaderboard_class_wildcard",
 };
 
 const char *g_aPlayerClassEmblemsDead[] =
@@ -163,7 +163,7 @@ const char *g_aPlayerClassEmblemsDead[] =
 	"../hud/leaderboard_class_civilian_d",
 	"../hud/leaderboard_class_combine_d",
 	"../hud/leaderboard_class_zombiefast_d",
-	"../hud/leaderboard_class_antlion_d",
+	"../hud/leaderboard_class_wildcard_d",
 };
 
 const char *g_aPlayerClassEmblemsAlt[] =
@@ -180,7 +180,7 @@ const char *g_aPlayerClassEmblemsAlt[] =
 	"../vgui/class_icons/class_icon_orange_civilian",
 	"../vgui/class_icons/class_icon_orange_combine",
 	"../vgui/class_icons/class_icon_orange_zombiefast",
-	"../vgui/class_icons/class_icon_orange_antlion",
+	"../vgui/class_icons/class_icon_orange_wildcard",
 };
 
 const char *g_aPlayerClassEmblemsAltDead[] =
@@ -197,7 +197,7 @@ const char *g_aPlayerClassEmblemsAltDead[] =
 	"../vgui/class_icons/class_icon_orange_civilian_d",
 	"../vgui/class_icons/class_icon_orange_combine_d",
 	"../vgui/class_icons/class_icon_orange_zombiefast_d",
-	"../vgui/class_icons/class_icon_orange_antlion_d",
+	"../vgui/class_icons/class_icon_orange_wildcard_d",
 };
 
 const char *g_aPlayerClassNames_NonLocalized[] =
@@ -215,7 +215,7 @@ const char *g_aPlayerClassNames_NonLocalized[] =
 	"Civilian",
 	"Combine",
 	"ZombieFast",
-	"Antlion",
+	"Wildcard",
 };
 
 const char *g_aRawPlayerClassNamesShort[] =
@@ -233,7 +233,7 @@ const char *g_aRawPlayerClassNamesShort[] =
 	"civilian",
 	"combine",
 	"zombiefast",
-	"antlion",
+	"wildcard",
 	"",
 	"random"
 };
@@ -253,7 +253,7 @@ const char *g_aRawPlayerClassNames[] =
 	"civilian",
 	"combine",
 	"zombiefast",
-	"antlion",
+	"wildcard",
 	"",
 	"random"
 };

@@ -36,7 +36,7 @@ const char *g_aClassNames[] =
 	"TF_CLASS_CIVILIAN",
 	"TF_CLASS_COMBINE",
 	"TF_CLASS_ZOMBIEFAST",
-	"TF_CLASS_ANTLION",
+	"TF_CLASS_WILDCARD",
 };
 
 //-----------------------------------------------------------------------------

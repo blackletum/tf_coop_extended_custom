@@ -23,7 +23,7 @@ void CCharInfoLoadoutSubPanel::OnCommand( const char* command )
 {
 	if ( V_strnicmp( command, "loadout ", 8 ) == 0 )
 	{
-		int iClass = GetClassIndexFromString( command + 8, TF_LAST_NORMAL_CLASS+1 );
+		int iClass = GetClassIndexFromString( command + 8, TF_CLASS_COUNT_ALL + 1 );
 		if ( iClass )
 		{
 			if ( m_iCurrentClass != iClass )

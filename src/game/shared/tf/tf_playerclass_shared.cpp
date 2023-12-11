@@ -24,7 +24,7 @@
 #define TF_CLASS_CIVILIAN_FILE			"scripts/playerclasses/civilian"
 #define TF_CLASS_COMBINE_FILE			"scripts/playerclasses/combine"
 #define TF_CLASS_ZOMBIEFAST_FILE		"scripts/playerclasses/zombiefast"
-#define TF_CLASS_ANTLION_FILE			"scripts/playerclasses/antlion"
+#define TF_CLASS_WILDCARD_FILE			"scripts/playerclasses/wildcard"
 
 #ifdef CLIENT_DLL
 extern bool UseHWMorphModels();
@@ -45,7 +45,7 @@ const char *s_aPlayerClassFiles[] =
 	TF_CLASS_CIVILIAN_FILE,
 	TF_CLASS_COMBINE_FILE,
 	TF_CLASS_ZOMBIEFAST_FILE,
-	TF_CLASS_ANTLION_FILE,
+	TF_CLASS_WILDCARD_FILE,
 };
 
 TFPlayerClassData_t s_aTFPlayerClassData[TF_CLASS_COUNT_ALL];

@@ -5671,7 +5671,7 @@ void CTFPlayer::TeamFortress_SetSpeed()
 	// unless we're cloaked..
 	if ( m_Shared.InCond( TF_COND_DISGUISED ) && !m_Shared.IsStealthed() )
 	{
-		if (m_Shared.GetDisguiseClass() != TF_CLASS_ANTLION && m_Shared.GetDisguiseClass() != TF_CLASS_ZOMBIEFAST)
+		if (m_Shared.GetDisguiseClass() != TF_CLASS_WILDCARD && m_Shared.GetDisguiseClass() != TF_CLASS_ZOMBIEFAST)
 		{
 			float flMaxDisguiseSpeed = GetPlayerClassData(m_Shared.GetDisguiseClass())->m_flMaxSpeed;
 			maxfbspeed = min(flMaxDisguiseSpeed, maxfbspeed);
@@ -5791,6 +5791,7 @@ void CTFPlayer::TeamFortress_SetSpeed()
 
 	// Set the speed
 	SetMaxSpeed( maxfbspeed );
+
 }
 
 //-----------------------------------------------------------------------------
@@ -6500,7 +6501,10 @@ Vector CTFPlayer::GetClassEyeHeight( void )
 	if ( iClassIndex < TF_FIRST_NORMAL_CLASS || iClassIndex > TF_CLASS_COUNT )
 		return VEC_VIEW_SCALED( this );
 
-	return ( g_TFClassViewVectors[pClass->GetClassIndex()] * GetModelScale() );
+	float flViewHeightMultiplier = 1;
+	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(GetActiveTFWeapon(), flViewHeightMultiplier, view_height_multiplier);
+
+	return ( g_TFClassViewVectors[pClass->GetClassIndex()] * GetModelScale() * flViewHeightMultiplier);
 }
 
 CTFWeaponBase *CTFPlayer::Weapon_OwnsThisID( int iWeaponID )

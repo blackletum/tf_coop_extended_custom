@@ -558,7 +558,7 @@ void CTFInventory::ResetInventory()
 
 	m_pInventory = new KeyValues( "Inventory" );
 
-	for ( int i = TF_FIRST_NORMAL_CLASS; i <= TF_LAST_NORMAL_CLASS; i++ )
+	for ( int i = TF_FIRST_NORMAL_CLASS; i <= TF_CLASS_COUNT_ALL; i++ )
 	{
 		KeyValues *pClassInv = new KeyValues( g_aPlayerClassNames_NonLocalized[i] );
 		for ( int j = 0; j < LOADOUT_POSITION_BUFFER; j++ )

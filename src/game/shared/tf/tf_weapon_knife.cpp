@@ -473,7 +473,7 @@ void CTFKnife::DisguiseOnKill( void )
 		if ( m_hBackstabVictim->ClassMatches( "npc_zombie" ) || m_hBackstabVictim->ClassMatches( "npc_poisonzombie" ) || m_hBackstabVictim->ClassMatches( "npc_zombine" ) || m_hBackstabVictim->ClassMatches( "npc_fastzombie" ) )
 			iClassIdx = TF_CLASS_ZOMBIEFAST;
 		if ( m_hBackstabVictim->ClassMatches( "npc_antlion" ) )
-			iClassIdx = TF_CLASS_ANTLION;
+			iClassIdx = TF_CLASS_WILDCARD;
 		#endif
 	}
 

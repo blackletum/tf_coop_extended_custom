@@ -677,7 +677,10 @@ bool CTFGameMovement::CheckJumpButton()
 	}
 
 	int nAirDashCount = m_pTFPlayer->m_Shared.GetAirDash();
-	int nMaxAirDashCount = 1;
+	int nMaxAirDashCount = 0;
+
+	if (bScout == true)
+		nMaxAirDashCount = 1;
 
 	if ( m_pTFPlayer->m_Shared.InCond( TF_COND_SODAPOPPER_HYPE ) )
 		nMaxAirDashCount = 5;
@@ -689,7 +692,7 @@ bool CTFGameMovement::CheckJumpButton()
 	// In air, so ignore jumps (unless you are a scout).
 	if ( !bOnGround )
 	{
-		if ( bScout && ( nAirDashCount < nMaxAirDashCount ) && !TFGameRules()->IsTFCAllowed() )
+		if (( nAirDashCount < nMaxAirDashCount ) && !TFGameRules()->IsTFCAllowed() )
 		{
 			bAirDash = true;
 			nAirDashCount++;

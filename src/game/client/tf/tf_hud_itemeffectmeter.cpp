@@ -988,7 +988,7 @@ void CHudItemEffects::SetPlayer( void )
 			break;
 		case TF_CLASS_CIVILIAN:
 		case TF_CLASS_COMBINE:
-		case TF_CLASS_ANTLION:
+		case TF_CLASS_WILDCARD:
 		default:
 			break;
 	}

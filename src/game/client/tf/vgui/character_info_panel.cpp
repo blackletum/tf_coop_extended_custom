@@ -43,7 +43,7 @@ void Open_CharInfo_Direct()
 		GetCharInfoPanel()->OpenEconUI( 0, false );
 
 		C_TFPlayer *pPlayer = C_TFPlayer::GetLocalTFPlayer();
-		if ( pPlayer && ( ( pPlayer->m_Shared.GetDesiredPlayerClassIndex() >= TF_FIRST_NORMAL_CLASS ) && ( pPlayer->m_Shared.GetDesiredPlayerClassIndex() < TF_LAST_NORMAL_CLASS ) ) )
+		if ( pPlayer && ( ( pPlayer->m_Shared.GetDesiredPlayerClassIndex() >= TF_FIRST_NORMAL_CLASS ) && ( pPlayer->m_Shared.GetDesiredPlayerClassIndex() < TF_CLASS_COUNT_ALL ) ) )
 		{
 			char szCommand[32];
 			Q_snprintf( szCommand, sizeof( szCommand ), "loadout %i", pPlayer->m_Shared.GetDesiredPlayerClassIndex() );

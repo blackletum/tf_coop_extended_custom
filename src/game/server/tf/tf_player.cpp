@@ -6554,7 +6554,7 @@ bool CTFPlayer::IsPlayerClass( int iClass ) const
 //-----------------------------------------------------------------------------
 bool CTFPlayer::IsPlayerNPCClass( void ) const
 {
-	return ( IsPlayerClass( TF_CLASS_COMBINE ) || IsPlayerClass( TF_CLASS_ZOMBIEFAST ) || IsPlayerClass( TF_CLASS_ANTLION ) );
+	return ( IsPlayerClass( TF_CLASS_COMBINE ) || IsPlayerClass( TF_CLASS_ZOMBIEFAST ) || IsPlayerClass( TF_CLASS_WILDCARD ) );
 }
 
 //-----------------------------------------------------------------------------
@@ -7885,7 +7885,7 @@ void CTFPlayer::Event_KilledOther( CBaseEntity *pVictim, const CTakeDamageInfo &
 					}
 					if (pNPCVictim->ClassMatches("npc_antlion"))
 					{
-						iClassIdx = TF_CLASS_ANTLION;
+						iClassIdx = TF_CLASS_WILDCARD;
 					}
 
 					m_Shared.Disguise(pNPCVictim->GetTeamNumber(), iClassIdx);

@@ -168,7 +168,7 @@ BEGIN_NETWORK_TABLE( CTFWeaponBase, DT_TFWeaponBase )
 	RecvPropInt( RECVINFO( m_iConsecutiveShot ) ),
 
 	RecvPropInt( RECVINFO( m_nSequence ), 0, RecvProxy_WeaponSequence ),
-	// Server specific.
+	// Server specific.h
 	#else
 	SendPropBool( SENDINFO( m_bLowered ) ),
 	SendPropBool( SENDINFO( m_bResetParity ) ),
@@ -2675,11 +2675,11 @@ void CTFWeaponBase::ApplyOnHitAttributes( CBaseEntity *pVictim, CTFPlayer *pAtta
 
 		int nMarkForDeath = CAttributeManager::AttribHookValue<int>( 0, "mark_for_death", this );
 		if ( nMarkForDeath )
-			pPlayer->m_Shared.AddCond( TF_COND_MARKEDFORDEATH, 15 );
+			pPlayer->m_Shared.AddCond(TF_COND_MARKEDFORDEATH, nMarkForDeath);
 	}
 //	int nAddDmgType = CAttributeManager::AttribHookValue<int>( 0, "add_damage_type", this );
 //	if (nAddDmgType){
-//		this->Type;
+//		info->AddDamageType(nAddDmgType);
 //}
 	else if ( pVictim->IsNPC() )
 	{
