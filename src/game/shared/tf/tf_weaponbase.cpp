@@ -426,7 +426,23 @@ void CTFWeaponBase::SetViewModel()
 	CTFPlayer *pTFPlayer = ToTFPlayer( GetOwner() );
 	if ( pTFPlayer == NULL )
 		return;
+	if (pTFPlayer)
+	{
+		for (int i = 0; i < pTFPlayer->GetNumWearables(); i++)
+		{
+			CEconWearable *pWearable = pTFPlayer->GetWearable(i);
 
+			if (!pWearable)
+				continue;
+
+
+			if (pWearable && pWearable->GetItem()->GetStaticData()->attach_to_hands_vm_only && pWearable->GetItem()->GetStaticData()->attach_to_hands_vm_only > 0)
+			{
+			
+
+			}
+		}
+	}
 	CTFViewModel *vm = dynamic_cast< CTFViewModel* >( pTFPlayer->GetViewModel( m_nViewModelIndex, false ) );
 	if ( vm == NULL )
 		return;
@@ -534,13 +550,13 @@ void C_TFWeaponBase::UpdateViewModel( void )
 					if (vmType == VMTYPE_TF2)
 					{
 						pszModel = pWearable->GetItem()->GetPlayerDisplayModel(pTFPlayer->GetPlayerClass()->GetClassIndex());
-						pWearable->AddEFlags(32); //Hide the wearable in third person (maybe)
+						pWearable->SetRenderMode(kRenderNone);
 					}
 
 					if (pszModel && pszModel[5] != '\0')
 					{
 						vm->UpdateViewmodelAddon(pszModel, 5);
-						pWearable->AddEFlags(32);
+						pWearable->SetRenderMode(kRenderNone);
 					}
 					else
 					{
@@ -2358,7 +2374,7 @@ void CTFWeaponBase::StartEffectBarRegen( void )
 	CTFPlayer *pOwner = GetTFPlayerOwner();
 	if ( !pOwner )
 		return;
-
+	
 	// Don't recharge unless we actually need recharging.
 	if ( gpGlobals->curtime > m_flEffectBarRegenTime ||
 		pOwner->GetAmmoCount( m_iPrimaryAmmoType ) + 1 <= pOwner->GetMaxAmmo( m_iPrimaryAmmoType ) )

@@ -283,7 +283,7 @@ Activity CTFPlayerAnimState::TranslateActivity( Activity actDesired )
 				return (Activity)act.weaponAct;
 		}
 	}
-	else if ( GetTFPlayer()->IsPlayerClass( TF_CLASS_COMBINE ) || GetTFPlayer()->IsPlayerClass( TF_CLASS_ZOMBIEFAST ) || GetTFPlayer()->IsPlayerClass( TF_CLASS_WILDCARD ) )
+	else if ( GetTFPlayer()->IsPlayerClass( TF_CLASS_COMBINE ) || GetTFPlayer()->IsPlayerClass( TF_CLASS_ZOMBIEFAST ) )
 	{
 		int actCount = ARRAYSIZE( s_acttableNPC );
 		for ( int i = 0; i < actCount; i++ )
