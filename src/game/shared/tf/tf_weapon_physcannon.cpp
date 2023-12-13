@@ -1556,6 +1556,8 @@ void CWeaponPhysCannon::Precache( void )
 	PrecacheModel( MEGACANNON_MODEL_MEDIC );
 	PrecacheModel( MEGACANNON_MODEL_SNIPER );
 	PrecacheModel( MEGACANNON_MODEL_SPY );
+	PrecacheModel(PHYSCANNON_MODEL_WILDCARD);
+	PrecacheModel(MEGACANNON_MODEL_WILDCARD);
 
 	PrecacheModel( PHYSCANNON_BEAM_SPRITE );
 	PrecacheModel( PHYSCANNON_BEAM_SPRITE_NOZ );
@@ -1783,7 +1785,7 @@ void CWeaponPhysCannon::SetViewModel( void )
 		}
 		else if (pOwner->IsPlayerClass(TF_CLASS_WILDCARD))
 		{
-			vm->SetWeaponModel(PHYSCANNON_MODEL_ANTLION, this);
+			vm->SetWeaponModel(PHYSCANNON_MODEL_WILDCARD, this);
 		}
 		else if (pOwner->IsPlayerClass(TF_CLASS_CIVILIAN))
 		{
@@ -1849,7 +1851,7 @@ void CWeaponPhysCannon::SetViewModel( void )
 		}
 		else if (pOwner->IsPlayerClass(TF_CLASS_WILDCARD))
 		{
-			vm->SetWeaponModel(MEGACANNON_MODEL_ANTLION, this);
+			vm->SetWeaponModel(MEGACANNON_MODEL_WILDCARD, this);
 		}
 		else if (pOwner->IsPlayerClass(TF_CLASS_CIVILIAN))
 		{
