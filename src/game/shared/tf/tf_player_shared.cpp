@@ -6727,7 +6727,7 @@ int CTFPlayer::GetMaxAmmo( int iAmmoIndex, int iClassNumber /*= -1*/ )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CTFPlayer::PlayStepSound( Vector &vecOrigin, surfacedata_t *psurface, float fvol, bool force )
+void CTFPlayer::PlayStepSound(Vector &vecOrigin, surfacedata_t *psurface, float fvol, bool force)
 {
 #ifdef CLIENT_DLL
 	// Don't make predicted footstep sounds in third person, animevents will take care of that.
@@ -6737,69 +6737,129 @@ void CTFPlayer::PlayStepSound( Vector &vecOrigin, surfacedata_t *psurface, float
 	IncrementStepsTaken();
 #endif
 
-	BaseClass::PlayStepSound( vecOrigin, psurface, fvol, force );
+	BaseClass::PlayStepSound(vecOrigin, psurface, fvol, force);
 }
+void CTFPlayer::OnEmitFootstepSound(CSoundParameters const &params, Vector const &vecOrigin, float flVolume)
+{
+	int nJingleOnStep = 0;
+	CALL_ATTRIB_HOOK_INT(nJingleOnStep, add_jingle_to_footsteps);
+	if (nJingleOnStep > 0)
+	{
+		const char *szSound = NULL;
+		switch (nJingleOnStep)
+		{
+		case 1:
+			szSound = "xmas.jingle";
+			break;
+		case 2:
+		default:
+			szSound = "xmas.jingle_higher";
+			break;
+		}
 
+		CPASFilter filter(vecOrigin);
+		if (1 < gpGlobals->maxClients)
+			filter.RemoveRecipientsByPVS(vecOrigin);
+
+		EmitSound_t parm;
+		parm.m_nChannel = CHAN_BODY;
+		parm.m_pSoundName = szSound;
+		parm.m_flVolume = flVolume;
+		parm.m_SoundLevel = params.soundlevel;
+		parm.m_nFlags = SND_CHANGE_VOL;
+		parm.m_nPitch = params.pitch;
+		parm.m_pOrigin = &vecOrigin;
+
+		CBaseEntity::EmitSound(filter, entindex(), parm);
+	}
+}
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-const char	*CTFPlayer::GetOverrideStepSound( const char *pszBaseStepSoundName )
+const char *CTFPlayer::GetOverrideStepSound(const char *pszBaseStepSoundName)
 {
-	int nOverrideFootstepSoundSet = 0;
-	CALL_ATTRIB_HOOK_INT( nOverrideFootstepSoundSet, override_footstep_sound_set );
-	if ( nOverrideFootstepSoundSet == 1 ) // football
-	{
-		//pszBaseStepSoundName = "Chest.Step";
-	}
-	else if ( nOverrideFootstepSoundSet == 6 ) // giant
-	{
-		if ( IsPlayerClass( TF_CLASS_HEAVYWEAPONS ) )
-			pszBaseStepSoundName = "MVM.GiantHeavyStep";
-		else if ( IsPlayerClass( TF_CLASS_SOLDIER ) )
-			pszBaseStepSoundName = "MVM.GiantSoldierStep";
-		else if ( IsPlayerClass( TF_CLASS_DEMOMAN ) )
-			pszBaseStepSoundName = "MVM.GiantDemomanStep";
-		else if ( IsPlayerClass( TF_CLASS_SCOUT ) )
-			pszBaseStepSoundName = "MVM.GiantScoutStep";
-		else if ( IsPlayerClass( TF_CLASS_SCOUT ) )
-			pszBaseStepSoundName = "MVM.GiantScoutStep";
-		else
-			pszBaseStepSoundName = "MVM.GiantPyroStep";
-	}
-	else if ( nOverrideFootstepSoundSet == 7 ) // buster
-	{
-		pszBaseStepSoundName = "MVM.SentryBusterStep";
-	}
-	else if ( nOverrideFootstepSoundSet == 8 ) // knife
-	{
-		pszBaseStepSoundName = "Chest.Step";
-	}
-	else if ( nOverrideFootstepSoundSet == 9 )
-	{
-		//pszBaseStepSoundName = "Chest.Step";
+
+	if (TFGameRules() && TFGameRules()->IsMannVsMachineMode() && GetTeamNumber() == TF_TEAM_PVE_INVADERS && !IsMiniBoss() && !m_Shared.InCond(TF_COND_DISGUISED))	{
+		return "MVM.BotStep";
 	}
 
-	if ( TFGameRules() && TFGameRules()->IsMvMModelsAllowed() )
+	Assert(pszBaseStepSoundName);
+
+	struct override_sound_entry_t { int iOverrideIndex; const char *pszBaseSoundName; const char *pszNewSoundName; };
+
+	enum
 	{
-		if ( GetModelScale() >= 1.5f )
+		kFootstepSoundSet_Default = 0,
+		kFootstepSoundSet_SoccerCleats = 1,
+		kFootstepSoundSet_HeavyGiant = 2,
+		kFootstepSoundSet_SoldierGiant = 3,
+		kFootstepSoundSet_DemoGiant = 4,
+		kFootstepSoundSet_ScoutGiant = 5,
+		kFootstepSoundSet_PyroGiant = 6,
+		kFootstepSoundSet_SentryBuster = 7,
+		kFootstepSoundSet_TreasureChest = 8,
+		kFootstepSoundSet_Octopus = 9,
+		kFootstepSoundSet_Robot = 10,
+	};
+
+	int iOverrideFootstepSoundSet = kFootstepSoundSet_Default;
+	CALL_ATTRIB_HOOK_INT(iOverrideFootstepSoundSet, override_footstep_sound_set);
+
+	if (iOverrideFootstepSoundSet != kFootstepSoundSet_Default)
+	{
+		static const override_sound_entry_t s_ReplacementSounds[] =
 		{
-			if ( IsPlayerClass( TF_CLASS_HEAVYWEAPONS ) )
-				pszBaseStepSoundName = "MVM.GiantHeavyStep";
-			else if ( IsPlayerClass( TF_CLASS_SOLDIER ) )
-				pszBaseStepSoundName = "MVM.GiantSoldierStep";
-			else if ( IsPlayerClass( TF_CLASS_DEMOMAN ) )
-				pszBaseStepSoundName = "MVM.GiantDemomanStep";
-			else if ( IsPlayerClass( TF_CLASS_SCOUT ) )
-				pszBaseStepSoundName = "MVM.GiantScoutStep";
-			else if ( IsPlayerClass( TF_CLASS_SCOUT ) )
-				pszBaseStepSoundName = "MVM.GiantScoutStep";
-			else
-				pszBaseStepSoundName = "MVM.GiantPyroStep";
-		}
-		else
-			pszBaseStepSoundName = "MVM.BotStep";
-	}
+			{ kFootstepSoundSet_SoccerCleats, "Default.StepLeft", "cleats_conc.StepLeft" },
+			{ kFootstepSoundSet_SoccerCleats, "Default.StepRight", "cleats_conc.StepRight" },
+			{ kFootstepSoundSet_SoccerCleats, "Dirt.StepLeft", "cleats_dirt.StepLeft" },
+			{ kFootstepSoundSet_SoccerCleats, "Dirt.StepRight", "cleats_dirt.StepRight" },
+			{ kFootstepSoundSet_SoccerCleats, "Concrete.StepLeft", "cleats_conc.StepLeft" },
+			{ kFootstepSoundSet_SoccerCleats, "Concrete.StepRight", "cleats_conc.StepRight" },
 
+			//
+			{ kFootstepSoundSet_Octopus, "Default.StepLeft", "Octopus.StepCommon" },
+			{ kFootstepSoundSet_Octopus, "Default.StepRight", "Octopus.StepCommon" },
+			{ kFootstepSoundSet_Octopus, "Dirt.StepLeft", "Octopus.StepCommon" },
+			{ kFootstepSoundSet_Octopus, "Dirt.StepRight", "Octopus.StepCommon" },
+			{ kFootstepSoundSet_Octopus, "Concrete.StepLeft", "Octopus.StepCommon" },
+			{ kFootstepSoundSet_Octopus, "Concrete.StepRight", "Octopus.StepCommon" },
+
+			//
+			{ kFootstepSoundSet_HeavyGiant, "", "MVM.GiantHeavyStep" },
+
+			//
+			{ kFootstepSoundSet_SoldierGiant, "", "MVM.GiantSoldierStep" },
+
+			//
+			{ kFootstepSoundSet_DemoGiant, "", "MVM.GiantDemomanStep" },
+
+			//
+			{ kFootstepSoundSet_ScoutGiant, "", "MVM.GiantScoutStep" },
+
+			//
+			{ kFootstepSoundSet_PyroGiant, "", "MVM.GiantPyroStep" },
+
+			//
+			{ kFootstepSoundSet_SentryBuster, "", "MVM.SentryBusterStep" },
+
+			//
+			{ kFootstepSoundSet_TreasureChest, "", "Chest.Step" },
+
+			{ kFootstepSoundSet_Robot, "", "MVM.BotStep" },
+		};
+
+		for (int i = 0; i < ARRAYSIZE(s_ReplacementSounds); i++)
+		{
+			if (iOverrideFootstepSoundSet == s_ReplacementSounds[i].iOverrideIndex)
+			{
+				if (!s_ReplacementSounds[i].pszBaseSoundName[0] ||
+					!Q_stricmp(pszBaseStepSoundName, s_ReplacementSounds[i].pszBaseSoundName))
+					return s_ReplacementSounds[i].pszNewSoundName;
+			}
+
+		}
+	}
+	// Fallback.
 	return pszBaseStepSoundName;
 }
 
