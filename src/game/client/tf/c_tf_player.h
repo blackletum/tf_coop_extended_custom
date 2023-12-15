@@ -97,6 +97,7 @@ public:
 	virtual void FireEvent( const Vector& origin, const QAngle& angles, int event, const char *options );
 	virtual void PlayStepSound( Vector &vecOrigin, surfacedata_t *psurface, float fvol, bool force );
 	virtual const char *GetOverrideStepSound( const char *pszBaseStepSoundName );
+	virtual void		OnEmitFootstepSound(const CSoundParameters& params, const Vector& vecOrigin, float fVolume);
 
 	void LoadInventory(void);
 	void EditInventory(int iSlot, int iWeapon);

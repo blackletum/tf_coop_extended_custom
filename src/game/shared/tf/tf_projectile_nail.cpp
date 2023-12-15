@@ -57,7 +57,7 @@ CTFProjectile_Syringe::~CTFProjectile_Syringe()
 //-----------------------------------------------------------------------------
 CTFProjectile_Syringe *CTFProjectile_Syringe::Create( const Vector &vecOrigin, const QAngle &vecAngles, CBaseEntity *pOwner, CBaseEntity *pScorer, bool bCritical )
 {
-	return static_cast<CTFProjectile_Syringe*>( CTFBaseProjectile::Create( "tf_projectile_syringe", vecOrigin, vecAngles, pOwner, CTFProjectile_Syringe::GetInitialVelocity(), g_sModelIndexSyringe, SYRINGE_DISPATCH_EFFECT, pScorer, bCritical ) );
+	return static_cast<CTFProjectile_Syringe*>( CTFBaseProjectile::Create( "tf_projectile_syringe", vecOrigin, vecAngles, pOwner, CTFProjectile_Syringe::GetInitialVelocity(), g_sModelIndexSyringe, NULL, pScorer, bCritical ) );
 }
 
 //-----------------------------------------------------------------------------
@@ -92,6 +92,7 @@ const char *GetSyringeTrailParticleName( int iTeamNumber, bool bCritical )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
+/*
 void ClientsideProjectileSyringeCallback( const CEffectData &data )
 {
 	// Get the syringe and add it to the client entity list, so we can attach a particle system to it.
@@ -119,6 +120,6 @@ void ClientsideProjectileSyringeCallback( const CEffectData &data )
 }
 
 DECLARE_CLIENT_EFFECT( SYRINGE_DISPATCH_EFFECT, ClientsideProjectileSyringeCallback );
-
+*/
 #endif
 

@@ -6758,8 +6758,7 @@ void CTFPlayer::OnEmitFootstepSound(CSoundParameters const &params, Vector const
 		}
 
 		CPASFilter filter(vecOrigin);
-		if (1 < gpGlobals->maxClients)
-			filter.RemoveRecipientsByPVS(vecOrigin);
+
 
 		EmitSound_t parm;
 		parm.m_nChannel = CHAN_BODY;

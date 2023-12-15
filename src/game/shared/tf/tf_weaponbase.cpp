@@ -438,7 +438,7 @@ void CTFWeaponBase::SetViewModel()
 
 			if (pWearable && pWearable->GetItem()->GetStaticData()->attach_to_hands_vm_only && pWearable->GetItem()->GetStaticData()->attach_to_hands_vm_only > 0)
 			{
-			
+				pWearable->AddEFlags(EF_NODRAW);
 
 			}
 		}
@@ -458,7 +458,42 @@ void CTFWeaponBase::SetViewModel()
 	vm->SetWeaponModel( pszModelName, this );
 
 #ifdef CLIENT_DLL
+	//This code fucking sucks
+	if (pTFPlayer)
+	{
+		for (int i = 0; i < pTFPlayer->GetNumWearables(); i++)
+		{
+			CEconWearable *pWearable = pTFPlayer->GetWearable(i);
+
+			if (!pWearable)
+				continue;
+
+
+			if (pWearable && pWearable->GetItem()->GetStaticData()->attach_to_hands_vm_only && pWearable->GetItem()->GetStaticData()->attach_to_hands_vm_only > 0)
+			{
+				pWearable->RemoveEFlags(EF_NODRAW);
+
+			}
+		}
+	}
 	UpdateViewModel();
+	if (pTFPlayer)
+	{
+		for (int i = 0; i < pTFPlayer->GetNumWearables(); i++)
+		{
+			CEconWearable *pWearable = pTFPlayer->GetWearable(i);
+
+			if (!pWearable)
+				continue;
+
+
+			if (pWearable && pWearable->GetItem()->GetStaticData()->attach_to_hands_vm_only && pWearable->GetItem()->GetStaticData()->attach_to_hands_vm_only > 0)
+			{
+				pWearable->AddEFlags(EF_NODRAW);
+
+			}
+		}
+	}
 #endif
 }
 
