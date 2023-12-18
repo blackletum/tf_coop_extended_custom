@@ -13061,7 +13061,34 @@ void CTFPlayer::ModifyOrAppendCriteria( AI_CriteriaSet& criteriaSet )
 			}
 		}
 	}
+//	int iClass = m_PlayerClass.GetClassIndex();
 
+	for (int i = 0; i < GetNumWearables(); i++)
+	{
+		CTFWearable *pWearable = assert_cast<CTFWearable *>(GetWearable(i));
+		if (pWearable == nullptr)
+			continue;
+
+		// Always remove extra wearables when initializing weapons
+		if (pWearable->IsExtraWearable())
+		{
+			continue;
+		}
+
+		CEconItemDefinition *pItemDef = pWearable->GetItem()->GetStaticData();
+		if (pItemDef)
+		{
+			//int iSlot = pItemDef->GetLoadoutSlot(iClass);
+			//CEconItemView *pLoadoutItem = GetLoadoutItem(iClass, iSlot);
+			if (m_bRegenerating == false)
+			{
+				string_t strResponseCriteria = NULL_STRING;
+				CALL_ATTRIB_HOOK_STRING_ON_OTHER(pWearable, strResponseCriteria, "additional_halloween_response_criteria_name");
+				if (strResponseCriteria != NULL_STRING)
+				AddContext(STRING(strResponseCriteria));
+			}
+		}
+	}
 	// If we have 'disguiseclass' criteria, pretend that we are actually our
 	// disguise class. That way we just look up the scene we would play as if 
 	// we were that class.
