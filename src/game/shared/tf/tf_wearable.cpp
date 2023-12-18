@@ -1,12 +1,13 @@
 #include "cbase.h"
 #include "tf_wearable.h"
-
+#include "cam_thirdperson.h"
 #ifdef GAME_DLL
 #include "tf_player.h"
 #include "ai_basenpc.h"
 #else
 #include "c_tf_player.h"
 #include "c_ai_basenpc.h"
+
 #endif
 
 // memdbgon must be the last include file in a .cpp file!!!
@@ -72,8 +73,11 @@ void CTFWearable::UpdateModelToClass(void)
 				//CALL_ATTRIB_HOOK_STRING(strResponseCriteria, additional_halloween_response_criteria_name);
 				//if (strResponseCriteria != NULL_STRING)
 				//pOwner->AddContext(STRING(strResponseCriteria));
-
+			
 				// This needs to also reset if there are no wearables with custom model defined.
+				if (strcmp(pItemDef->item_class, "tf_wearable_vm") && pItemDef->attach_to_hands_vm_only != '\0') {
+					SetRenderMode(kRenderNone);
+				}
 				if (pItemDef->model_world[iClass] != '\0') {
 					Q_snprintf(pOwner->m_iszCustomModel.GetForModify(), MAX_PATH, pItemDef->model_world);
 					pOwner->UpdateModel();
@@ -106,6 +110,10 @@ int C_TFWearable::InternalDrawModel( int flags )
 
 	int ret = BaseClass::InternalDrawModel( flags );
 
+	if (!bNotViewModel && pOwner->IsLocalPlayer())
+		SetRenderMode(kRenderNormal);
+	else;
+		SetRenderMode(kRenderNone);
 	if ( bUseInvulnMaterial )
 		modelrender->ForcedMaterialOverride( NULL );
 	if (GetItem()->GetStaticData()) {

@@ -471,7 +471,7 @@ void CTFWeaponBase::SetViewModel()
 
 			if (pWearable && pWearable->GetItem()->GetStaticData()->attach_to_hands_vm_only && pWearable->GetItem()->GetStaticData()->attach_to_hands_vm_only > 0)
 			{
-				pWearable->RemoveEFlags(EF_NODRAW);
+			//	pWearable->RemoveEFlags(EF_NODRAW);
 
 			}
 		}
@@ -489,7 +489,7 @@ void CTFWeaponBase::SetViewModel()
 
 			if (pWearable && pWearable->GetItem()->GetStaticData()->attach_to_hands_vm_only && pWearable->GetItem()->GetStaticData()->attach_to_hands_vm_only > 0)
 			{
-				pWearable->AddEFlags(EF_NODRAW);
+			//	pWearable->AddEFlags(EF_NODRAW);
 
 			}
 		}

@@ -14,7 +14,7 @@
 #ifdef CLIENT_DLL
 	#include "c_baseplayer.h"
 #else
-	#include "baseplayer.h"
+	#include "player.h"
 #endif
 
 #define DIST_FORWARD 0
