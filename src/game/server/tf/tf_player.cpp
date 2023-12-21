@@ -13075,18 +13075,28 @@ void CTFPlayer::ModifyOrAppendCriteria( AI_CriteriaSet& criteriaSet )
 			continue;
 		}
 
-		CEconItemDefinition *pItemDef = pWearable->GetItem()->GetStaticData();
-		if (pItemDef)
+		CEconItemDefinition *pItemDeff = pWearable->GetItem()->GetStaticData();
+		if (pItemDeff)
 		{
+			DevMsg("ItemDef found! ");
 			//int iSlot = pItemDef->GetLoadoutSlot(iClass);
 			//CEconItemView *pLoadoutItem = GetLoadoutItem(iClass, iSlot);
-			if (m_bRegenerating == false)
-			{
-				string_t strResponseCriteria = NULL_STRING;
-				CALL_ATTRIB_HOOK_STRING_ON_OTHER(pWearable, strResponseCriteria, "additional_halloween_response_criteria_name");
-				if (strResponseCriteria != NULL_STRING)
-				AddContext(STRING(strResponseCriteria));
-			}
+
+				if (pItemDeff->response_criteria)
+				{
+					
+					//const char *cstr_response = strResponseCriteria.ToCStr();
+					//DevMsg(cstr_response);
+					criteriaSet.AppendCriteria(pItemDeff->response_criteria, "1");
+				}
+				else
+				{
+					DevMsg("ResponseCriteria is null. ");
+				}
+		}
+		else{
+			DevMsg("Wow. Epic Fail....");
+
 		}
 	}
 	// If we have 'disguiseclass' criteria, pretend that we are actually our
@@ -13103,6 +13113,13 @@ void CTFPlayer::ModifyOrAppendCriteria( AI_CriteriaSet& criteriaSet )
 		if ( GetPlayerClass() )
 		{
 			criteriaSet.AppendCriteria( "playerclass", g_aPlayerClassNames_NonLocalized[ GetPlayerClass()->GetClassIndex() ] );
+			string_t plmodel = GetModelName();
+			const char *cstr = plmodel.ToCStr(); // Hey Cstrs!!!!!!! - James Charles (real)
+			if (strcmp(cstr, "/0") != 0)
+			{
+				criteriaSet.AppendCriteria("playermodel", cstr);
+				DevMsg(cstr);
+			}
 		}
 	}
 
@@ -13115,6 +13132,7 @@ void CTFPlayer::ModifyOrAppendCriteria( AI_CriteriaSet& criteriaSet )
 		iTotalKills = pStats->statsCurrentLife.m_iStat[TFSTAT_KILLS] + pStats->statsCurrentLife.m_iStat[TFSTAT_KILLASSISTS]+ 
 			pStats->statsCurrentLife.m_iStat[TFSTAT_BUILDINGSDESTROYED];
 	}
+
 	criteriaSet.AppendCriteria( "killsthislife", UTIL_VarArgs( "%d", iTotalKills ) );
 	criteriaSet.AppendCriteria( "cloaked", m_Shared.IsStealthed() ? "1" : "0" );
 	criteriaSet.AppendCriteria( "disguised", m_Shared.InCond( TF_COND_DISGUISED ) ? "1" : "0" );

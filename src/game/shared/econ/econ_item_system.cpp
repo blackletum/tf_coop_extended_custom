@@ -328,6 +328,7 @@ public:
 			GET_INT( pItem, pDefinition, image_inventory_size_h );
 
 			GET_STRING( pItem, pDefinition, model_player );
+			GET_STRING(pItem, pDefinition, response_criteria);
 			GET_STRING( pItem, pDefinition, model_vision_filtered );
 			GET_STRING( pItem, pDefinition, model_world );
 			GET_STRING( pItem, pDefinition, extra_wearable );
