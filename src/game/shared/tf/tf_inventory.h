@@ -60,7 +60,7 @@ public:
 	};
 
 	struct Loadout {
-		ClassLoadout playerclass[TF_LAST_NORMAL_CLASS];
+		ClassLoadout playerclass[TF_CLASS_COUNT];
 	};
 
 	CUtlMap<uint64, Loadout> m_Player;

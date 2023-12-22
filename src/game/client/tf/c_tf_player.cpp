@@ -6208,7 +6208,7 @@ void C_TFPlayer::Simulate( void )
 //-----------------------------------------------------------------------------
 void C_TFPlayer::LoadInventory( void )
 {
-	for ( int iClass = TF_FIRST_NORMAL_CLASS; iClass <= TF_LAST_NORMAL_CLASS; iClass++ )
+	for ( int iClass = TF_FIRST_NORMAL_CLASS; iClass <= TF_CLASS_COUNT; iClass++ )
 	{
 		for ( int iSlot = 0; iSlot < LOADOUT_POSITION_TAUNT2; iSlot++ )
 		{

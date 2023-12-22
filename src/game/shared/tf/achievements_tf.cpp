@@ -142,7 +142,7 @@ class CAchievementTFGetMultipleKills : public CBaseAchievement
 
 		int iKills = 0;
 		// get sum of kills per class across all classes to get total kills
-		for ( int iClass = TF_FIRST_NORMAL_CLASS; iClass <= TF_LAST_NORMAL_CLASS; iClass++ )
+		for ( int iClass = TF_FIRST_NORMAL_CLASS; iClass <= TF_CLASS_COUNT; iClass++ )
 		{
 			ClassStats_t &classStats = CTFStatPanel::GetClassStats( iClass );
 			iKills += classStats.accumulated.m_iStat[TFSTAT_KILLS];
