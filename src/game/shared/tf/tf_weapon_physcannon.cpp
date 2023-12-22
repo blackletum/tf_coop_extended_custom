@@ -2843,7 +2843,7 @@ void CWeaponPhysCannon::SecondaryAttack( void )
 		switch ( result )
 		{
 		case OBJECT_FOUND:
-			WeaponSound( SPECIAL1 );
+			EmitSound( "Weapon_PhysCannon.Pickup" );
 			SendWeaponAnim( ACT_VM_PRIMARYATTACK );
 			m_flNextSecondaryAttack = gpGlobals->curtime + 0.5f;
 
@@ -2853,6 +2853,7 @@ void CWeaponPhysCannon::SecondaryAttack( void )
 
 		case OBJECT_NOT_FOUND:
 			m_flNextSecondaryAttack = gpGlobals->curtime + 0.1f;
+
 			CloseElements();
 			break;
 
@@ -3141,7 +3142,8 @@ CWeaponPhysCannon::FindObjectResult_t CWeaponPhysCannon::FindObject( void )
 			if (!m_flLastDenySoundPlayed)
 			{
 				m_flLastDenySoundPlayed = true;
-				WeaponSound(SPECIAL3);
+				EmitSound( "Weapon_PhysCannon.TooHeavy" );
+				//WeaponSound(SPECIAL3);
 			}
 
 			return OBJECT_NOT_FOUND;
@@ -3641,7 +3643,8 @@ void CWeaponPhysCannon::DetachObject( bool playSound, bool wasLaunched )
 	if ( playSound )
 	{
 		//Play the detach sound
-		WeaponSound( MELEE_MISS );
+		//WeaponSound( MELEE_MISS );
+		EmitSound( "Weapon_PhysCannon.Drop" );
 	}
 
 	RecordThrownObject(pObject);
