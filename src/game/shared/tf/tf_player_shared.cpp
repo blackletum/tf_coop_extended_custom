@@ -6502,7 +6502,7 @@ Vector CTFPlayer::GetClassEyeHeight( void )
 		return VEC_VIEW_SCALED( this );
 
 	float flViewHeightMultiplier = 1;
-	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(GetActiveTFWeapon(), flViewHeightMultiplier, view_height_multiplier);
+	CALL_ATTRIB_HOOK_FLOAT(flViewHeightMultiplier, view_height_multiplier);
 
 	return ( g_TFClassViewVectors[pClass->GetClassIndex()] * GetModelScale() * flViewHeightMultiplier);
 }

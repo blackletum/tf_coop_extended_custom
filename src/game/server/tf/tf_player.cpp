@@ -832,7 +832,7 @@ void CTFPlayer::TFPlayerThink()
 	m_flHandScale  = Approach( GetDesiredHandScale(),  m_flHandScale,  GetHandScaleSpeed() );
 
 	if ( IsAlive() && lfe_use_hl2_player_hull.GetInt() != 0 && GetModelScale() == 1 && !TFGameRules()->IsTFCAllowed() )
-		SetModelScale( 0.9 );
+		SetModelScale( 1 );
 	else if ( IsAlive() && (lfe_use_hl2_player_hull.GetInt() != 1 || TFGameRules()->IsTFCAllowed()) && GetModelScale() != 1 )
 		SetModelScale( 1 );
 
