@@ -6501,10 +6501,10 @@ Vector CTFPlayer::GetClassEyeHeight( void )
 	if ( iClassIndex < TF_FIRST_NORMAL_CLASS || iClassIndex > TF_CLASS_COUNT )
 		return VEC_VIEW_SCALED( this );
 
-	//float flViewHeightMultiplier = 1;
-	//CALL_ATTRIB_HOOK_FLOAT(flViewHeightMultiplier, view_height_multiplier);
+	float flViewHeightMultiplier = 1;
+	CALL_ATTRIB_HOOK_FLOAT(flViewHeightMultiplier, view_height_multiplier);
 
-	return ( g_TFClassViewVectors[pClass->GetClassIndex()] * GetModelScale());
+	return ( g_TFClassViewVectors[pClass->GetClassIndex()] * GetModelScale() * flViewHeightMultiplier);
 }
 
 CTFWeaponBase *CTFPlayer::Weapon_OwnsThisID( int iWeaponID )
