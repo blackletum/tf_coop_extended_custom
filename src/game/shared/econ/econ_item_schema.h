@@ -305,6 +305,7 @@ typedef struct EconItemStyle
 	{
 		CLEAR_STR( name );
 		CLEAR_STR( model_player );
+		CLEAR_STR(model_world);
 		CLEAR_STR( image_inventory );
 		skin_red = 0;
 		skin_blu = 0;
@@ -316,6 +317,7 @@ typedef struct EconItemStyle
 	bool selectable;
 	char name[128];
 	char model_player[128];
+	char model_world[128];
 	char image_inventory[128];
 	CUtlDict< const char*, unsigned short > model_player_per_class;
 } ItemStyle_t;

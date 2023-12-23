@@ -732,6 +732,7 @@ public:
 
 					GET_STRING( style, pStyleData, name );
 					GET_STRING( style, pStyleData, model_player );
+					GET_STRING(style, pStyleData, model_world);
 					GET_STRING( style, pStyleData, image_inventory );
 					GET_BOOL( style, pStyleData, selectable );
 					GET_INT( style, pStyleData, skin_red );

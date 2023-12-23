@@ -690,14 +690,16 @@ CBaseEntity *CTFWeaponBaseGun::FireNail( CTFPlayer *pPlayer, int iSpecificNail )
 
 	float flSpread = 1.5;
 	CALL_ATTRIB_HOOK_FLOAT(flSpread, projectile_spread_angle);
-	angForward.x += RandomFloat(-flSpread, flSpread);
-	angForward.y += RandomFloat(-flSpread, flSpread);
+
 
 	CTFBaseProjectile *pProjectile = NULL;
 	switch( iSpecificNail )
 	{
 	case TF_PROJECTILE_SYRINGE:
-		pProjectile = CTFProjectile_Syringe::Create( vecSrc, angForward, pPlayer, pPlayer, IsCurrentAttackACrit() );
+		GetProjectileFireSetup(pPlayer, Vector(16, 6, -8), &vecSrc, &angForward);
+		angForward.x += RandomFloat(-flSpread, flSpread);
+		angForward.y += RandomFloat(-flSpread, flSpread);
+		pProjectile = CTFProjectile_Syringe::Create(vecSrc, angForward, pPlayer, pPlayer, IsCurrentAttackACrit());
 		break;
 	default:
 		Assert(0);
