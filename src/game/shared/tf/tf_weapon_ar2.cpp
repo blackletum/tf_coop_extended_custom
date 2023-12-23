@@ -123,6 +123,11 @@ void CTFWeaponAR2::ItemPostFrame( void )
 	BaseClass::ItemPostFrame();
 }
 
+
+void CTFWeaponAR2::PrimaryAttack(void)
+{
+	BaseClass::PrimaryAttack();
+}
 //-----------------------------------------------------------------------------
 // Purpose: 
 // Input  : &tr - 

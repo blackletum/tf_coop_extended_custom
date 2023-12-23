@@ -452,13 +452,15 @@ CBaseEntity *CTFWeaponBaseGun::FireProjectile( CTFPlayer *pPlayer )
 void CTFWeaponBaseGun::UpdatePunchAngles( CTFPlayer *pPlayer )
 {
 	// Update the player's punch angle.
+	int flPunchAngleMult = 4;
+	CALL_ATTRIB_HOOK_FLOAT(flPunchAngleMult, viewpunch_mult);
 	QAngle angle = pPlayer->GetPunchAngle();
 	float flPunchAngle = m_pWeaponInfo->GetWeaponData( m_iWeaponMode ).m_flPunchAngle;
 
 	if ( flPunchAngle > 0 )
 	{
 		angle.x -= SharedRandomInt( "ShotgunPunchAngle", ( flPunchAngle - 1 ), ( flPunchAngle + 1 ) );
-		pPlayer->SetPunchAngle( angle );
+		pPlayer->SetPunchAngle( angle * flPunchAngleMult );
 	}
 }
 
