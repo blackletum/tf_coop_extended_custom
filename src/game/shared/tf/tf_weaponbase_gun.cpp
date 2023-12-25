@@ -728,9 +728,11 @@ CBaseEntity *CTFWeaponBaseGun::FirePipeBomb( CTFPlayer *pPlayer, int iType )
 
 #ifdef GAME_DLL
 	int iMode = TF_GL_MODE_REGULAR, iNoSpin = 0;
+	int iDetMode = TF_GL_MODE_REGULAR;
 	CALL_ATTRIB_HOOK_INT( iMode, set_detonate_mode );
+	CALL_ATTRIB_HOOK_INT(iDetMode, set_detonate_mode);
 
-	if ( ( iType == TF_PROJECTILE_PIPEBOMB_REMOTE ) || ( iType == TF_PROJECTILE_PIPEBOMB_REMOTE_PRACTICE ) )
+	if ((iType == TF_PROJECTILE_PIPEBOMB_REMOTE) || (iType == TF_PROJECTILE_PIPEBOMB_REMOTE_PRACTICE) || (iType == TF_PROJECTILE_PIPEBOMB) && iDetMode == TF_GL_MODE_REMOTE_DETONATE)
 	{
 		iMode = TF_GL_MODE_REMOTE_DETONATE;
 	}

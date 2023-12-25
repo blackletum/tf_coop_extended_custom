@@ -39,6 +39,7 @@ ConVar xbox_throttlebias("xbox_throttlebias", "100", FCVAR_ARCHIVE );
 ConVar xbox_throttlespoof("xbox_throttlespoof", "200", FCVAR_ARCHIVE );
 ConVar xbox_autothrottle("xbox_autothrottle", "1", FCVAR_ARCHIVE );
 ConVar xbox_steering_deadzone( "xbox_steering_deadzone", "0.0" );
+ConVar sv_vehicle_ignore_water("sv_vehicle_ignore_water", "0.0");
 
 // remaps an angular variable to a 3 band function:
 // 0 <= t < start :		f(t) = 0
@@ -1393,6 +1394,14 @@ void CFourWheelVehiclePhysics::UpdateDriverControls( CUserCmd *cmd, float flFram
 	params.bThrottleDown = bThrottle;
 	params.bTurbo = IsBoosting();
 	params.bVehicleInWater = m_pOuterServerVehicle->IsVehicleBodyInWater();
+	if (sv_vehicle_ignore_water.GetFloat() != 0)
+	{
+		params.bVehicleInWater = false;
+	}
+	else
+	{
+		params.bVehicleInWater = m_pOuterServerVehicle->IsVehicleBodyInWater();
+	}
 	params.flCurrentSpeedFraction = flSpeedPercentage;
 	params.flFrameTime = flFrameTime;
 	params.flWorldSpaceSpeed = carState.speed;

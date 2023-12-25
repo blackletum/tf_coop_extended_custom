@@ -78,6 +78,7 @@ ConVar	g_jeepexitspeed( "g_jeepexitspeed", "100", FCVAR_CHEAT );
 
 extern ConVar autoaim_max_dist;
 extern ConVar sv_vehicle_autoaim_scale;
+extern ConVar sv_vehicle_ignore_water;
 
 
 //=============================================================================
@@ -594,7 +595,7 @@ bool CPropJeep::CheckWater( void )
 			m_bHasPoop = false;
 		}
 
-		if ( !m_VehiclePhysics.IsEngineDisabled() )
+		if ( !m_VehiclePhysics.IsEngineDisabled() && sv_vehicle_ignore_water.GetFloat() == 0 )
 		{
 			m_VehiclePhysics.SetDisableEngine( true );
 		}
