@@ -402,6 +402,7 @@ public:
 		image_inventory_size_h = 0;
 		CLEAR_STR( model_player );
 		CLEAR_STR(response_criteria);
+		CLEAR_STR(response_criteria_value);
 		CLEAR_STR( model_world );
 		CLEAR_STR( equip_region );
 		Q_memset( &model_player_per_class, 0, sizeof( model_player_per_class ) );
@@ -468,6 +469,7 @@ public:
 	int		image_inventory_size_h;
 	char	model_player[128];
 	char	response_criteria[128];
+	char	response_criteria_value[128];
 	char	model_world[128];
 	char	equip_region[128];
 	char	model_player_per_class[TF_CLASS_COUNT_ALL][128];

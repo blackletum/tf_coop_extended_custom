@@ -5868,12 +5868,13 @@ int CTFPlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 			flDamage = info.GetDamage() * TF_DAMAGE_CRIT_MULTIPLIER;
 			if ( pAttacker && pAttacker->IsNPC() )
 			{
-				if ( TFGameRules()->IsSkillLevel( SKILL_EASY ) )
-					flDamage = info.GetDamage() * TF_DAMAGE_CRIT_MULTIPLIER / 2;
-				else if ( TFGameRules()->IsSkillLevel( SKILL_MEDIUM ) )
-					flDamage = info.GetDamage() * TF_DAMAGE_CRIT_MULTIPLIER / 1.5;
-				else if ( TFGameRules()->IsSkillLevel( SKILL_HARD ) )
-					flDamage = info.GetDamage() * TF_DAMAGE_CRIT_MULTIPLIER / 1.2;
+				//TESTING: remove weird skill level damage scaling to make weapons feel consistent across difficulties!
+				if (TFGameRules()->IsSkillLevel(SKILL_EASY))
+					flDamage = info.GetDamage() * TF_DAMAGE_CRIT_MULTIPLIER; // / 2
+		//		else if ( TFGameRules()->IsSkillLevel( SKILL_MEDIUM ) )
+		//			flDamage = info.GetDamage() * TF_DAMAGE_CRIT_MULTIPLIER / 1.5;
+		//		else if ( TFGameRules()->IsSkillLevel( SKILL_HARD ) )
+		//			flDamage = info.GetDamage() * TF_DAMAGE_CRIT_MULTIPLIER / 1.2;
 			}
 
 			// Show the attacker, unless the target is a disguised spy
@@ -6404,7 +6405,7 @@ void CTFPlayer::DamageEffect(float flDamage, int fDamageType)
 	}
 	else if (fDamageType & DMG_DROWN)
 	{
-		//Red damage indicator
+		//Blue damage indicator
 		color32 blue = {0,0,128,128};
 		UTIL_ScreenFade( this, blue, 1.0f, 0.1f, FFADE_IN );
 	}
@@ -13087,7 +13088,19 @@ void CTFPlayer::ModifyOrAppendCriteria( AI_CriteriaSet& criteriaSet )
 					
 					//const char *cstr_response = strResponseCriteria.ToCStr();
 					//DevMsg(cstr_response);
-					criteriaSet.AppendCriteria(pItemDeff->response_criteria, "1");
+					if (pItemDeff->response_criteria_value && strcmp(pItemDeff->response_criteria_value, "/0") != 0)
+					{
+						criteriaSet.AppendCriteria(pItemDeff->response_criteria, pItemDeff->response_criteria_value);
+					}
+					else if (pItemDeff->response_criteria_value && strcmp(pItemDeff->response_criteria_value, "/0") == 0)
+					{
+						DevWarning("Response_criteria_value is not being properly read somehow!");
+
+					}
+					else if (!pItemDeff->response_criteria_value)
+					{
+						criteriaSet.AppendCriteria(pItemDeff->response_criteria, "1");
+					}
 				}
 				else
 				{
@@ -13117,7 +13130,7 @@ void CTFPlayer::ModifyOrAppendCriteria( AI_CriteriaSet& criteriaSet )
 			const char *cstr = plmodel.ToCStr(); // Hey Cstrs!!!!!!! - James Charles (real)
 			if (strcmp(cstr, "/0") != 0)
 			{
-				criteriaSet.AppendCriteria("playermodel", cstr);
+				criteriaSet.AppendCriteria("playermodel", cstr, 0);
 				DevMsg(cstr);
 			}
 		}

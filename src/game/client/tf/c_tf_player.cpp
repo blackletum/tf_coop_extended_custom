@@ -862,6 +862,8 @@ void C_TFRagdoll::CreateTFRagdoll( void )
 	TFPlayerClassData_t *pData = GetPlayerClassData( m_iClass );
 	if ( pData )
 	{
+		
+
 		int nModelIndex = modelinfo->GetModelIndex( pData->GetModelName() );
 		SetModelIndex( nModelIndex );
 
@@ -892,9 +894,13 @@ void C_TFRagdoll::CreateTFRagdoll( void )
 		m_timer2.Start( RandomFloat( 9.0f, 11.0f ) );
 	}
 
-	if ( pPlayer && !pPlayer->IsDormant() )
+	if (pPlayer && !pPlayer->IsDormant())
 	{
 		// Move my current model instance to the ragdoll's so decals are preserved.
+		if (pPlayer && pPlayer->m_iszCustomModel){
+			int cusModelIndex = modelinfo->GetModelIndex(pPlayer->m_iszCustomModel);
+			SetModelIndex(cusModelIndex);
+			}
 		pPlayer->SnatchModelInstance( this );
 
 		VarMapping_t *varMap = GetVarMapping();

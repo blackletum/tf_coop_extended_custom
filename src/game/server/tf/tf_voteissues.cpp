@@ -402,8 +402,9 @@ bool CChangeDifficultyIssue::IsEnabled()
 void CChangeDifficultyIssue::ExecuteCommand()
 {
 	CBaseTFIssue::ExecuteCommand();
-
-	engine->ServerCommand( UTIL_VarArgs( "sv_difficulty %s\n", m_szDetailsString ) );
+	if (strchr(m_szDetailsString, ';') == NULL){
+		engine->ServerCommand(UTIL_VarArgs("sv_difficulty %s\n", m_szDetailsString));	// Else, do nothing to prevent people from using ; to run commands on the server!
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -448,8 +449,9 @@ void CChangeMapAddIssue::ExecuteCommand()
 
 	if ( FStrEq( m_szDetailsString, "#Lfe_vote_no_mapadd" ) )
 		return;
-
-	engine->ServerCommand( UTIL_VarArgs( "lfe_mapadd_file %s\n", m_szDetailsString ) );
+	if (strchr(m_szDetailsString, ';') == NULL){
+		engine->ServerCommand(UTIL_VarArgs("lfe_mapadd_file %s\n", m_szDetailsString));
+	}
 	mp_restartgame_immediate.SetValue( 1 );
 }
 
