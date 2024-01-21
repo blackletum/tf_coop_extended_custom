@@ -723,6 +723,7 @@ const char *g_aWeaponNames[] =
 	"TF_WEAPON_PHYSGUN",
 	"TF_WEAPON_CHEATGUN",
 	"TF_WEAPON_PHYSCANNON",
+	"TF_WEAPON_CUSTOM",
 
 
 	"TF_WEAPON_COUNT",	// end marker, do not add below here
@@ -891,6 +892,7 @@ int g_aWeaponDamageTypes[] =
 	DMG_GENERIC,	// TF_WEAPON_PHYSGUN
 	DMG_GENERIC,	// TF_WEAPON_CHEATGUN
 	DMG_GENERIC,	// TF_WEAPON_PHYSCANNON
+	DMG_GENERIC,	// TF_WEAPON_CUSTOM
 
 	// This is a special entry that must match with TF_WEAPON_COUNT
 	// to protect against updating the weapon list without updating this list

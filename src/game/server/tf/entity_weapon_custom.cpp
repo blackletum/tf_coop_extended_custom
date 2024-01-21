@@ -19,7 +19,7 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-BEGIN_DATADESC( CTFWeaponCustom )
+BEGIN_DATADESC( CTFLFEWeaponCustom )
 	DEFINE_KEYFIELD( m_nItemID, 			FIELD_INTEGER,	"itemid" ),
 	DEFINE_KEYFIELD( m_szItemClassname, 	FIELD_STRING,	"itemclassname" ),
 	DEFINE_KEYFIELD( m_szItemModelW, 		FIELD_STRING,	"itemmodelw" ),
@@ -28,10 +28,10 @@ BEGIN_DATADESC( CTFWeaponCustom )
 	DEFINE_KEYFIELD( m_bSkipBaseAttributes,	FIELD_BOOLEAN,	"skipbaseattribute"),
 END_DATADESC()
 
-LINK_ENTITY_TO_CLASS( lfe_weapon_custom, CTFWeaponCustom );
+LINK_ENTITY_TO_CLASS( lfe_weapon_custom, CTFLFEWeaponCustom );
 
 
-CTFWeaponCustom::CTFWeaponCustom()
+CTFLFEWeaponCustom::CTFLFEWeaponCustom()
 {
 	m_nItemID = -1;
 	m_bSkipBaseAttributes = false;
@@ -47,7 +47,7 @@ CTFWeaponCustom::CTFWeaponCustom()
 //-----------------------------------------------------------------------------
 // Purpose: Spawn function 
 //-----------------------------------------------------------------------------
-void CTFWeaponCustom::Spawn( void )
+void CTFLFEWeaponCustom::Spawn( void )
 {
 	CEconItemDefinition *pItemDef = GetItemSchema()->GetItemDefinition( m_nItemID );
 	if ( !pItemDef )
@@ -77,7 +77,7 @@ void CTFWeaponCustom::Spawn( void )
 //-----------------------------------------------------------------------------
 // Purpose: Precache function 
 //-----------------------------------------------------------------------------
-void CTFWeaponCustom::Precache( void )
+void CTFLFEWeaponCustom::Precache( void )
 {
 	PrecacheModel( m_Item.GetWorldDisplayModel() );
 	//PrecacheModel( m_szItemModelW );
@@ -87,7 +87,7 @@ void CTFWeaponCustom::Precache( void )
 //-----------------------------------------------------------------------------
 // Purpose:
 //-----------------------------------------------------------------------------
-bool CTFWeaponCustom::KeyValue( const char *szKeyName, const char *szValue )
+bool CTFLFEWeaponCustom::KeyValue( const char *szKeyName, const char *szValue )
 {
 	if ( szValue && szValue[0] )
 	{
@@ -113,7 +113,7 @@ bool CTFWeaponCustom::KeyValue( const char *szKeyName, const char *szValue )
 //-----------------------------------------------------------------------------
 // Purpose:  Override to get rid of EF_NODRAW
 //-----------------------------------------------------------------------------
-CBaseEntity* CTFWeaponCustom::Respawn( void )
+CBaseEntity* CTFLFEWeaponCustom::Respawn( void )
 {
 	return NULL;
 }
@@ -121,7 +121,7 @@ CBaseEntity* CTFWeaponCustom::Respawn( void )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CTFWeaponCustom::Materialize( void )
+void CTFLFEWeaponCustom::Materialize( void )
 {
 
 }
@@ -129,7 +129,7 @@ void CTFWeaponCustom::Materialize( void )
 //-----------------------------------------------------------------------------
 // Purpose:  
 //-----------------------------------------------------------------------------
-void CTFWeaponCustom::EndTouch( CBaseEntity *pOther )
+void CTFLFEWeaponCustom::EndTouch( CBaseEntity *pOther )
 {
 	CTFPlayer *pTFPlayer = dynamic_cast<CTFPlayer*>( pOther );
 
@@ -147,7 +147,7 @@ void CTFWeaponCustom::EndTouch( CBaseEntity *pOther )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-bool CTFWeaponCustom::MyTouch( CBasePlayer *pPlayer )
+bool CTFLFEWeaponCustom::MyTouch( CBasePlayer *pPlayer )
 {
 	bool bSuccess = false;
 

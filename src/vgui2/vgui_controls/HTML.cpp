@@ -352,6 +352,7 @@ void HTML::OnMove()
 void HTML::OpenURL(const char *URL, const char *postData, bool force)
 {
 	PostURL( URL, postData, force );
+	DevMsg("Loading an HTML Page /n");
 }
 
 //-----------------------------------------------------------------------------

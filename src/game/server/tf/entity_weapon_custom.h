@@ -16,13 +16,13 @@
 
 //=============================================================================
 
-class CTFWeaponCustom : public CTFPowerup
+class CTFLFEWeaponCustom : public CTFPowerup
 {
 public:
-	DECLARE_CLASS( CTFWeaponCustom, CTFPowerup );
+	DECLARE_CLASS( CTFLFEWeaponCustom, CTFPowerup );
 	DECLARE_DATADESC();
 
-	CTFWeaponCustom();
+	CTFLFEWeaponCustom();
 
 	void					Spawn( void );
 	void					Precache( void );
