@@ -8878,7 +8878,7 @@ bool CTFGameRules::IsTFCAllowed( void )
 //-----------------------------------------------------------------------------
 bool CTFGameRules::IsGrenadesAllowed( void )
 {
-	return IsTFCAllowed();
+	return true;
 }
 
 //-----------------------------------------------------------------------------

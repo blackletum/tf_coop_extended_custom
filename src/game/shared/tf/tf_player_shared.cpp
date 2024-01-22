@@ -6711,10 +6711,14 @@ int CTFPlayer::GetMaxAmmo( int iAmmoIndex, int iClassNumber /*= -1*/ )
 		break;
 
 	case TF_AMMO_GRENADES1:
-	case LFE_AMMO_GRENADES1:
-		CALL_ATTRIB_HOOK_INT( iMaxAmmo, mult_maxammo_grenades1 );
+		CALL_ATTRIB_HOOK_INT(iMaxAmmo, mult_maxammo_grenades1);
 		break;
-
+	case LFE_AMMO_GRENADES1:
+		CALL_ATTRIB_HOOK_INT(iMaxAmmo, mult_maxammo_lfegrenades1);
+		break;
+	case LFE_AMMO_GRENADES2:
+		CALL_ATTRIB_HOOK_INT(iMaxAmmo, mult_maxammo_lfegrenades2);
+		break;
 	case 6:
 	default:
 		iMaxAmmo = 1;
@@ -6799,6 +6803,7 @@ const char *CTFPlayer::GetOverrideStepSound(const char *pszBaseStepSoundName)
 		kFootstepSoundSet_TreasureChest = 8,
 		kFootstepSoundSet_Octopus = 9,
 		kFootstepSoundSet_Robot = 10,
+		kFootstepSoundSet_Heels = 11,
 	};
 
 	int iOverrideFootstepSoundSet = kFootstepSoundSet_Default;
@@ -6845,6 +6850,15 @@ const char *CTFPlayer::GetOverrideStepSound(const char *pszBaseStepSoundName)
 			{ kFootstepSoundSet_TreasureChest, "", "Chest.Step" },
 
 			{ kFootstepSoundSet_Robot, "", "MVM.BotStep" },
+
+			{ kFootstepSoundSet_Heels, "Concrete.StepRight", "Player_Footstep_Heels.Concrete" },
+			{ kFootstepSoundSet_Heels, "Concrete.StepLeft", "Player_Footstep_Heels.Concrete" },
+			{ kFootstepSoundSet_Heels, "Default.StepRight", "Player_Footstep_Heels.Concrete" },
+			{ kFootstepSoundSet_Heels, "Default.StepLeft", "Player_Footstep_Heels.Concrete" },
+			{ kFootstepSoundSet_Heels, "Wood.StepRight", "Player_Footstep_Heels.Concrete" },
+			{ kFootstepSoundSet_Heels, "Wood.StepLeft", "Player_Footstep_Heels.Concrete" },
+			{ kFootstepSoundSet_Heels, "Dirt.StepLeft", "cleats_dirt.StepLeft" },
+			{ kFootstepSoundSet_Heels, "Dirt.StepRight", "cleats_dirt.StepRight" },
 		};
 
 		for (int i = 0; i < ARRAYSIZE(s_ReplacementSounds); i++)

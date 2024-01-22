@@ -370,8 +370,6 @@ bool CTFHudGrenadeAmmo::ShouldDraw( void )
 	if ( !pPlayer )
 		return false;
 
-	if ( !TFGameRules()->IsGrenadesAllowed() )
-		return false;
 
 	return CHudElement::ShouldDraw();
 }
@@ -418,10 +416,10 @@ void CTFHudGrenadeAmmo::OnThink()
 			//hudlcd->SetGlobalStat( "(ammo_grenades2)", "n/a" );
 
 			// turn off our ammo counts
-			UpdateAmmoLabels( false, false );
+		//	UpdateAmmoLabels( false, false );
 
-			m_nAmmo = -1;
-			m_nAmmo2 = -1;
+		//	m_nAmmo = -1;
+		//	m_nAmmo2 = -1;
 		}
 		else
 		{

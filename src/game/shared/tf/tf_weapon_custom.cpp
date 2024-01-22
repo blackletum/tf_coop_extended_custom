@@ -61,10 +61,31 @@ void CTFWeaponCustom::SecondaryAttack()
 	CTFPlayer *pOwner = GetTFPlayerOwner();
 	if (!CanAttack())
 		return;
+	int iSecondaryMode = 0;
+	CALL_ATTRIB_HOOK_INT(iSecondaryMode, cw_secondary_attack_mode);
+	switch(iSecondaryMode)
+	{
+	case 0:
+		return;
+	case 1:
+		if (pOwner->GetAmmoCount(m_iSecondaryAmmoType) > 0) //UNFINISHED
+		{
+			FireHLAR2Grenade(pOwner, 0);
+			pOwner->RemoveAmmo(1, m_iSecondaryAmmoType);
+			SetSecondaryAmmoCount(GetSecondaryAmmoCount() - 1);
+			SendWeaponAnim(ACT_VM_SECONDARYATTACK);
+			WeaponSound(WPN_DOUBLE);
+		}
+		else{
+			WeaponSound(EMPTY);
+		}
+
+
+	}
 
 	// Set the weapon mode.
 	m_iWeaponMode = TF_WEAPON_SECONDARY_MODE;
-	FireHLHornet(pOwner);
+	
 	BaseClass::SecondaryAttack();
 }
 bool CTFWeaponCustom::Reload(void)
