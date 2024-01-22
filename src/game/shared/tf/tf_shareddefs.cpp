@@ -724,6 +724,7 @@ const char *g_aWeaponNames[] =
 	"TF_WEAPON_CHEATGUN",
 	"TF_WEAPON_PHYSCANNON",
 	"TF_WEAPON_CUSTOM",
+	"TF_WEAPON_CUSTOM_PRIMARY",
 
 
 	"TF_WEAPON_COUNT",	// end marker, do not add below here

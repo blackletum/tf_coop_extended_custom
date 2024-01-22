@@ -22,10 +22,12 @@
 #endif
 
 CREATE_SIMPLE_WEAPON_TABLE(TFWeaponCustom, tf_weapon_custom)
+CREATE_SIMPLE_WEAPON_TABLE(TFWeaponCustomPrimary, tf_weapon_custom_primary)
 // Custom Weapon Functions
 CTFWeaponCustom::CTFWeaponCustom()
 {
 	m_bReloadsSingly = false;
+
 }
 void CTFWeaponCustom::Equip(CBaseCombatCharacter *pEquipTo)
 {
@@ -64,4 +66,28 @@ void CTFWeaponCustom::SecondaryAttack()
 	m_iWeaponMode = TF_WEAPON_SECONDARY_MODE;
 	FireHLHornet(pOwner);
 	BaseClass::SecondaryAttack();
+}
+bool CTFWeaponCustom::Reload(void)
+{
+	int iReloadSingle = 0;
+	CALL_ATTRIB_HOOK_INT(iReloadSingle, cw_reload_singly);
+	if (iReloadSingle == 1){
+		m_bReloadsSingly = true;
+		//DevMsg("Weapon reloads singly (1)");
+	}
+	if (iReloadSingle == 0){
+		m_bReloadsSingly = false;
+		//DevMsg("Weapon does not reload singly (0)");
+	}
+	return BaseClass::Reload();
+}
+void CTFWeaponCustomPrimary::Precache(void)
+{
+#ifndef CLIENT_DLL
+	// Set the proper classname so it loads the correct script file.
+	SetClassname("tf_weapon_custom_primary");
+#endif
+
+	BaseClass::Precache();
+
 }

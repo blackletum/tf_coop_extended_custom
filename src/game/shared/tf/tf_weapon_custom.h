@@ -15,6 +15,7 @@
 
 #if defined( CLIENT_DLL )
 #define CTFWeaponCustom C_TFWeaponCustom
+#define CTFWeaponCustomPrimary C_TFWeaponCustomPrimary
 #endif
 
 
@@ -30,7 +31,8 @@ public:
 
 	virtual int		GetWeaponID(void) const			{ return TF_WEAPON_CUSTOM; }
 	virtual void	PrimaryAttack();
-	virtual void	SecondaryAttack();
+	virtual void	SecondaryAttack(); 
+	virtual bool	Reload(void);
 	virtual void	Equip(CBaseCombatCharacter *pOwner);
 	virtual int		GetDamageType() const;
 
@@ -42,6 +44,15 @@ protected:
 private:
 
 	CTFWeaponCustom(const CTFWeaponCustom &) {}
+};
+class CTFWeaponCustomPrimary : public CTFWeaponCustom
+{
+public:
+	DECLARE_CLASS(CTFWeaponCustomPrimary, CTFWeaponCustom);
+	DECLARE_NETWORKCLASS();
+	DECLARE_PREDICTABLE();
+
+	void	Precache();
 };
 
 
