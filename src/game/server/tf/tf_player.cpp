@@ -1994,8 +1994,11 @@ void CTFPlayer::Spawn()
 
 	// Create our off hand viewmodel if necessary
 	CreateViewModel( 1 );
+	// Do it for one extra wearable too
+	CreateViewModel(2);
 	// Make sure it has no model set, in case it had one before
 	GetViewModel( 1 )->SetWeaponModel( NULL, NULL );
+	GetViewModel(2)->SetWeaponModel(NULL, NULL);
 
 	m_Shared.SetDemoShieldEquipped( false );
 	m_Shared.SetParachuteEquipped( false );
@@ -5875,6 +5878,7 @@ int CTFPlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 		//			flDamage = info.GetDamage() * TF_DAMAGE_CRIT_MULTIPLIER / 1.5;
 		//		else if ( TFGameRules()->IsSkillLevel( SKILL_HARD ) )
 		//			flDamage = info.GetDamage() * TF_DAMAGE_CRIT_MULTIPLIER / 1.2;
+				// I'm stupid, this is just for NPCS
 			}
 
 			// Show the attacker, unless the target is a disguised spy
@@ -8021,13 +8025,34 @@ void CTFPlayer::Event_Killed( const CTakeDamageInfo &info )
 	if ( bDisguised )
 		UpdateModel();
 
-	if ( pKillerWeapon && !pKillerWeapon->IsSilentKiller() )
+	if (pKillerWeapon && pKillerWeapon->IsSilentKiller())
 	{
-		if ( ( TFGameRules()->IsTFCAllowed() || TFGameRules()->IsHolidayActive( kHoliday_AprilFools ) ) )
-			EmitSound( "TFCPlayer.Death" );
-		else
-			SpeakConceptIfAllowed( MP_CONCEPT_DIED );
+		//Player was silently killed
+		
 	}
+	else{
+		// test test test test test test test test test test test test test test test test test test test test
+		if ((TFGameRules()->IsTFCAllowed() || TFGameRules()->IsHolidayActive(kHoliday_AprilFools))){
+			EmitSound("TFCPlayer.Death");
+		}
+		int iDeathConcept = MP_CONCEPT_PLRDEATH;
+		if (m_LastDamageType & DMG_BLAST){
+			iDeathConcept = MP_CONCEPT_PLRDEATHEXPLOSION;
+			
+		}
+		if (m_LastDamageType & DMG_CLUB){
+			iDeathConcept = MP_CONCEPT_PLRDEATHMELEE;
+			
+		}
+		if (m_LastDamageType & DMG_CRITICAL){
+			iDeathConcept = MP_CONCEPT_PLRDEATHCRIT;
+			
+		}
+		DevMsg("DEATH!!!! Concept to speak is: %i \n", iDeathConcept);
+
+		SpeakConceptIfAllowed(iDeathConcept);
+	}
+	
 
 	if ( pTFAttacker )
 	{
@@ -10331,24 +10356,27 @@ void CTFPlayer::DeathSound( const CTakeDamageInfo &info )
 		// They died in the fall. Play a splat sound.
 		EmitSound( "Player.FallGib" );
 	}
-	else if ( m_LastDamageType & DMG_BLAST )
-	{
-		EmitSound( pData->m_szExplosionDeathSound );
-	}
-	else if ( m_LastDamageType & DMG_CRITICAL )
-	{
-		EmitSound( pData->m_szCritDeathSound );
 
-		PlayCritReceivedSound();
-	}
-	else if ( m_LastDamageType & (DMG_CLUB | DMG_SLASH) )
-	{
-		EmitSound( pData->m_szMeleeDeathSound );
-	}
-	else
-	{
-		EmitSound( pData->m_szDeathSound );
-	}
+	// Disable this for now, test overriding via response system
+
+//	else if ( m_LastDamageType & DMG_BLAST )
+//	{
+//		EmitSound( pData->m_szExplosionDeathSound );
+//	}
+//	else if ( m_LastDamageType & DMG_CRITICAL )
+//	{
+//		EmitSound( pData->m_szCritDeathSound );
+//
+//		PlayCritReceivedSound();
+//	}
+//	else if ( m_LastDamageType & (DMG_CLUB | DMG_SLASH) )
+//	{
+//		EmitSound( pData->m_szMeleeDeathSound );
+//	}
+//	else
+//	{
+//		EmitSound( pData->m_szDeathSound );
+//	}
 }
 
 //-----------------------------------------------------------------------------
@@ -13079,7 +13107,7 @@ void CTFPlayer::ModifyOrAppendCriteria( AI_CriteriaSet& criteriaSet )
 		CEconItemDefinition *pItemDeff = pWearable->GetItem()->GetStaticData();
 		if (pItemDeff)
 		{
-			DevMsg("ItemDef found! ");
+		//	DevMsg("ItemDef found! ");
 			//int iSlot = pItemDef->GetLoadoutSlot(iClass);
 			//CEconItemView *pLoadoutItem = GetLoadoutItem(iClass, iSlot);
 
@@ -13104,11 +13132,11 @@ void CTFPlayer::ModifyOrAppendCriteria( AI_CriteriaSet& criteriaSet )
 				}
 				else
 				{
-					DevMsg("ResponseCriteria is null. ");
+				//	DevMsg("ResponseCriteria is null. ");
 				}
 		}
 		else{
-			DevMsg("Wow. Epic Fail....");
+		//	DevMsg("Wow. Epic Fail....");
 
 		}
 	}
@@ -13530,7 +13558,7 @@ bool CTFPlayer::SpeakConceptIfAllowed( int iConcept, const char *modifiers, char
 
 	if ( IsSpeaking() )
 	{
-		if ( iConcept != MP_CONCEPT_DIED )
+		if (iConcept != MP_CONCEPT_DIED && iConcept != MP_CONCEPT_PLRDEATH && iConcept != MP_CONCEPT_PLRDEATHCRIT && iConcept != MP_CONCEPT_PLRDEATHMELEE && iConcept != MP_CONCEPT_PLRDEATHEXPLOSION)
 			return false;
 	}
 

@@ -255,8 +255,10 @@ void CTFWeaponBaseGun::SecondaryAttack( void )
 	pPlayer->DoClassSpecialSkill();
 
 	m_bInAttack2 = true;
-
-	m_flNextSecondaryAttack = gpGlobals->curtime + 0.5;
+	
+	float flSecondaryAttackDelay = 0.5;
+	CALL_ATTRIB_HOOK_FLOAT(flSecondaryAttackDelay, secondary_atk_fire_rate);
+	m_flNextSecondaryAttack = gpGlobals->curtime + flSecondaryAttackDelay;
 }
 
 CBaseEntity *CTFWeaponBaseGun::FireProjectile( CTFPlayer *pPlayer )
@@ -452,7 +454,7 @@ CBaseEntity *CTFWeaponBaseGun::FireProjectile( CTFPlayer *pPlayer )
 void CTFWeaponBaseGun::UpdatePunchAngles( CTFPlayer *pPlayer )
 {
 	// Update the player's punch angle.
-	int flPunchAngleMult = 4;
+	int flPunchAngleMult = 1;
 	CALL_ATTRIB_HOOK_FLOAT(flPunchAngleMult, viewpunch_mult);
 	QAngle angle = pPlayer->GetPunchAngle();
 	float flPunchAngle = m_pWeaponInfo->GetWeaponData( m_iWeaponMode ).m_flPunchAngle;

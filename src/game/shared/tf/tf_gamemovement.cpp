@@ -100,6 +100,7 @@ ConVar sv_player_funnel_into_portals("sv_player_funnel_into_portals", "1", FCVAR
 extern bool g_bAllowForcePortalTrace;
 extern bool g_bForcePortalTrace;
 
+
 static inline CBaseEntity *TranslateGroundEntity( CBaseEntity *pGroundEntity )
 {
 #ifndef CLIENT_DLL
@@ -539,14 +540,17 @@ void CTFGameMovement::AirDash( void )
 		CPVSFilter filter( m_pTFPlayer->GetAbsOrigin() );
 
 		m_pTFPlayer->StopSound( "General.banana_slip" );
-
+		CAttribute_String strCustomAirDashSound;
+		float flCustomAirDashSoundVol = 0.1;
+		strCustomAirDashSound = MAKE_STRING("General.banana_slip");
+		CALL_ATTRIB_HOOK_STRING_ON_OTHER(m_pTFPlayer, strCustomAirDashSound, custom_air_dash_sound);
+		CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(m_pTFPlayer, flCustomAirDashSoundVol, custom_air_dash_sound_volume);
 		EmitSound_t parms;
-		parms.m_pSoundName = "General.banana_slip";
+		parms.m_pSoundName = strCustomAirDashSound;
 		parms.m_SoundLevel = SNDLVL_25dB;
-		parms.m_flVolume = 0.1f;
+		parms.m_flVolume = flCustomAirDashSoundVol;
 		parms.m_nFlags |= SND_CHANGE_PITCH | SND_CHANGE_VOL;
 		parms.m_nPitch = ( m_pTFPlayer->m_Shared.GetAirDash() * 5 ) + 100;
-
 		m_pTFPlayer->EmitSound( filter, m_pTFPlayer->entindex(), parms );
 	}
 	else
@@ -655,7 +659,7 @@ bool CTFGameMovement::CheckJumpButton()
 	if ( player->GetFlags() & FL_DUCKING )
 	{
 		// Let a scout do it.
-		bool bAllow = ( bScout && !bOnGround ) || ( lfe_duckjump.GetBool() && bOnGround );
+		bool bAllow = ( bScout && !bOnGround ) || ( lfe_duckjump.GetBool() );
 
 		if ( !bAllow )
 			return false;
@@ -688,7 +692,7 @@ bool CTFGameMovement::CheckJumpButton()
 	CTFWeaponBase *pWeapon = m_pTFPlayer->GetActiveTFWeapon();
 	if ( pWeapon )
 		CALL_ATTRIB_HOOK_INT_ON_OTHER( pWeapon, nMaxAirDashCount, air_dash_count );
-
+	CALL_ATTRIB_HOOK_INT_ON_OTHER(m_pTFPlayer, nMaxAirDashCount, air_dash_count);
 	// In air, so ignore jumps (unless you are a scout).
 	if ( !bOnGround )
 	{
@@ -1851,11 +1855,11 @@ void CTFGameMovement::Duck( void )
 		mv->m_nButtons &= ~IN_DUCK;
 
 	// Don't allowing ducking in water.
-	if ( ( ( player->GetWaterLevel() >= WL_Feet ) && ( player->GetGroundEntity() == NULL ) ) ||
-		 player->GetWaterLevel() >= WL_Eyes )
-	{
-		mv->m_nButtons &= ~IN_DUCK;
-	}
+//	if ( ( ( player->GetWaterLevel() >= WL_Feet ) && ( player->GetGroundEntity() == NULL ) ) ||
+//		 player->GetWaterLevel() >= WL_Eyes )
+//	{
+//		mv->m_nButtons &= ~IN_DUCK;
+//	}
 	int buttonsChanged = ( mv->m_nOldButtons ^ mv->m_nButtons );	// These buttons have changed this frame
 	int buttonsPressed = buttonsChanged & mv->m_nButtons;			// The changed ones still down are "pressed"
 	int buttonsReleased = buttonsChanged & mv->m_nOldButtons;		// The changed ones which were previously down are "released"

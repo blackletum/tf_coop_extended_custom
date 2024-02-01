@@ -63,30 +63,46 @@ void CTFWeaponCustom::SecondaryAttack()
 		return;
 	int iSecondaryMode = 0;
 	CALL_ATTRIB_HOOK_INT(iSecondaryMode, cw_secondary_attack_mode);
-	switch(iSecondaryMode)
+if (iSecondaryMode == 1){ //Abandon switches because for whatever reason they just didn't work.. at all
+	if (pOwner->GetAmmoCount(m_iSecondaryAmmoType) > 0) //UNFINISHED
 	{
-	case 0:
-		return;
-	case 1:
-		if (pOwner->GetAmmoCount(m_iSecondaryAmmoType) > 0) //UNFINISHED
-		{
-			FireHLAR2Grenade(pOwner, 0);
-			pOwner->RemoveAmmo(1, m_iSecondaryAmmoType);
-			SetSecondaryAmmoCount(GetSecondaryAmmoCount() - 1);
-			SendWeaponAnim(ACT_VM_SECONDARYATTACK);
-			WeaponSound(WPN_DOUBLE);
-		}
-		else{
-			WeaponSound(EMPTY);
-		}
-
-
+		FireHLAR2Grenade(pOwner, 0);
+		SetSecondaryAmmoCount(pOwner->GetAmmoCount(m_iSecondaryAmmoType) - 1);
+		SendWeaponAnim(ACT_VM_SECONDARYATTACK);
+		WeaponSound(WPN_DOUBLE);
+	}
+	else{
+		WeaponSound(EMPTY);
+		DevMsg("skill issue 2");
+	}
+}
+if (iSecondaryMode == 2){
+	if (m_iClip1 >= 2 && m_flNextSecondaryAttack >= gpGlobals->curtime) //UNFINISHED
+	{
+		PrimaryAttack();
+		m_flNextPrimaryAttack = gpGlobals->curtime;
+		PrimaryAttack();
+		//m_iClip1 -= 2;
+		SendWeaponAnim(ACT_VM_SECONDARYATTACK);
+		WeaponSound(WPN_DOUBLE);
+		
+	}
+	else{
+		WeaponSound(EMPTY);
+		DevMsg("skill issue 2");
 	}
 
+}
+
+
+
 	// Set the weapon mode.
-	m_iWeaponMode = TF_WEAPON_SECONDARY_MODE;
+	//m_iWeaponMode = TF_WEAPON_SECONDARY_MODE;
 	
 	BaseClass::SecondaryAttack();
+	float flSecondaryAttackDelay = 0.5;
+	CALL_ATTRIB_HOOK_FLOAT(flSecondaryAttackDelay, secondary_atk_fire_rate);
+	m_flNextSecondaryAttack = gpGlobals->curtime + flSecondaryAttackDelay;
 }
 bool CTFWeaponCustom::Reload(void)
 {

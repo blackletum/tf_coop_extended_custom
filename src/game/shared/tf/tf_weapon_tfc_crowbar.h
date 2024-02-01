@@ -30,6 +30,7 @@ public:
 
 	CTFCCrowbar();
 	virtual int			GetWeaponID( void ) const { return TF_WEAPON_TFC_CROWBAR; }
+	virtual void	OnSwingHit(trace_t &trace);
 
 private:
 

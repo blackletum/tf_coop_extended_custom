@@ -290,7 +290,9 @@ enum CastVote
 
 // Humans only have left and right hands, though we might have aliens with more
 //  than two, sigh
-#define MAX_VIEWMODELS			2
+
+//HGF: Doubled for dual support for demoshields and playermodel hands
+#define MAX_VIEWMODELS			4
 
 #define MAX_BEAM_ENTS			10
 
