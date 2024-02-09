@@ -202,23 +202,28 @@ void CTFFlameEntity::ClientThink( void )
 		CALL_ATTRIB_HOOK_INT_ON_OTHER( GetOwnerEntity(), nGreenFlames, halloween_green_flames );
 		CALL_ATTRIB_HOOK_INT_ON_OTHER( GetOwnerEntity(), iType, set_weapon_mode );
 
-		string_t strFlameParticleName = NULL_STRING;
-		CALL_ATTRIB_HOOK_STRING_ON_OTHER( GetOwnerEntity(), strFlameParticleName, flame_core_particle_name );
+
 
 		if ( nGreenFlames != 0 )
 			pszParticleEffect = "new_flame_core_halloween";
-		else if ( strFlameParticleName != NULL_STRING )
-		{
-			PrecacheParticleSystem( STRING( strFlameParticleName ) );
-			pszParticleEffect = STRING( strFlameParticleName );
-		}
 		else if ( iType == 1 )
 			pszParticleEffect = "burningplayer_flyingbits";
 		else if ( iType == 3 )
 			pszParticleEffect = "pyrovision_flaming_arrow";
 		else
 			pszParticleEffect = "burningplayer_flyingbits";
-
+		
+	string_t strFlameParticleName = NULL_STRING;
+	CALL_ATTRIB_HOOK_STRING_ON_OTHER(GetOwnerEntity(), strFlameParticleName, flame_core_particle_name);
+	if ( strFlameParticleName != NULL_STRING )
+	{
+	//	DevMsg("Replaced!");
+		PrecacheParticleSystem( STRING( strFlameParticleName ) );
+		pszParticleEffect = STRING( strFlameParticleName );
+	}
+	else{
+		//DevMsg("Y U NO REPLACE?!");
+	}
 		m_pFlameEffect = ParticleProp()->Create( pszParticleEffect, PATTACH_CUSTOMORIGIN );
 	}
 
@@ -567,9 +572,19 @@ void CTFFlameEntity::OnCollide( CBaseEntity *pOther )
 	if ( ( pOther->IsPlayer() || pOther->IsNPC() ) && IsBehindTarget( pOther ) && m_bCritFromBehind )
 		m_iDmgType |= DMG_CRITICAL;
 
-	CTakeDamageInfo info( GetOwnerEntity(), pAttacker, GetOwnerEntity(), flDamage, m_iDmgType, TF_DMG_CUSTOM_BURNING );
-	info.SetReportedPosition( pAttacker->GetAbsOrigin() );	
+
+
+	CTakeDamageInfo info(GetOwnerEntity(), pAttacker, GetOwnerEntity(), flDamage, m_iDmgType, TF_DMG_CUSTOM_BURNING);
+	info.SetReportedPosition(pAttacker->GetAbsOrigin());
 	
+	int iOverrideDamageType = -1;
+	CALL_ATTRIB_HOOK_INT_ON_OTHER(GetOwnerEntity(), iOverrideDamageType, flamethrower_override_dmgtype);
+	if (iOverrideDamageType != -1){
+		CTakeDamageInfo info(GetOwnerEntity(), pAttacker, GetOwnerEntity(), flDamage, iOverrideDamageType);
+		info.SetReportedPosition(pAttacker->GetAbsOrigin());
+		DevMsg("Flamethrower damage type overridden");
+	}
+
 	// We collided with pOther, so try to find a place on their surface to show blood
 	trace_t pTrace;
 	Ray_t ray; ray.Init( WorldSpaceCenter(), pOther->WorldSpaceCenter() );
@@ -579,20 +594,30 @@ void CTFFlameEntity::OnCollide( CBaseEntity *pOther )
 
 	ApplyMultiDamage();
 
+
+
 	// It's better to ignite NPC here rather than NPC code.
 	CAI_BaseNPC *pNPC = pOther->MyNPCPointer();
-	if ( pNPC )
+	if (pNPC)
 	{
-		pNPC->Ignite( TF_BURNING_FLAME_LIFE );
-		// I don't like this but Ignite doesn't allow us to set attacker so we have to do it separately. -nicknine?
-		pNPC->SetBurnAttacker( pAttacker );
+		if (m_iDmgType &= DMG_IGNITE){
+			pNPC->Ignite(TF_BURNING_FLAME_LIFE);
+			DevMsg("this should ignite!");
+			// I don't like this but Ignite doesn't allow us to set attacker so we have to do it separately. -nicknine?
+			pNPC->SetBurnAttacker(pAttacker);
+		}
+
+
 	}
 
 	CBreakableProp *pProp = dynamic_cast< CBreakableProp * >( pOther );
 	if ( pProp )
 	{
+
 		// If we won't be able to break it, don't burn
-		pProp->IgniteLifetime( TF_BURNING_FLAME_LIFE );
+		if (m_iDmgType &= DMG_IGNITE){
+			pProp->IgniteLifetime(TF_BURNING_FLAME_LIFE);
+		}
 		//pProp->ApplyMultiDamage();
 	}
 }

@@ -482,9 +482,13 @@ void CTFFlameThrower::PrimaryAttack()
 
 		// Burn & Ignite 'em
 		int iDmgType = g_aWeaponDamageTypes[ GetWeaponID() ];
+		int iOverrideDamageType = -1;
 		m_bCritFire = IsCurrentAttackACrit();
 		m_bMiniCritFire = IsCurrentAttackAMiniCrit();
-
+		CALL_ATTRIB_HOOK_INT(iOverrideDamageType, flamethrower_override_dmgtype);
+		if (iOverrideDamageType != -1){
+			iDmgType = iOverrideDamageType;
+		}
 		if ( m_bCritFire )
 		{
 			iDmgType |= DMG_CRITICAL;
@@ -968,7 +972,7 @@ void CTFFlameThrower::StartFlame()
 			if ( m_bHitTarget )
 			{
 				CLocalPlayerFilter filter;
-				m_pHitTargetSound = controller.SoundCreate( filter, entindex(), "Weapon_FlameThrower.FireHit" );
+				m_pHitTargetSound = controller.SoundCreate( filter, entindex(), GetShootSound(MELEE_HIT) );
 				controller.Play( m_pHitTargetSound, 1.0f, 100.0f );
 			}
 			else if ( m_pHitTargetSound )

@@ -2387,7 +2387,7 @@ int CAI_BaseNPC::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 	if ( pAttacker != this && pWeapon )
 	{
 		CALL_ATTRIB_HOOK_INT_ON_OTHER( pWeapon, nIgnoreResists, mod_pierce_resists_absorbs );
-		CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pWeapon, flDamage, mult_dmg_vs_players );
+	//	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pWeapon, flDamage, mult_dmg_vs_players );
 	}
 
 	if ( info.GetDamageType() & DMG_CRITICAL )
@@ -2566,6 +2566,22 @@ int CAI_BaseNPC::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 		CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pTFWeapon, flBleedDamage, mult_wpn_bleeddmg );
 		MakeBleed( pTFAttacker, pTFWeapon, flBleeding, flBleedDamage );
 	}
+
+	float nChillTime = 0.0f;
+	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pTFWeapon, nChillTime, chill_duration);
+	if (nChillTime > 0.0f){
+		AddCond(HGF_COND_CHILLED, nChillTime);
+		//DevMsg("Success! ChillTime is %s \n", nChillTime);
+	}
+	else{
+		//DevMsg("ChillTime is %s \n", nChillTime);
+	}
+	
+
+	float flFreezeTime = 0.0f;
+	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pTFWeapon, flFreezeTime, freeze_duration);
+	if (flFreezeTime > 0.0f)
+		AddCond(HGF_COND_FROZEN, flFreezeTime);
 
 	if ( pTFWeapon )
 	{
@@ -4942,6 +4958,11 @@ void CAI_BaseNPC::RunAnimation( void )
 	if ( InCond( TF_COND_STUNNED ) && ( GetStunFlags() & TF_STUNFLAG_BONKSTUCK ) )
 		flPlaybackRate = 0.1f;
 
+	if (InCond(HGF_COND_CHILLED))
+		flPlaybackRate = 0.5f;
+	if (InCond(HGF_COND_FROZEN))
+		flPlaybackRate = 0.0f;
+	
 	if ( InCond( TF_COND_SHIELD_CHARGE ) )
 		flPlaybackRate = 7.5f;
 

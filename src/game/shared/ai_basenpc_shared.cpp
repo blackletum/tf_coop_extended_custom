@@ -885,6 +885,14 @@ void CAI_BaseNPC::OnConditionAdded( int nCond )
 	case TF_COND_RUNE_SUPERNOVA:
 		OnAddRune();
 		break;
+
+		
+	case HGF_COND_CHILLED:
+		OnAddChilled();
+		break;
+	case HGF_COND_FROZEN:
+		OnAddFrozen();
+		break;
 #else
 	case TF_COND_OFFENSEBUFF:
 	case TF_COND_DEFENSEBUFF:
@@ -894,6 +902,12 @@ void CAI_BaseNPC::OnConditionAdded( int nCond )
 			AddCond( TF_COND_SPEED_BOOST );
 		break;
 
+	case HGF_COND_CHILLED:
+
+		break;
+	case HGF_COND_FROZEN:
+
+		break;
 	case TF_COND_RADIUSHEAL:
 		OnAddRadiusHeal();
 		break;
@@ -1042,6 +1056,13 @@ void CAI_BaseNPC::OnConditionRemoved( int nCond )
 	case TF_COND_RUNE_SUPERNOVA:
 		OnRemoveRune();
 		break;
+	case HGF_COND_CHILLED:
+		OnRemoveChilled();
+		break;
+
+	case HGF_COND_FROZEN:
+		OnRemoveFrozen();
+		break;
 #else
 	case TF_COND_OFFENSEBUFF:
 	case TF_COND_DEFENSEBUFF:
@@ -1063,6 +1084,8 @@ void CAI_BaseNPC::OnConditionRemoved( int nCond )
 	case TF_COND_SAPPED:
 		OnRemoveSapped();
 		break;
+
+
 
 	default:
 		break;
@@ -1601,7 +1624,32 @@ void CAI_BaseNPC::OnRemoveHalloweenTiny( void )
 
 	SetModelScale( 1.0, 0.0 );
 }
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CAI_BaseNPC::OnAddChilled(void)
+{
+	
+	SetRenderColor(150, 200, 255);
+	EmitSound("Player.Chilled");
+}
+void CAI_BaseNPC::OnRemoveChilled(void)
+{
+	SetRenderColor(255, 255, 255);
+}
+void CAI_BaseNPC::OnAddFrozen(void)
+{
+	
+	MaterialOverride("models/player/shared/ice_player.vmt");
+	EmitSound("Icicle.TurnToIce");
 
+}
+void CAI_BaseNPC::OnRemoveFrozen(void)
+{
+	MaterialOverride("");
+	
+
+}
 //-----------------------------------------------------------------------------
 // Purpose: Bonk phase effects
 //-----------------------------------------------------------------------------

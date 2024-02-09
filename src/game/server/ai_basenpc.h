@@ -2259,6 +2259,9 @@ public:
 	//void OnAddBuff( void );
 	void OnAddSapped( void );
 	void OnAddRune( void );
+	//HGF stuff
+	void OnAddChilled(void);
+	void OnAddFrozen(void);
 
 	void OnRemoveBurning( void );
 	void OnRemoveInvulnerable( void );
@@ -2275,6 +2278,9 @@ public:
 	void OnRemoveCondGas( void );
 	void OnRemoveBleeding( void );
 	void OnRemoveSapped( void );
+	//HGF stuff
+	void OnRemoveChilled(void);
+	void OnRemoveFrozen(void);
 	//void OnRemoveBuff( void );
 	void OnRemoveRune( void );
 

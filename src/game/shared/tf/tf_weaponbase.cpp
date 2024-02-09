@@ -683,9 +683,22 @@ const char *CTFWeaponBase::DetermineViewModelType( const char *vModel ) const
 
 		if ( iType == VMTYPE_TF2 )
 		{
+			//Stupid hacks; call me Hackerman B)
+			const char *pszHandReplacement = pPlayer->GetPlayerClass()->GetHandModelName(false);
+			const char *pszHandReplacementGS = pPlayer->GetPlayerClass()->GetHandModelName(true);
+			string_t strHandReplacement = MAKE_STRING(pPlayer->GetPlayerClass()->GetHandModelName(false));
+			string_t strHandReplacementGS = MAKE_STRING(pPlayer->GetPlayerClass()->GetHandModelName(true));
+			CALL_ATTRIB_HOOK_STRING_ON_OTHER(pPlayer, strHandReplacement, custom_hand_model);
+			CALL_ATTRIB_HOOK_STRING_ON_OTHER(pPlayer, strHandReplacementGS, custom_hand_model_gunslinger);
+			pszHandReplacement = STRING(strHandReplacement);
+			pszHandReplacementGS = STRING(strHandReplacementGS);
 			int iGunslinger = 0;
 			CALL_ATTRIB_HOOK_INT_ON_OTHER( pPlayer, iGunslinger, wrench_builds_minisentry );
-			return iGunslinger ? pPlayer->GetPlayerClass()->GetHandModelName(true) : pPlayer->GetPlayerClass()->GetHandModelName(false);
+		//	DevMsg(pszHandReplacement);
+		//	DevMsg("\n");
+		//	DevMsg(pszHandReplacementGS);
+		//	DevMsg("\n");
+			return iGunslinger ? pszHandReplacementGS : pszHandReplacement;
 		}
 	}
 
@@ -2797,6 +2810,8 @@ void CTFWeaponBase::ApplyOnHitAttributes( CBaseEntity *pVictim, CTFPlayer *pAtta
 			pMedigun->AddCharge( flAddCharge );
 		}
 	}
+
+
 
 	float flAddChargeRed = 0.0f;
 	CALL_ATTRIB_HOOK_FLOAT( flAddChargeRed, add_onhit_ubercharge_red );

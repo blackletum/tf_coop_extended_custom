@@ -836,6 +836,7 @@ void CTFPlayer::TFPlayerThink()
 //	else if ( IsAlive() && (lfe_use_hl2_player_hull.GetInt() != 1 || TFGameRules()->IsTFCAllowed()) && GetModelScale() != 1 )
 //		SetModelScale( 1 );
 
+	
 	SetContextThink( &CTFPlayer::TFPlayerThink, gpGlobals->curtime, "TFPlayerThink" );
 }
 
@@ -1994,11 +1995,11 @@ void CTFPlayer::Spawn()
 
 	// Create our off hand viewmodel if necessary
 	CreateViewModel( 1 );
-	// Do it for one extra wearable too
-	CreateViewModel(2);
+	// Do it for one extra wearable too (DISABLED, caused weird issues it seems)
+	//CreateViewModel(2);
 	// Make sure it has no model set, in case it had one before
 	GetViewModel( 1 )->SetWeaponModel( NULL, NULL );
-	GetViewModel(2)->SetWeaponModel(NULL, NULL);
+	//GetViewModel(2)->SetWeaponModel(NULL, NULL);
 
 	m_Shared.SetDemoShieldEquipped( false );
 	m_Shared.SetParachuteEquipped( false );
@@ -2202,6 +2203,7 @@ void CTFPlayer::Spawn()
 		if ( GetTeamNumber() != TF_TEAM_RED )
 			ChangeTeam( TF_TEAM_RED );
 	}
+
 }
 
 //-----------------------------------------------------------------------------
@@ -2610,6 +2612,12 @@ void CTFPlayer::GiveDefaultItems()
 
 	if ( TFGameRules()->IsPowerupMode() && !gEntList.FindEntityByClassname( NULL, "info_powerup_spawn" ) && ( m_Shared.GetCarryingRuneType() == TF_RUNE_NONE ) )
 		m_Shared.AddCond( RandomInt( TF_COND_RUNE_STRENGTH, TF_COND_RUNE_AGILITY ) );
+
+	float flCustomModelScale = 1.0;
+	CALL_ATTRIB_HOOK_FLOAT(flCustomModelScale, player_model_scale);
+	SetModelScale(flCustomModelScale);
+
+
 }
 
 //-----------------------------------------------------------------------------
@@ -7141,9 +7149,10 @@ void CTFPlayer::ApplyPushFromDamage( const CTakeDamageInfo &info, Vector &vecDir
 		}
 
 		// If we were damaged by someone else, reduce the amount of force with an attribute.
-		CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pAttacker, flForceMultiplier, damage_force_reduction );
-		if ( flForceMultiplier != 1.0f )
-			vecForce *= flForceMultiplier;
+		// Try moving this below as it weirdly isn't noticeable when damaged by NPCs. Maybe I'm just blind, though.
+	//	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pAttacker, flForceMultiplier, damage_force_reduction );
+	//	if ( flForceMultiplier != 1.0f )
+	//		vecForce *= flForceMultiplier;
 
 		if ( m_Shared.InCond( TF_COND_MEGAHEAL ) )
 			vecForce *= 0.25f;
@@ -7186,6 +7195,8 @@ void CTFPlayer::ApplyAbsVelocityImpulse( const Vector &inVecImpulse )
 		float flImpulseScale = 1.0f;
 		if ( m_Shared.InCond( TF_COND_AIMING ) )
 			CALL_ATTRIB_HOOK_FLOAT( flImpulseScale, mult_aiming_knockback_resistance );
+
+		CALL_ATTRIB_HOOK_FLOAT(flImpulseScale, damage_force_reduction);
 
 		if ( m_Shared.InCond( TF_COND_HALLOWEEN_TINY ) )
 			flImpulseScale *= 2.0f;

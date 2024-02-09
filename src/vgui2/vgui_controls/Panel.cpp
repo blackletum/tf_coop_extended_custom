@@ -958,7 +958,7 @@ int Panel::GetYPos()
 //-----------------------------------------------------------------------------
 void Panel::SetSize(int wide, int tall)
 {
-	Assert( abs(wide) < 32768 && abs(tall) < 32768 );
+	//Assert( abs(wide) < 32768 && abs(tall) < 32768 );
 	ipanel()->SetSize(GetVPanel(), wide, tall);
 }
 
@@ -4207,7 +4207,8 @@ void Panel::ApplyAutoResizeSettings(KeyValues *inResourceData)
 			if ( GetParent() != lastWarningParent )
 			{
 				lastWarningParent = GetParent();
-				Warning( "Resize parent (panel(%s) -> parent(%s)) not sized yet!!!\n", GetName(), GetParent()->GetName() );
+			//	Warning( "Resize parent (panel(%s) -> parent(%s)) not sized yet!!!\n", GetName(), GetParent()->GetName() );
+				//Suppress these for now until I can figure out a way to fix it and keep the class portrait overrides
 			}
 		}
 #endif

@@ -3016,8 +3016,15 @@ void CTFPlayerShared::Burn( CTFPlayer *pAttacker, CTFWeaponBase *pWeapon /*= NUL
 	float flFlameLife = TF_BURNING_FLAME_LIFE;
 	if ( pWeapon )
 	{
+		
 		flFlameLife = pWeapon->GetAfterburnRateOnHit();
 		CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pWeapon, flFlameLife, mult_wpn_burntime );
+		int iOverrideDamageType = -1;
+		CALL_ATTRIB_HOOK_INT_ON_OTHER(pWeapon, iOverrideDamageType, flamethrower_override_dmgtype);
+		if (iOverrideDamageType != -1){
+			return;
+		}
+
 	}
 
 	if ( bVictimIsPyro )

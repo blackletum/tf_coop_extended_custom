@@ -77,7 +77,7 @@ if (iSecondaryMode == 1){ //Abandon switches because for whatever reason they ju
 	}
 }
 if (iSecondaryMode == 2){
-	if (m_iClip1 >= 2 && m_flNextSecondaryAttack >= gpGlobals->curtime) //UNFINISHED
+	if (m_iClip1 >= 2 && m_flNextSecondaryAttack <= gpGlobals->curtime) //UNFINISHED
 	{
 		PrimaryAttack();
 		m_flNextPrimaryAttack = gpGlobals->curtime;

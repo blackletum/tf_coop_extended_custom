@@ -1743,6 +1743,8 @@ const char *g_aTFCondNames[] =
 	"LFE_COND_POWERPLAY",
 	"LFE_COND_ZOMBIE_SPAWN",
 	"LFE_COND_ZOMBIE_LEAP",
+	"HGF_COND_CHILLED",
+	"HGF_COND_FROZEN",
 
 	"TF_COND_LAST"	// end marker, do not add below here
 };

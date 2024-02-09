@@ -870,6 +870,7 @@ void C_TFRagdoll::CreateTFRagdoll( void )
 		switch ( m_iTeam )
 		{
 			case TF_TEAM_RED:
+			default:
 				m_nSkin = 0;
 				break;
 

@@ -1049,6 +1049,7 @@ void CTFClassImage::SetClass( int iTeam, int iClass, int iCloakstate )
 {
 	char szImage[128];
 	szImage[0] = '\0';
+	C_TFPlayer *pPlayer = ToTFPlayer(C_BasePlayer::GetLocalPlayer());
 
 	switch (iTeam)
 	{
@@ -1059,7 +1060,35 @@ void CTFClassImage::SetClass( int iTeam, int iClass, int iCloakstate )
 			Q_strncpy(szImage, g_szBlueClassImages[iClass], sizeof(szImage));
 			break;
 	}
-
+	if (pPlayer)
+	{
+		string_t strCustomReplacementImage = NULL_STRING;
+		CALL_ATTRIB_HOOK_STRING_ON_OTHER(pPlayer, strCustomReplacementImage, replace_class_portrait_noteam);
+		if (strCustomReplacementImage != NULL_STRING)
+			Q_strncpy(szImage, strCustomReplacementImage, sizeof(szImage));
+	}
+	if (pPlayer)
+	{
+		string_t strCustomReplacementImage = NULL_STRING;
+		CALL_ATTRIB_HOOK_STRING_ON_OTHER(pPlayer, strCustomReplacementImage, replace_class_portrait);
+		if (strCustomReplacementImage != NULL_STRING)
+			Q_strncpy(szImage, strCustomReplacementImage, sizeof(szImage));
+			switch (pPlayer->GetTeamNumber())
+			{ 
+				case 2:
+				default:
+					break;
+				case 3:
+					Q_strncat(szImage, "_blue", sizeof(szImage), COPY_ALL_CHARACTERS);
+					break;
+				case 4:
+					Q_strncat(szImage, "_green", sizeof(szImage), COPY_ALL_CHARACTERS);
+					break;
+				case 5:
+					Q_strncat(szImage, "_yellow", sizeof(szImage), COPY_ALL_CHARACTERS);
+					break;
+			}
+	}
 	switch( iCloakstate )
 	{
 	case 2:
@@ -1071,7 +1100,37 @@ void CTFClassImage::SetClass( int iTeam, int iClass, int iCloakstate )
 	default:
 		break;
 	}
+	
 
+	if (pPlayer)
+	{
+		string_t strCustomReplacementImage = NULL_STRING;
+		CALL_ATTRIB_HOOK_STRING_ON_OTHER(pPlayer, strCustomReplacementImage, replace_class_portrait_nocloak_noteam);
+		if (strCustomReplacementImage != NULL_STRING)
+			Q_strncpy(szImage, strCustomReplacementImage, sizeof(szImage));
+	}
+	if (pPlayer)
+	{
+		string_t strCustomReplacementImage = NULL_STRING;
+		CALL_ATTRIB_HOOK_STRING_ON_OTHER(pPlayer, strCustomReplacementImage, replace_class_portrait_nocloak);
+		if (strCustomReplacementImage != NULL_STRING)
+			Q_strncpy(szImage, strCustomReplacementImage, sizeof(szImage));
+		switch (pPlayer->GetTeamNumber())
+		{
+		case 2:
+		default:
+			break;
+		case 3:
+			Q_strncat(szImage, "_blue", sizeof(szImage), COPY_ALL_CHARACTERS);
+			break;
+		case 4:
+			Q_strncat(szImage, "_green", sizeof(szImage), COPY_ALL_CHARACTERS);
+			break;
+		case 5:
+			Q_strncat(szImage, "_yellow", sizeof(szImage), COPY_ALL_CHARACTERS);
+			break;
+		}
+	}
 	if ( Q_strlen( szImage ) > 0 )
 	{
 		SetImage( szImage );
