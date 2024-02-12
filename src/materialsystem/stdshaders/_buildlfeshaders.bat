@@ -5,7 +5,7 @@ rem ================================
 rem ==== MOD PATH CONFIGURATIONS ===
 
 rem == Set the absolute path to your mod's game directory here ==
-set GAMEDIR=%cd%\..\..\..\game\tf_coop_extended
+set GAMEDIR=%cd%\..\..\..\..\tf_coop_hotgarbage
 
 rem == Set the relative or absolute path to Source SDK Base 2013 Multiplayer\bin ==
 set SDKBINDIR=C:\Program Files (x86)\Steam\steamapps\common\Source SDK Base 2013 Multiplayer\bin

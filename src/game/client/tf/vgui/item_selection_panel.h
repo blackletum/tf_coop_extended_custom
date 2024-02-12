@@ -23,6 +23,7 @@ public:
 	virtual void CreateItemPanels();
 	virtual void AddNewItemPanel( int index );
 	virtual void ApplyKVsToItemPanels();
+	virtual void OnCommand(const char *command);
 	virtual int GetNumItemPanels();
 	virtual void PerformLayout();
 	void SetTeam( int iTeam );

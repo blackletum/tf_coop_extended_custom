@@ -3,11 +3,14 @@
 #include "character_info_panel.h"
 #include "tf_inventory.h"
 #include "tf_mainmenu.h"
+#include "ienginevgui.h"
+
 
 CEquipSlotItemSelectionPanel::CEquipSlotItemSelectionPanel( vgui::Panel* parent, int iSlot ) : vgui::EditablePanel( parent, "ItemSelectionPanel" )
 {
 	m_pMouseOverItemPanel = new CItemModelPanel( this, "mouseoveritempanel" );
 	m_iSlot = iSlot;
+	
 }
 
 CEquipSlotItemSelectionPanel::~CEquipSlotItemSelectionPanel()
@@ -31,6 +34,8 @@ void CEquipSlotItemSelectionPanel::ApplySchemeSettings( vgui::IScheme* pScheme )
 	Panel* pItemSlotLabel = FindChildByName( "ItemSlotLabel" );
 	if ( pItemSlotLabel )
 		m_pItemSlotLabel = dynamic_cast< CExLabel* >( pItemSlotLabel );
+	
+	SetKeyBoardInputEnabled(true);
 
 	m_pMouseOverItemPanel->SetVisible( false );
 
@@ -152,6 +157,22 @@ void CEquipSlotItemSelectionPanel::OnItemPanelExited( Panel* pPanel )
 {
 	MAINMENU_ROOT->HideItemToolTip();
 }
+
+void CEquipSlotItemSelectionPanel::OnCommand(const char *command)
+{
+	if (!stricmp(command, "loadout_scrollup"))
+	{
+		DevMsg("Pootis UP! \n");
+		if (GetYPos() <= -70)
+			SetPos(GetXPos(), GetYPos() + 70);
+	}
+	if (!stricmp(command, "loadout_scrolldown"))
+	{
+		DevMsg("Pootis DOWN! \n");
+		SetPos(GetXPos(), GetYPos() - 70);
+	}
+}
+
 
 void CEquipSlotItemSelectionPanel::OnItemPanelMouseReleased( Panel* pPanel )
 {

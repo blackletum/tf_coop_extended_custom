@@ -2576,12 +2576,17 @@ int CAI_BaseNPC::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 	else{
 		//DevMsg("ChillTime is %s \n", nChillTime);
 	}
-	
+	float nFreezeTime = 0.0f;
+	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pTFWeapon, nFreezeTime, freeze_duration);
+	if (nFreezeTime > 0.0f){
+		AddCond(HGF_COND_FROZEN, nFreezeTime);
+		DevMsg("SUCC(ess)! ;-) FreezeTime is %s \n", nFreezeTime);
+	}
+	else{
+		DevMsg("FreezeTime is %s \n", nFreezeTime);
+	}
 
-	float flFreezeTime = 0.0f;
-	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pTFWeapon, flFreezeTime, freeze_duration);
-	if (flFreezeTime > 0.0f)
-		AddCond(HGF_COND_FROZEN, flFreezeTime);
+
 
 	if ( pTFWeapon )
 	{

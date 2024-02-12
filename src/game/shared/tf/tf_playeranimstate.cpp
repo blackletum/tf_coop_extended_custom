@@ -766,7 +766,7 @@ bool CTFPlayerAnimState::HandleDucking( Activity &idealActivity )
 		if ( GetOuterXYSpeed() < MOVING_MINIMUM_SPEED || m_pTFPlayer->m_Shared.IsLoser() )
 		{
 			idealActivity = ACT_MP_CROUCH_IDLE;		
-			if ( ( m_pTFPlayer->m_Shared.InCond( TF_COND_AIMING ) && m_pTFPlayer->IsPlayerClass( TF_CLASS_SNIPER ) || m_pTFPlayer->IsPlayerClass( TF_CLASS_HEAVYWEAPONS ) ) || m_flHoldDeployedPoseUntilTime > gpGlobals->curtime )
+			if ((m_pTFPlayer->m_Shared.InCond(TF_COND_AIMING) && m_pTFPlayer->IsPlayerClass(TF_CLASS_SNIPER)) || (m_pTFPlayer->m_Shared.InCond(TF_COND_AIMING) && m_pTFPlayer->IsPlayerClass(TF_CLASS_HEAVYWEAPONS)) || (m_flHoldDeployedPoseUntilTime > gpGlobals->curtime))
 			{
 				idealActivity = ACT_MP_CROUCH_DEPLOYED_IDLE;
 			}

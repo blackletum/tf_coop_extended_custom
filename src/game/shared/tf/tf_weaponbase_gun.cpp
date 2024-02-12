@@ -738,6 +738,10 @@ CBaseEntity *CTFWeaponBaseGun::FirePipeBomb( CTFPlayer *pPlayer, int iType )
 	{
 		iMode = TF_GL_MODE_REMOTE_DETONATE;
 	}
+	if (iDetMode == TF_GL_MODE_REMOTE_PIPEBOMB){
+		iMode = TF_GL_MODE_REMOTE_PIPEBOMB;
+
+	}
 
 	Vector vecForward, vecRight, vecUp;
 	AngleVectors( pPlayer->EyeAngles(), &vecForward, &vecRight, &vecUp );

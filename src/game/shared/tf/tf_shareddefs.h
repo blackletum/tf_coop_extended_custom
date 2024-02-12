@@ -274,6 +274,7 @@ enum
 	TF_GL_MODE_REGULAR = 0,
 	TF_GL_MODE_REMOTE_DETONATE,
 	TF_GL_MODE_FIZZLE,
+	TF_GL_MODE_REMOTE_PIPEBOMB,
 };
 
 //-----------------------------------------------------------------------------

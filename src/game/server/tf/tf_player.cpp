@@ -5881,11 +5881,11 @@ int CTFPlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 			{
 				//TESTING: remove weird skill level damage scaling to make weapons feel consistent across difficulties!
 				if (TFGameRules()->IsSkillLevel(SKILL_EASY))
-					flDamage = info.GetDamage() * TF_DAMAGE_CRIT_MULTIPLIER; // / 2
-		//		else if ( TFGameRules()->IsSkillLevel( SKILL_MEDIUM ) )
-		//			flDamage = info.GetDamage() * TF_DAMAGE_CRIT_MULTIPLIER / 1.5;
-		//		else if ( TFGameRules()->IsSkillLevel( SKILL_HARD ) )
-		//			flDamage = info.GetDamage() * TF_DAMAGE_CRIT_MULTIPLIER / 1.2;
+					flDamage = info.GetDamage() * TF_DAMAGE_CRIT_MULTIPLIER / 2;
+				else if ( TFGameRules()->IsSkillLevel( SKILL_MEDIUM ) )
+					flDamage = info.GetDamage() * TF_DAMAGE_CRIT_MULTIPLIER / 1.5;
+				else if ( TFGameRules()->IsSkillLevel( SKILL_HARD ) )
+					flDamage = info.GetDamage() * TF_DAMAGE_CRIT_MULTIPLIER / 1.2;
 				// I'm stupid, this is just for NPCS
 			}
 
