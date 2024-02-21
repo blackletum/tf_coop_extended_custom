@@ -107,7 +107,7 @@ CTFGrenadePipebombProjectile::~CTFGrenadePipebombProjectile()
 
 int CTFGrenadePipebombProjectile::GetWeaponID( void ) const
 {
-	if (m_iType == TF_GL_MODE_REMOTE_DETONATE || m_iType == TF_GL_MODE_REMOTE_PIPEBOMB )
+	if (m_iType == TF_GL_MODE_REMOTE_DETONATE )
 		return TF_WEAPON_GRENADE_PIPEBOMB;
 
 	return TF_WEAPON_GRENADE_DEMOMAN;
@@ -417,10 +417,6 @@ void CTFGrenadePipebombProjectile::Spawn()
 	{
 		SetDetonateTimerLength( FLT_MAX );
 		SetModel( TF_WEAPON_STICKYBOMB_MODEL );
-	}
-	if (m_iType == TF_GL_MODE_REMOTE_PIPEBOMB)
-	{
-		SetDetonateTimerLength(FLT_MAX);
 	}
 	else
 	{

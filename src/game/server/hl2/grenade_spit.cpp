@@ -62,7 +62,8 @@ void CGrenadeSpit::Spawn( void )
 	SetTouch( &CGrenadeSpit::GrenadeSpitTouch );
 	SetNextThink( gpGlobals->curtime + 0.1f );
 
-	m_flDamage		= sk_antlion_worker_spit_grenade_dmg.GetFloat();
+	m_flDamage		= sk_antlion_worker_spit_grenade_dmg.GetFloat() / 1.5; // Divide by 1.5 to make the crit damage less punishing-
+																		   //but this and the critical damage sound will be enough to make the player think twice before getting hit!
 	m_DmgRadius		= sk_antlion_worker_spit_grenade_radius.GetFloat();
 	m_takedamage	= DAMAGE_NO;
 	m_iHealth		= 1;

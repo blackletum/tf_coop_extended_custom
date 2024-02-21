@@ -185,6 +185,9 @@ void CTFProjectile_Arrow::InitArrow( const QAngle &vecAngles, float flSpeed, flo
 
 	m_iProjectileType = eType;
 	SetModel( g_pszArrowModels[eType] );
+	string_t strModelOverride = NULL_STRING;
+	if (strcmp(STRING(strModelOverride), "") != 0)
+		SetModel(STRING(strModelOverride));
 
 	m_nSkin = GetArrowSkin();
 
@@ -661,8 +664,14 @@ bool CTFProjectile_Arrow::CheckSkyboxImpact( CBaseEntity *pOther )
 
 	if ( GetProjectileType() == TF_PROJECTILETYPE_HOOK )
 		pszImpactSound = "WeaponGrapplingHook.ImpactDefault";
+	string_t strImpactReplaceSound = NULL_STRING;
+	CALL_ATTRIB_HOOK_STRING_ON_OTHER(m_hLauncher, strImpactReplaceSound, arrow_override_impact_sound);
 
 	// Play sound
+	if (strcmp(STRING(strImpactReplaceSound), "") != 0)
+	{
+		pszImpactSound = STRING(strImpactReplaceSound);
+	}
 	if ( pszImpactSound )
 	{
 		ImpactSound( pszImpactSound );
@@ -786,6 +795,13 @@ int	CTFProjectile_Arrow::GetDamageType()
 	CTFWeaponBase *pWeapon = ( CTFWeaponBase * )m_hLauncher.Get();
 	if ( pWeapon )
 	{
+		int iCustomAddDmgType = -1;
+		CALL_ATTRIB_HOOK_INT_ON_OTHER(pWeapon, iCustomAddDmgType, cw_add_dmgtype);
+		if (iCustomAddDmgType >= 1)
+		{
+			DevMsg("CTFProjectile_Arrow: Damage type replaced with %i", iCustomAddDmgType);
+			iDmgType = iCustomAddDmgType;
+		}
 		pWeapon->CalcIsAttackMiniCritical();
 		if ( pWeapon->IsCurrentAttackAMiniCrit() )
 		{

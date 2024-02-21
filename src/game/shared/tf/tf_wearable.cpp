@@ -73,7 +73,7 @@ void CTFWearable::UpdateModelToClass(void)
 				//CALL_ATTRIB_HOOK_STRING(strResponseCriteria, additional_halloween_response_criteria_name);
 				//if (strResponseCriteria != NULL_STRING)
 				//pOwner->AddContext(STRING(strResponseCriteria));
-			
+
 				// This needs to also reset if there are no wearables with custom model defined.
 				if (strcmp(pItemDef->item_class, "tf_wearable_vm") && pItemDef->attach_to_hands_vm_only != '\0') {
 					SetRenderMode(kRenderNone);
@@ -81,7 +81,13 @@ void CTFWearable::UpdateModelToClass(void)
 				if (pItemDef->model_world[iClass] != '\0') {
 					Q_snprintf(pOwner->m_iszCustomModel.GetForModify(), MAX_PATH, pItemDef->model_world);
 					pOwner->UpdateModel();
+					if (pOwner->GetModelScale() == 1){
+					//	float flCustomScale = 1;
+					//	CALL_ATTRIB_HOOK_FLOAT(flCustomScale, player_model_scale);
+					//	pOwner->SetModelScale(flCustomScale);
+					}
 				}
+
 			}
 
 			if (pszModel[0] != '\0')

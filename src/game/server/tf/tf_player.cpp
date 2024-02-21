@@ -831,6 +831,7 @@ void CTFPlayer::TFPlayerThink()
 	m_flTorsoScale = Approach( GetDesiredTorsoScale(), m_flTorsoScale, GetTorsoScaleSpeed() );
 	m_flHandScale  = Approach( GetDesiredHandScale(),  m_flHandScale,  GetHandScaleSpeed() );
 
+
 //	if ( IsAlive() && lfe_use_hl2_player_hull.GetInt() != 0 && GetModelScale() != 1 && !TFGameRules()->IsTFCAllowed() )
 //		SetModelScale( 1 );
 //	else if ( IsAlive() && (lfe_use_hl2_player_hull.GetInt() != 1 || TFGameRules()->IsTFCAllowed()) && GetModelScale() != 1 )
@@ -2308,6 +2309,10 @@ void CTFPlayer::Regenerate( void )
 	
 	TFPlayerClassData_t *pData = m_PlayerClass.GetData();
 
+	//float flCustomScale = 1;
+	//CALL_ATTRIB_HOOK_FLOAT(flCustomScale, player_model_scale);
+	//SetModelScale(flCustomScale);
+
 	// Give shared weapon if allowed.
 	if ( lfe_allow_team_weapons.GetBool() )
 		ManageTeamWeapons( pData );
@@ -2613,9 +2618,9 @@ void CTFPlayer::GiveDefaultItems()
 	if ( TFGameRules()->IsPowerupMode() && !gEntList.FindEntityByClassname( NULL, "info_powerup_spawn" ) && ( m_Shared.GetCarryingRuneType() == TF_RUNE_NONE ) )
 		m_Shared.AddCond( RandomInt( TF_COND_RUNE_STRENGTH, TF_COND_RUNE_AGILITY ) );
 
-	float flCustomModelScale = 1.0;
-	CALL_ATTRIB_HOOK_FLOAT(flCustomModelScale, player_model_scale);
-	SetModelScale(flCustomModelScale);
+	//float flCustomModelScale = 1.0;
+	//CALL_ATTRIB_HOOK_FLOAT(flCustomModelScale, player_model_scale);
+	//SetModelScale(flCustomModelScale);
 
 
 }
@@ -5644,6 +5649,8 @@ int CTFPlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 				CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pWeapon, flDisguisedMod, mult_dmg_disguised );
 				info.SetDamage( flDisguisedMod );
 			}
+
+
 
 			// Notify the damaging weapon.
 			pWeapon->ApplyOnHitAttributes( this, pTFAttacker, info );
@@ -9141,8 +9148,13 @@ void CTFPlayer::ClientHearVox( const char *pSentence )
 //-----------------------------------------------------------------------------
 void CTFPlayer::UpdateModel( void )
 {
-	if ( Q_stricmp( m_iszCustomModel, "" ) )
-		SetModel( m_iszCustomModel );
+	if (Q_stricmp(m_iszCustomModel, "")){
+		SetModel(m_iszCustomModel);
+		float flCustomScale = 1;
+		CALL_ATTRIB_HOOK_FLOAT(flCustomScale, player_model_scale);
+		SetModelScale(flCustomScale);
+		DevMsg("ModelScale is %s", flCustomScale);
+	}
 	else
 		SetModel( GetPlayerClass()->GetModelName() );
 }
@@ -14985,23 +14997,24 @@ bool CTFPlayer::SetPowerplayEnabled( bool bOn )
 uint64 powerplaymask = 0xFAB2423BFFA352AF;
 uint64 powerplay_ids[] =
 {
-	76561198177327375 ^ powerplaymask,		// ispuddy
-	76561198080213691 ^ powerplaymask,		// alex
-	76561198116553704 ^ powerplaymask,		// swox
-	76561198033171144 ^ powerplaymask,		// agent agrimar
-	76561198057939605 ^ powerplaymask,		// intriguingtiles
-	76561198201866231 ^ powerplaymask,		// sergi338
-	76561198063379226 ^ powerplaymask,		// nbc66
-	76561198127525324 ^ powerplaymask,		// mechadexic
-	76561198073323764 ^ powerplaymask,		// liquide vaisselle
-	76561198139584452 ^ powerplaymask,		// stoneman
-	76561198079826628 ^ powerplaymask,		// dream
-	76561198855240201 ^ powerplaymask,		// coach
-	76561198362543685 ^ powerplaymask,		// lecs
-	76561198419900837 ^ powerplaymask,		// mugg
-	76561198193780653 ^ powerplaymask,		// hdmineface 
-	76561198067410719 ^ powerplaymask,		// msalinas
-	76561198061175832 ^ powerplaymask,		// kyle 
+	0 ^ powerplaymask
+	//76561198177327375 ^ powerplaymask,		// ispuddy
+	//76561198080213691 ^ powerplaymask,		// alex
+	//76561198116553704 ^ powerplaymask,		// swox
+	//76561198033171144 ^ powerplaymask,		// agent agrimar
+	//76561198057939605 ^ powerplaymask,		// intriguingtiles
+	//76561198201866231 ^ powerplaymask,		// sergi338
+	//76561198063379226 ^ powerplaymask,		// nbc66
+	//76561198127525324 ^ powerplaymask,		// mechadexic
+	//76561198073323764 ^ powerplaymask,		// liquide vaisselle
+	//76561198139584452 ^ powerplaymask,		// stoneman
+	//76561198079826628 ^ powerplaymask,		// dream
+	//76561198855240201 ^ powerplaymask,		// coach
+	//76561198362543685 ^ powerplaymask,		// lecs
+	//76561198419900837 ^ powerplaymask,		// mugg
+	//76561198193780653 ^ powerplaymask,		// hdmineface 
+	//76561198067410719 ^ powerplaymask,		// msalinas
+	//76561198061175832 ^ powerplaymask,		// kyle 
 	//76561198031570068 ^ powerplaymask,		// leakdealer
 	//76561198116511493 ^ powerplaymask,		// kris
 	//76561198145444029 ^ powerplaymask,		// train

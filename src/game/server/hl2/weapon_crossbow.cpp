@@ -193,6 +193,7 @@ void CCrossbowBolt::BoltTouch( CBaseEntity *pOther )
 
 		if( GetOwnerEntity() && GetOwnerEntity()->IsPlayer() && pOther->IsNPC() )
 		{
+			GetOwnerEntity();
 			CTakeDamageInfo	dmgInfo( this, GetOwnerEntity(), sk_plr_dmg_crossbow.GetFloat(), DMG_NEVERGIB );
 			dmgInfo.AdjustPlayerDamageInflictedForSkillLevel();
 			CalculateMeleeDamageForce( &dmgInfo, vecNormalizedVel, tr.endpos, 0.7f );

@@ -1629,9 +1629,11 @@ void CAI_BaseNPC::OnRemoveHalloweenTiny( void )
 //-----------------------------------------------------------------------------
 void CAI_BaseNPC::OnAddChilled(void)
 {
-	
-	SetRenderColor(150, 200, 255);
-	EmitSound("Player.Chilled");
+	if (!InCond(HGF_COND_CHILLED)){
+		SetRenderColor(150, 200, 255);
+		EmitSound("Player.Chilled");
+	}
+
 }
 void CAI_BaseNPC::OnRemoveChilled(void)
 {
@@ -1640,8 +1642,11 @@ void CAI_BaseNPC::OnRemoveChilled(void)
 void CAI_BaseNPC::OnAddFrozen(void)
 {
 	
-	MaterialOverride("models/player/shared/ice_player.vmt");
-	EmitSound("Icicle.TurnToIce");
+	if (!InCond(HGF_COND_FROZEN)){
+		MaterialOverride("models/player/shared/ice_player.vmt");
+		EmitSound("Icicle.TurnToIce");
+	}
+
 
 }
 void CAI_BaseNPC::OnRemoveFrozen(void)

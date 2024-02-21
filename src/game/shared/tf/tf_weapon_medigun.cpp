@@ -358,6 +358,9 @@ float CWeaponMedigun::GetHealRate( void )
 	if ( pOwner && pOwner->m_Shared.InCond( TF_COND_MEGAHEAL ) )
 		flHealRate *= 3.0f;
 
+
+	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pOwner, flHealRate, mult_medigun_healrate_on_wearer);
+
 	return flHealRate;
 }
 

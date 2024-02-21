@@ -6862,8 +6862,8 @@ const char *CTFPlayer::GetOverrideStepSound(const char *pszBaseStepSoundName)
 			{ kFootstepSoundSet_Heels, "Concrete.StepLeft", "Player_Footstep_Heels.Concrete" },
 			{ kFootstepSoundSet_Heels, "Default.StepRight", "Player_Footstep_Heels.Concrete" },
 			{ kFootstepSoundSet_Heels, "Default.StepLeft", "Player_Footstep_Heels.Concrete" },
-			{ kFootstepSoundSet_Heels, "Wood.StepRight", "Player_Footstep_Heels.Concrete" },
-			{ kFootstepSoundSet_Heels, "Wood.StepLeft", "Player_Footstep_Heels.Concrete" },
+			{ kFootstepSoundSet_Heels, "Wood.StepRight", "Player_Footstep_Heels.Wood" },
+			{ kFootstepSoundSet_Heels, "Wood.StepLeft", "Player_Footstep_Heels.Wood" },
 			{ kFootstepSoundSet_Heels, "Dirt.StepLeft", "cleats_dirt.StepLeft" },
 			{ kFootstepSoundSet_Heels, "Dirt.StepRight", "cleats_dirt.StepRight" },
 		};

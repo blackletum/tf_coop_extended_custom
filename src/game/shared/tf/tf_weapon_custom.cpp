@@ -48,36 +48,63 @@ int	CTFWeaponCustom::GetDamageType() const
 }
 void CTFWeaponCustom::PrimaryAttack()
 {
+	m_iWeaponMode = TF_WEAPON_PRIMARY_MODE;
 	if (!CanAttack())
 		return;
-
+	float flSecondaryAttackDelay = 0;
+	int bNoSeparatePrimaryFire = 0;
+	
+	CALL_ATTRIB_HOOK_FLOAT(flSecondaryAttackDelay, secondary_atk_fire_rate);
+	CALL_ATTRIB_HOOK_INT(bNoSeparatePrimaryFire, cw_separate_primary_secondaryfire);
+	if (bNoSeparatePrimaryFire == 1){	
+		m_flNextSecondaryAttack = gpGlobals->curtime + flSecondaryAttackDelay;
+		DevMsg("Test");
+		DevMsg("(P) Secondary Fire Rate: %.2f", flSecondaryAttackDelay);
+	}
+	
 	// Set the weapon mode.
-	m_iWeaponMode = TF_WEAPON_PRIMARY_MODE;
+	
 
 	BaseClass::PrimaryAttack();
 }
 void CTFWeaponCustom::SecondaryAttack()
 {
+	m_iWeaponMode = TF_WEAPON_SECONDARY_MODE;
 	CTFPlayer *pOwner = GetTFPlayerOwner();
 	if (!CanAttack())
 		return;
 	int iSecondaryMode = 0;
+	float flSecondaryAttackDelay = 0;
+	int bNoSeparatePrimaryFire = 0;
+	DevMsg("Secondary Fire Rate Before: %.2f", flSecondaryAttackDelay);
+	CALL_ATTRIB_HOOK_FLOAT(flSecondaryAttackDelay, secondary_atk_fire_rate);
+	DevMsg("Secondary Fire Rate After: %.2f", flSecondaryAttackDelay);
 	CALL_ATTRIB_HOOK_INT(iSecondaryMode, cw_secondary_attack_mode);
+	CALL_ATTRIB_HOOK_INT(bNoSeparatePrimaryFire, cw_separate_primary_secondaryfire);
+
 if (iSecondaryMode == 1){ //Abandon switches because for whatever reason they just didn't work.. at all
 	if (pOwner->GetAmmoCount(m_iSecondaryAmmoType) > 0) //UNFINISHED
 	{
 		FireHLAR2Grenade(pOwner, 0);
-		SetSecondaryAmmoCount(pOwner->GetAmmoCount(m_iSecondaryAmmoType) - 1);
+	//	SetSecondaryAmmoCount(pOwner->GetAmmoCount(m_iSecondaryAmmoType) - 1);
+		m_iClip2 -= 1;
 		SendWeaponAnim(ACT_VM_SECONDARYATTACK);
 		WeaponSound(WPN_DOUBLE);
+		m_flNextSecondaryAttack = gpGlobals->curtime + flSecondaryAttackDelay;
+		if (bNoSeparatePrimaryFire == 1)
+			m_flNextPrimaryAttack = gpGlobals->curtime + flSecondaryAttackDelay;
+	
 	}
 	else{
 		WeaponSound(EMPTY);
 		DevMsg("skill issue 2");
+		m_flNextSecondaryAttack = gpGlobals->curtime + flSecondaryAttackDelay;
+		if (bNoSeparatePrimaryFire == 1)
+			m_flNextPrimaryAttack = gpGlobals->curtime + flSecondaryAttackDelay;
 	}
 }
-if (iSecondaryMode == 2){
-	if (m_iClip1 >= 2 && m_flNextSecondaryAttack <= gpGlobals->curtime) //UNFINISHED
+if (iSecondaryMode == 2 && m_flNextSecondaryAttack <= gpGlobals->curtime){
+	if (m_iClip1 >= 2) //Finished now :D
 	{
 		PrimaryAttack();
 		m_flNextPrimaryAttack = gpGlobals->curtime;
@@ -85,24 +112,47 @@ if (iSecondaryMode == 2){
 		//m_iClip1 -= 2;
 		SendWeaponAnim(ACT_VM_SECONDARYATTACK);
 		WeaponSound(WPN_DOUBLE);
+
 		
+
+	//	DevMsg("Secondary Fire Rate After: %.2f", flSecondaryAttackDelay);
+		m_flNextSecondaryAttack = gpGlobals->curtime + flSecondaryAttackDelay;
+		if (bNoSeparatePrimaryFire == 1)
+			m_flNextPrimaryAttack = gpGlobals->curtime + flSecondaryAttackDelay;
+	}
+	else if (m_iClip1 == 1) //Just primary attack bruz
+	{
+		PrimaryAttack();
+		m_flNextSecondaryAttack = gpGlobals->curtime + flSecondaryAttackDelay;
 	}
 	else{
 		WeaponSound(EMPTY);
 		DevMsg("skill issue 2");
+		m_flNextSecondaryAttack = gpGlobals->curtime + flSecondaryAttackDelay;
+		if (bNoSeparatePrimaryFire == 1)
+			m_flNextPrimaryAttack = gpGlobals->curtime + flSecondaryAttackDelay;
 	}
 
 }
+if (iSecondaryMode == 3 && m_flNextSecondaryAttack <= gpGlobals->curtime){
+	if (pOwner->m_Shared.InCond(TF_COND_ZOOMED))
+	{
+		ZoomOut();
+	}
+	else{
+		ZoomIn();
 
+	}
+	m_flNextSecondaryAttack = gpGlobals->curtime + flSecondaryAttackDelay;
+	if (bNoSeparatePrimaryFire == 1)
+		m_flNextPrimaryAttack = gpGlobals->curtime + flSecondaryAttackDelay;
+}
 
 
 	// Set the weapon mode.
-	//m_iWeaponMode = TF_WEAPON_SECONDARY_MODE;
+	
 	
 	BaseClass::SecondaryAttack();
-	float flSecondaryAttackDelay = 0.5;
-	CALL_ATTRIB_HOOK_FLOAT(flSecondaryAttackDelay, secondary_atk_fire_rate);
-	m_flNextSecondaryAttack = gpGlobals->curtime + flSecondaryAttackDelay;
 }
 bool CTFWeaponCustom::Reload(void)
 {
@@ -117,6 +167,22 @@ bool CTFWeaponCustom::Reload(void)
 		//DevMsg("Weapon does not reload singly (0)");
 	}
 	return BaseClass::Reload();
+}
+float CTFWeaponCustom::GetProjectileSpeed(void)
+{
+	float flAttribSpeedMult = 0.0f;
+	CALL_ATTRIB_HOOK_FLOAT(flAttribSpeedMult, mult_projectile_speed);
+	return 100.0f * flAttribSpeedMult;
+}
+float CTFWeaponCustom::GetProjectileGravity(void)
+{
+	float flAttribGravMult = 0.0f;
+	CALL_ATTRIB_HOOK_FLOAT(flAttribGravMult, mult_projectile_gravity);
+	if (flAttribGravMult != 0.0f){
+		return 0.1f * flAttribGravMult;
+	}
+	else
+		return 0;
 }
 void CTFWeaponCustomPrimary::Precache(void)
 {

@@ -204,6 +204,54 @@ void CPlayerSpeedProxy::OnBind( void *pC_BaseEntity )
 
 EXPOSE_INTERFACE( CPlayerSpeedProxy, IMaterialProxy, "PlayerSpeed" IMATERIAL_PROXY_INTERFACE_VERSION );
 
+//-----------------------------------------------------------------------------
+// Returns the player health as a fraction
+//-----------------------------------------------------------------------------
+class CPlayerHealthProxy : public CResultProxy
+{
+public:
+	bool Init(IMaterial *pMaterial, KeyValues *pKeyValues);
+	void OnBind(void *pC_BaseEntity);
+
+private:
+	float	m_Factor;
+};
+
+bool CPlayerHealthProxy::Init(IMaterial *pMaterial, KeyValues *pKeyValues)
+{
+	if (!CResultProxy::Init(pMaterial, pKeyValues))
+		return false;
+
+
+	return true;
+}
+
+void CPlayerHealthProxy::OnBind(void *pC_BaseEntity)
+{
+	// Find the player....
+	C_BaseEntity* pPlayer = C_BasePlayer::GetLocalPlayer();
+	if (!pPlayer)
+		return;
+
+	Assert(m_pResult);
+	// Now find the health and divide it by maximum
+	// With a sanity check to completely avoid dividing by zero
+	//if (pPlayer->GetHealth() != 0 || pPlayer->GetMaxHealth() != 0)
+	//	SetFloatResult(pPlayer->GetHealth() / pPlayer->GetMaxHealth());
+	//if (pPlayer->GetHealth() == 0)
+	//	SetFloatResult(0);
+
+	//Nevermind- LessOrEqual proxies are weird with floats, and this relies on them
+	//Return as direct HP value instead
+	SetFloatResult(pPlayer->GetHealth());
+
+	if (ToolsEnabled())
+	{
+		ToolFramework_RecordMaterialParams(GetMaterial());
+	}
+}
+
+EXPOSE_INTERFACE(CPlayerHealthProxy, IMaterialProxy, "PlayerHealth" IMATERIAL_PROXY_INTERFACE_VERSION);
 
 //-----------------------------------------------------------------------------
 // Returns the player position

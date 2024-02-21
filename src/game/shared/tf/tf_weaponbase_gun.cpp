@@ -256,9 +256,9 @@ void CTFWeaponBaseGun::SecondaryAttack( void )
 
 	m_bInAttack2 = true;
 	
-	float flSecondaryAttackDelay = 0.5;
-	CALL_ATTRIB_HOOK_FLOAT(flSecondaryAttackDelay, secondary_atk_fire_rate);
-	m_flNextSecondaryAttack = gpGlobals->curtime + flSecondaryAttackDelay;
+//	float flSecondaryAttackDelay = 0.5;
+//	CALL_ATTRIB_HOOK_FLOAT(flSecondaryAttackDelay, secondary_atk_fire_rate);
+//	m_flNextSecondaryAttack = gpGlobals->curtime + flSecondaryAttackDelay;
 }
 
 CBaseEntity *CTFWeaponBaseGun::FireProjectile( CTFPlayer *pPlayer )
@@ -397,6 +397,7 @@ CBaseEntity *CTFWeaponBaseGun::FireProjectile( CTFPlayer *pPlayer )
 
 	case LFE_HL2_PROJECTILE_CROSSBOW_BOLT:
 	case LFE_HL1_PROJECTILE_CROSSBOW_BOLT:
+		pProjectile = FireHLBolt(pPlayer, iProjectile);
 		pPlayer->DoAnimationEvent( PLAYERANIMEVENT_ATTACK_PRIMARY );
 		break;
 
@@ -708,7 +709,8 @@ CBaseEntity *CTFWeaponBaseGun::FireNail( CTFPlayer *pPlayer, int iSpecificNail )
 	default:
 		Assert(0);
 	}
-
+	string_t strCustomProjectileModel = NULL_STRING;
+	CALL_ATTRIB_HOOK_STRING(strCustomProjectileModel, custom_projectile_model);
 	if ( pProjectile )
 	{
 		pProjectile->SetWeaponID( GetWeaponID() );
@@ -830,6 +832,7 @@ CBaseEntity *CTFWeaponBaseGun::FireFlare( CTFPlayer *pPlayer )
 	{
 		pProjectile->SetCritical( IsCurrentAttackACrit() );
 		pProjectile->SetDamage( GetProjectileDamage() );
+		
 	}
 	return pProjectile;
 #endif
@@ -845,31 +848,39 @@ CBaseEntity *CTFWeaponBaseGun::FireArrow( CTFPlayer *pPlayer, ProjectileType_t e
 	PlayWeaponShootSound();
 
 #ifdef GAME_DLL
+
+
 	Vector vecSrc;
 	QAngle angForward;
-	Vector vecOffset( -16.0f, 10.0f, -6.0f );
-	if ( pPlayer->GetFlags() & FL_DUCKING )
-	{
-		vecOffset.z = 4.0f;
-	}
 
-	GetProjectileFireSetup( pPlayer, vecOffset, &vecSrc, &angForward, false, true );
+	GetProjectileFireSetup(pPlayer, Vector(16, 6, -8), &vecSrc, &angForward);
 
-	// Add attribute spread.
-	float flSpread = 0;
-	CALL_ATTRIB_HOOK_FLOAT( flSpread, projectile_spread_angle );
-	if ( flSpread != 0)
+	float flSpread = 1.5;
+	CALL_ATTRIB_HOOK_FLOAT(flSpread, projectile_spread_angle);
+
+
+	CTFProjectile_Arrow *pProjectile = NULL;
+	switch (eType)
 	{
+	case TF_PROJECTILETYPE_ARROW:
+		GetProjectileFireSetup(pPlayer, Vector(16, 6, -8), &vecSrc, &angForward);
 		angForward.x += RandomFloat(-flSpread, flSpread);
 		angForward.y += RandomFloat(-flSpread, flSpread);
+		pProjectile = CTFProjectile_Arrow::Create(vecSrc, angForward, 100, 0, eType, pPlayer, this);
+		break;
+	default:
+		Assert(0);
 	}
 
-	CTFProjectile_Arrow *pProjectile = CTFProjectile_Arrow::Create( vecSrc, angForward, GetProjectileSpeed(), GetProjectileGravity(), eType, pPlayer, this );
-	if ( pProjectile )
+	if (pProjectile)
 	{
-		pProjectile->SetCritical( IsCurrentAttackACrit() );
-		pProjectile->SetDamage( GetProjectileDamage() );
+	//	pProjectile->SetWeaponID(GetWeaponID());
+		pProjectile->SetCritical(IsCurrentAttackACrit());
+#ifdef GAME_DLL
+		pProjectile->SetDamage(GetProjectileDamage());
+#endif
 	}
+
 	return pProjectile;
 #endif
 
@@ -1084,6 +1095,9 @@ CBaseEntity *CTFWeaponBaseGun::FireHLAR2Grenade( CTFPlayer *pPlayer, int iType )
 
 	float flDamageMult = 100.0f;
 	CALL_ATTRIB_HOOK_FLOAT( flDamageMult, mult_dmg );
+	if (m_iWeaponMode == TF_WEAPON_SECONDARY_MODE){
+		CALL_ATTRIB_HOOK_FLOAT(flDamageMult, mult_dmg_secondary_atk);
+	}
 	if ( pPlayer->m_Shared.InCond( TF_COND_RUNE_STRENGTH ) )
 		flDamageMult *= 2;
 
@@ -1129,7 +1143,11 @@ CBaseEntity *CTFWeaponBaseGun::FireHLSpit( CTFPlayer *pPlayer )
 	pGrenade->SetThrower( GetOwner() );
 	pGrenade->ApplyAbsVelocityImpulse( ( vecThrow + RandomVector( -0.035f, 0.035f ) ) /* flVelocity*/ );
 	pGrenade->SetSpitSize( random->RandomInt( SPIT_SMALL, SPIT_MEDIUM ) );
-
+	CAttribute_String strCustomMdl;		// Do this a second time after SetSpitSize so the model change isn't ignored
+	if (GetCustomProjectileModel(&strCustomMdl))
+	{
+		pGrenade->SetModel(strCustomMdl);
+	}
 	/*QAngle angles( random->RandomFloat( -250, -500 ),
 				random->RandomFloat( -250, -500 ),
 				random->RandomFloat( -250, -500 ) );*/
@@ -1370,7 +1388,9 @@ float CTFWeaponBaseGun::GetProjectileSpeed( void )
 {
 	// placeholder for now
 	// grenade launcher and pipebomb launcher hook this to set variable pipebomb speed
-
+	//float flSpeedMult = 1;
+	//CALL_ATTRIB_HOOK_FLOAT(flSpeedMult, mult_projectile_speed);
+	//return 100.00f * flSpeedMult;
 	return 0;
 }
 
@@ -1379,7 +1399,10 @@ float CTFWeaponBaseGun::GetProjectileSpeed( void )
 //-----------------------------------------------------------------------------
 float CTFWeaponBaseGun::GetProjectileGravity( void )
 {
-	return 0.001f;
+	//float flGravMult = 1;
+	//	CALL_ATTRIB_HOOK_FLOAT(flGravMult, mult_projectile_speed);
+	//return 0.001f * flGravMult;
+	return 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -1405,12 +1428,15 @@ float CTFWeaponBaseGun::GetWeaponSpread( void )
 //-----------------------------------------------------------------------------
 // Purpose: Accessor for damage, so sniper etc can modify damage
 //-----------------------------------------------------------------------------
-float CTFWeaponBaseGun::GetProjectileDamage( void )
+float CTFWeaponBaseGun::GetProjectileDamage(void)
 {
-	float flDamage = (float)m_pWeaponInfo->GetWeaponData( m_iWeaponMode ).m_nDamage;
-	CALL_ATTRIB_HOOK_FLOAT( flDamage, mult_dmg );
-	if ( GetTFPlayerOwner() && GetTFPlayerOwner()->m_Shared.InCond( TF_COND_RUNE_STRENGTH ) )
+	float flDamage = (float)m_pWeaponInfo->GetWeaponData(m_iWeaponMode).m_nDamage;
+	CALL_ATTRIB_HOOK_FLOAT(flDamage, mult_dmg);
+	if (GetTFPlayerOwner() && GetTFPlayerOwner()->m_Shared.InCond(TF_COND_RUNE_STRENGTH))
 		flDamage *= 2;
+	if (m_iWeaponMode == TF_WEAPON_SECONDARY_MODE){
+		CALL_ATTRIB_HOOK_FLOAT(flDamage, mult_dmg_secondary_atk);
+	}
 	return flDamage;
 }
 

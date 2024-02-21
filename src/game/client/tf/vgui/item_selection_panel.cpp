@@ -162,13 +162,13 @@ void CEquipSlotItemSelectionPanel::OnCommand(const char *command)
 {
 	if (!stricmp(command, "loadout_scrollup"))
 	{
-		DevMsg("Pootis UP! \n");
+	//	DevMsg("Pootis UP! \n");
 		if (GetYPos() <= -70)
 			SetPos(GetXPos(), GetYPos() + 70);
 	}
 	if (!stricmp(command, "loadout_scrolldown"))
 	{
-		DevMsg("Pootis DOWN! \n");
+		//DevMsg("Pootis DOWN! \n");
 		SetPos(GetXPos(), GetYPos() - 70);
 	}
 }

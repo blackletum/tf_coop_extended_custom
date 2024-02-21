@@ -642,7 +642,8 @@ void CWeaponPortalgun::FirePortal1( inputdata_t &inputdata )
 
 	if( pOwner && pOwner->IsPlayer() )
 	{
-		WeaponSound( SINGLE );
+		//WeaponSound( SINGLE );
+		pOwner->EmitSound("Weapon_Portalgun.fire_blue");
 	}
 	else
 	{
@@ -659,7 +660,8 @@ void CWeaponPortalgun::FirePortal2( inputdata_t &inputdata )
 
 	if( pOwner && pOwner->IsPlayer() )
 	{
-		WeaponSound( WPN_DOUBLE );
+		//WeaponSound( WPN_DOUBLE );
+		pOwner->EmitSound("Weapon_Portalgun.fire_red");
 	}
 	else
 	{
