@@ -2327,15 +2327,43 @@ void CNPC_AntlionGuard::TraceAttack( const CTakeDamageInfo &inputInfo, const Vec
 	CTakeDamageInfo info = inputInfo;
 
 	// Bullets are weak against us, buckshot less so
-	if ( info.GetDamageType() & DMG_BUCKSHOT )
+	if (info.GetWeapon())
 	{
-		info.ScaleDamage( 0.5f );
+		int goopgop = 0;
+		CALL_ATTRIB_HOOK_INT_ON_OTHER(info.GetWeapon(), goopgop, mod_pierce_resists_absorbs);
+	
+	if (goopgop != 0){
+		if (info.GetDamageType() & DMG_BUCKSHOT)
+		{
+			info.ScaleDamage(1.0f);
+		}
+		else if (info.GetDamageType() & DMG_BULLET)
+		{
+			info.ScaleDamage(1.0f);
+		}
 	}
-	else if ( info.GetDamageType() & DMG_BULLET )
+	else
 	{
-		info.ScaleDamage( 0.25f );
+		if (info.GetDamageType() & DMG_BUCKSHOT)
+		{
+			info.ScaleDamage(0.5f);
+		}
+		else if (info.GetDamageType() & DMG_BULLET)
+		{
+			info.ScaleDamage(0.25f);
+		}
 	}
-
+	}
+	else{
+		if (info.GetDamageType() & DMG_BUCKSHOT)
+		{
+			info.ScaleDamage(0.5f);
+		}
+		else if (info.GetDamageType() & DMG_BULLET)
+		{
+			info.ScaleDamage(0.25f);
+		}
+	}
 	// Make sure we haven't rounded down to a minimal amount
 	if ( info.GetDamage() < 1.0f )
 	{

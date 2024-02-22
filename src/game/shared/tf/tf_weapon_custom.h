@@ -35,8 +35,8 @@ public:
 	virtual bool	Reload(void);
 	virtual void	Equip(CBaseCombatCharacter *pOwner);
 	virtual int		GetDamageType() const;
-	virtual float   GetProjectileSpeed(void);
-	virtual float   GetProjectileGravity(void);
+//	virtual float   GetProjectileSpeed(void);
+//	virtual float   GetProjectileGravity(void);
 
 protected:
 

@@ -124,6 +124,13 @@ void CTFBaseRocket::Precache( void )
 	PrecacheParticleSystem( "explosionTrail_seeds_mvm" );
 	PrecacheParticleSystem( "fluidSmokeExpl_ring_mvm" );
 	PrecacheParticleSystem( "mvm_pow_gold_seq_firework_mid" );
+	string_t strExplosionParticleOverride = NULL_STRING;
+	CALL_ATTRIB_HOOK_STRING_ON_OTHER(m_hLauncher, strExplosionParticleOverride, explosion_particle_override);
+	if (strExplosionParticleOverride != NULL_STRING)
+	{
+		PrecacheParticleSystem(STRING(strExplosionParticleOverride));
+	}
+		
 }
 
 //-----------------------------------------------------------------------------
@@ -450,7 +457,14 @@ void CTFBaseRocket::Explode( trace_t *pTrace, CBaseEntity *pOther )
 	// Play explosion sound and effect.
 	Vector vecOrigin = GetAbsOrigin();
 	CPVSFilter filter( vecOrigin );
-	TE_TFExplosion( filter, 0.0f, vecOrigin, pTrace->plane.normal, GetWeaponID(), pOther->entindex(), iItemID, SPECIAL1 );
+	string_t strExplosionParticleOverride = NULL_STRING;
+	CALL_ATTRIB_HOOK_STRING_ON_OTHER(m_hLauncher, strExplosionParticleOverride, explosion_particle_override);
+	if (strExplosionParticleOverride != NULL_STRING)
+	{
+		TE_TFExplosion(filter, 0.0f, vecOrigin, pTrace->plane.normal, GetWeaponID(), pOther->entindex(), iItemID, SPECIAL1, GetParticleSystemIndex(STRING(strExplosionParticleOverride)));
+	}
+	else
+		TE_TFExplosion( filter, 0.0f, vecOrigin, pTrace->plane.normal, GetWeaponID(), pOther->entindex(), iItemID, SPECIAL1 );
 	CSoundEnt::InsertSound( SOUND_COMBAT | SOUND_CONTEXT_EXPLOSION, vecOrigin, BASEGRENADE_EXPLOSION_VOLUME, 0.25, pAttacker );
 
 	int iMiniCritOnAirborne = 0;
@@ -478,9 +492,17 @@ void CTFBaseRocket::Explode( trace_t *pTrace, CBaseEntity *pOther )
 	}
 
 	// Don't decal players with scorch.
-	if ( !pOther->IsPlayer() )
+	if (!pOther->IsPlayer() && !pOther->IsNPC())
 	{
-		UTIL_DecalTrace( pTrace, "Scorch" );
+		if (strExplosionParticleOverride != NULL_STRING)
+		{
+			
+		}
+		else
+		{
+			UTIL_DecalTrace(pTrace, "Scorch");
+		}
+		
 	}
 
 	int iUseLargeExplosion = 0;

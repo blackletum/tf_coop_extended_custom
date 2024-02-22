@@ -8,6 +8,7 @@
 
 #include "basehlcombatweapon_shared.h"
 #include "basecombatcharacter.h"
+#include "tf_weaponbase.h"
 
 #define BOLT_AIR_VELOCITY	2500
 #define BOLT_WATER_VELOCITY	1500
@@ -31,11 +32,19 @@ public:
 	void BubbleThink( void );
 	void BoltTouch( CBaseEntity *pOther );
 	bool CreateVPhysics( void );
+	virtual float	GetDamage(void) { return m_flDamage; }
+	virtual void	SetDamage(float flDamage) { m_flDamage = flDamage; }
 	unsigned int PhysicsSolidMaskForEntity() const;
-	static CCrossbowBolt *BoltCreate( const Vector &vecOrigin, const QAngle &angAngles, CBasePlayer *pentOwner = NULL );
-
+	void CCrossbowBolt::SetLauncher(EHANDLE hLauncher);
+	void CCrossbowBolt::SetCrit(bool bCritYesNo);
+	void CCrossbowBolt::SetMiniCrit(bool bMiniCritYesNo);
+	static CCrossbowBolt *BoltCreate(const Vector &vecOrigin, const QAngle &angAngles, CBasePlayer *pentOwner = NULL, CBaseCombatWeapon *pLauncher = NULL, bool bCrit = false, bool bMiniCrit = false);
+	CHandle<CBaseCombatWeapon>			m_hLauncher;
+	bool m_bCrit;
+	bool m_bMiniCrit;
 protected:
 
+	float					m_flDamage;
 	bool	CreateSprites( void );
 
 	CHandle<CSprite>		m_pGlowSprite;

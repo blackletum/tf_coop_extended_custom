@@ -86,8 +86,7 @@ if (iSecondaryMode == 1){ //Abandon switches because for whatever reason they ju
 	if (pOwner->GetAmmoCount(m_iSecondaryAmmoType) > 0) //UNFINISHED
 	{
 		FireHLAR2Grenade(pOwner, 0);
-	//	SetSecondaryAmmoCount(pOwner->GetAmmoCount(m_iSecondaryAmmoType) - 1);
-		m_iClip2 -= 1;
+		pOwner->SetAmmoCount(pOwner->GetAmmoCount(m_iSecondaryAmmoType) - 1, m_iSecondaryAmmoType);
 		SendWeaponAnim(ACT_VM_SECONDARYATTACK);
 		WeaponSound(WPN_DOUBLE);
 		m_flNextSecondaryAttack = gpGlobals->curtime + flSecondaryAttackDelay;
@@ -138,10 +137,11 @@ if (iSecondaryMode == 3 && m_flNextSecondaryAttack <= gpGlobals->curtime){
 	if (pOwner->m_Shared.InCond(TF_COND_ZOOMED))
 	{
 		ZoomOut();
+		pOwner->m_Shared.RemoveCond(TF_COND_AIMING);
 	}
 	else{
 		ZoomIn();
-
+		pOwner->m_Shared.AddCond(TF_COND_AIMING);
 	}
 	m_flNextSecondaryAttack = gpGlobals->curtime + flSecondaryAttackDelay;
 	if (bNoSeparatePrimaryFire == 1)
@@ -168,22 +168,22 @@ bool CTFWeaponCustom::Reload(void)
 	}
 	return BaseClass::Reload();
 }
-float CTFWeaponCustom::GetProjectileSpeed(void)
-{
-	float flAttribSpeedMult = 0.0f;
-	CALL_ATTRIB_HOOK_FLOAT(flAttribSpeedMult, mult_projectile_speed);
-	return 100.0f * flAttribSpeedMult;
-}
-float CTFWeaponCustom::GetProjectileGravity(void)
-{
-	float flAttribGravMult = 0.0f;
-	CALL_ATTRIB_HOOK_FLOAT(flAttribGravMult, mult_projectile_gravity);
-	if (flAttribGravMult != 0.0f){
-		return 0.1f * flAttribGravMult;
-	}
-	else
-		return 0;
-}
+//float CTFWeaponCustom::GetProjectileSpeed(void)
+//{
+//	float flAttribSpeedMult = 0.0f;
+//	CALL_ATTRIB_HOOK_FLOAT(flAttribSpeedMult, mult_projectile_speed);
+//	return 100.0f * flAttribSpeedMult;
+//}
+//float CTFWeaponCustom::GetProjectileGravity(void)
+//{
+//	float flAttribGravMult = 0.0f;
+//	CALL_ATTRIB_HOOK_FLOAT(flAttribGravMult, mult_projectile_gravity);
+//	if (flAttribGravMult != 0.0f){
+//		return 0.1f * flAttribGravMult;
+//	}
+//	else
+//		return 0;
+//}
 void CTFWeaponCustomPrimary::Precache(void)
 {
 #ifndef CLIENT_DLL

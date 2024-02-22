@@ -1169,10 +1169,22 @@ CBaseEntity *CTFWeaponBaseGun::FireHLBolt( CTFPlayer *pPlayer, int iType )
 	PlayWeaponShootSound();
 
 	// Server only - create the rocket.
+
 #ifdef GAME_DLL
 	Vector vecSrc;
 	QAngle angForward;
-	Vector vecOffset( 23.5f, 12.0f, -3.0f );
+	Vector	vecThrow;
+	AngleVectors(pPlayer->EyeAngles() + pPlayer->GetPunchAngle(), &vecThrow);
+	VectorScale(vecThrow, 1.0f, vecThrow);
+	Vector vecOffset(0.0f, 0.0f, 0.0f);
+	if (pPlayer->m_Shared.InCond(TF_COND_ZOOMED)){
+		vecOffset = Vector(0.0f, 0.0f, 0.0f); // These are 0 so that scoped shots feel less janky.
+	}
+	else
+	{
+		vecOffset = Vector(16, 6, -8);
+	}
+	
 	if ( pPlayer->GetFlags() & FL_DUCKING )
 	{
 		vecOffset.z = 8.0f;
@@ -1190,9 +1202,13 @@ CBaseEntity *CTFWeaponBaseGun::FireHLBolt( CTFPlayer *pPlayer, int iType )
 	}
 	else
 	{
-		CCrossbowBolt *pBolt = CCrossbowBolt::BoltCreate( vecSrc, angForward, pPlayer );
-		if ( pBolt )
-			pBolt->SetAbsVelocity( vecSrc * BOLT_AIR_VELOCITY );
+		CCrossbowBolt *pBolt = CCrossbowBolt::BoltCreate(vecSrc, angForward, pPlayer, this, IsCurrentAttackACrit(), IsCurrentAttackAMiniCrit());
+		if (pBolt){
+			pBolt->SetAbsVelocity(vecThrow * BOLT_AIR_VELOCITY);
+			pBolt->SetAbsAngles(angForward);
+			pBolt->SetDamage(GetProjectileDamage());
+			pBolt->SetLauncher(this);
+		}
 
 		return pBolt;
 	}

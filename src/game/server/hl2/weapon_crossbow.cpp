@@ -52,6 +52,7 @@ BEGIN_DATADESC( CCrossbowBolt )
 
 	// These are recreated on reload, they don't need storage
 	DEFINE_FIELD( m_pGlowSprite, FIELD_EHANDLE ),
+	DEFINE_FIELD(m_hLauncher, FIELD_EHANDLE),
 	//DEFINE_FIELD( m_pGlowTrail, FIELD_EHANDLE ),
 
 END_DATADESC()
@@ -59,7 +60,7 @@ END_DATADESC()
 IMPLEMENT_SERVERCLASS_ST( CCrossbowBolt, DT_CrossbowBolt )
 END_SEND_TABLE()
 
-CCrossbowBolt *CCrossbowBolt::BoltCreate( const Vector &vecOrigin, const QAngle &angAngles, CBasePlayer *pentOwner )
+CCrossbowBolt *CCrossbowBolt::BoltCreate( const Vector &vecOrigin, const QAngle &angAngles, CBasePlayer *pentOwner, CBaseCombatWeapon *pWeapon, bool bCrit, bool bMiniCrit )
 {
 	// Create a new entity with CCrossbowBolt private data
 	CCrossbowBolt *pBolt = (CCrossbowBolt *)CreateEntityByName( "crossbow_bolt" );
@@ -67,10 +68,27 @@ CCrossbowBolt *CCrossbowBolt::BoltCreate( const Vector &vecOrigin, const QAngle 
 	pBolt->SetAbsAngles( angAngles );
 	pBolt->Spawn();
 	pBolt->SetOwnerEntity( pentOwner );
+	pBolt->ChangeTeam(pentOwner->GetTeamNumber());
+	pBolt->SetLauncher(pWeapon);
+	
 
 	return pBolt;
 }
-
+//
+//
+//
+void CCrossbowBolt::SetLauncher(EHANDLE hLauncher)
+{
+	m_hLauncher = hLauncher;
+}
+void CCrossbowBolt::SetCrit(bool bCritYesNo)
+{
+	m_bCrit = bCritYesNo;
+}
+void CCrossbowBolt::SetMiniCrit(bool bMiniCritYesNo)
+{
+	m_bMiniCrit = bMiniCritYesNo;
+}
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -98,7 +116,31 @@ bool CCrossbowBolt::CreateVPhysics( void )
 //-----------------------------------------------------------------------------
 unsigned int CCrossbowBolt::PhysicsSolidMaskForEntity() const
 {
-	return ( BaseClass::PhysicsSolidMaskForEntity() | CONTENTS_HITBOX ) & ~CONTENTS_GRATE;
+
+		// Only collide with the other team
+	int teamContents = 0;
+		switch (GetTeamNumber())
+		{
+		case TF_TEAM_RED:
+			teamContents = CONTENTS_BLUETEAM | CONTENTS_GREENTEAM | CONTENTS_YELLOWTEAM;
+			break;
+
+		case TF_TEAM_BLUE:
+			teamContents = CONTENTS_REDTEAM | CONTENTS_GREENTEAM | CONTENTS_YELLOWTEAM;
+			break;
+
+		case TF_TEAM_GREEN:
+			teamContents = CONTENTS_REDTEAM | CONTENTS_BLUETEAM | CONTENTS_YELLOWTEAM;
+			break;
+
+		case TF_TEAM_YELLOW:
+			teamContents = CONTENTS_REDTEAM | CONTENTS_BLUETEAM | CONTENTS_GREENTEAM;
+			break;
+		}
+	
+
+
+	return ( BaseClass::PhysicsSolidMaskForEntity() | CONTENTS_HITBOX | teamContents ) & ~CONTENTS_GRATE;
 }
 
 //-----------------------------------------------------------------------------
@@ -133,7 +175,6 @@ void CCrossbowBolt::Spawn( void )
 	UTIL_SetSize( this, -Vector(0.3f,0.3f,0.3f), Vector(0.3f,0.3f,0.3f) );
 	SetSolid( SOLID_BBOX );
 	SetGravity( 0.05f );
-	
 	// Make sure we're updated if we're underwater
 	UpdateWaterState();
 
@@ -194,7 +235,26 @@ void CCrossbowBolt::BoltTouch( CBaseEntity *pOther )
 		if( GetOwnerEntity() && GetOwnerEntity()->IsPlayer() && pOther->IsNPC() )
 		{
 			GetOwnerEntity();
-			CTakeDamageInfo	dmgInfo( this, GetOwnerEntity(), sk_plr_dmg_crossbow.GetFloat(), DMG_NEVERGIB );
+			int iAddType = 0;
+			if (m_hLauncher)
+			{
+				CALL_ATTRIB_HOOK_INT_ON_OTHER(m_hLauncher, iAddType, cw_add_dmgtype);
+			}
+			if (iAddType != 0)
+			{
+				//Nothing! :D
+			}
+			else
+			{
+				iAddType = DMG_NEVERGIB;
+			}
+			if (m_bMiniCrit){
+				iAddType |= DMG_MINICRITICAL;
+			}
+			if (m_bCrit){
+				iAddType |= DMG_CRITICAL;
+			}
+			CTakeDamageInfo	dmgInfo(this, GetOwnerEntity(), GetDamage(), iAddType);
 			dmgInfo.AdjustPlayerDamageInflictedForSkillLevel();
 			CalculateMeleeDamageForce( &dmgInfo, vecNormalizedVel, tr.endpos, 0.7f );
 			dmgInfo.SetDamagePosition( tr.endpos );
@@ -209,7 +269,7 @@ void CCrossbowBolt::BoltTouch( CBaseEntity *pOther )
 		}
 		else
 		{
-			CTakeDamageInfo	dmgInfo( this, GetOwnerEntity(), sk_plr_dmg_crossbow.GetFloat(), DMG_BULLET | DMG_NEVERGIB );
+			CTakeDamageInfo	dmgInfo(this, GetOwnerEntity(), GetDamage(), m_hLauncher.Get()->GetDamageType());
 			CalculateMeleeDamageForce( &dmgInfo, vecNormalizedVel, tr.endpos, 0.7f );
 			dmgInfo.SetDamagePosition( tr.endpos );
 			pOther->DispatchTraceAttack( dmgInfo, vecNormalizedVel, &tr );
@@ -220,6 +280,9 @@ void CCrossbowBolt::BoltTouch( CBaseEntity *pOther )
 		//Adrian: keep going through the glass.
 		if ( pOther->GetCollisionGroup() == COLLISION_GROUP_BREAKABLE_GLASS )
 			 return;
+		//Ignore teammates
+		if (pOther->GetTeamNumber() == GetTeamNumber())
+			return;
 
 		if ( !pOther->IsAlive() )
 		{
@@ -260,13 +323,12 @@ void CCrossbowBolt::BoltTouch( CBaseEntity *pOther )
 			}
 		}
 		
-		SetTouch( NULL );
-		SetThink( NULL );
 
-		if ( !g_pGameRules->IsMultiplayer() )
-		{
+
+	//	if ( !g_pGameRules->IsMultiplayer() )
+	//	{
 			UTIL_Remove( this );
-		}
+	//	}
 	}
 	else
 	{
