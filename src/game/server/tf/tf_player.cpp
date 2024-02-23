@@ -2870,8 +2870,11 @@ void CTFPlayer::ManageTeamWeapons( TFPlayerClassData_t *pData )
 			int iSlot = pItemDef->GetLoadoutSlot( iClass );
 			CTFWeaponBase *pWeapon = (CTFWeaponBase *)GetEntityForLoadoutSlot( iSlot );
 			CEconItemView econItem( iWeaponID );
-			if ( pWeapon )
+			if (pWeapon && iWeaponID != 9000 && iWeaponID != 9001 && iWeaponID != 9003 && iWeaponID != 9004)
 			{
+				//Prevent deleting gravity gun
+				//TODO: Replace weapon progression & gravity gun giving logic with an item attribute (e.g. loadout_progression)
+				//Or maybe a new item slot for team weapons? Hmmm.....
 				if ( ItemsMatch( pWeapon->GetItem(), &econItem, pWeapon ) )
 				{
 					pWeapon->UnEquip( this );
@@ -2967,6 +2970,7 @@ void CTFPlayer::ManageRegularWeaponsLegacy( TFPlayerClassData_t *pData )
 			if ( pCarriedWeapon && !pCarriedWeapon->IsWeapon( TF_WEAPON_BUILDER ) && pCarriedWeapon->GetWeaponID() < TF_WEAPON_PHYSCANNON )
 			{
 				Weapon_Detach( pCarriedWeapon );
+				DevMsg("Removed weapon %s", pCarriedWeapon->GetName());
 				UTIL_Remove( pCarriedWeapon );
 			}
 		}
@@ -5201,6 +5205,8 @@ void CTFPlayer::TFWeaponRemove( int iWeaponID )
 
 		if ( pWeapon->GetWeaponID() != iWeaponID )
 			continue;
+
+		DevMsg("Removing weapon %s with ID %i", pWeapon->GetName(), iWeaponID);
 
 		RemovePlayerItem( pWeapon );
 		UTIL_Remove( pWeapon );
@@ -7637,6 +7643,7 @@ void CTFPlayer::Event_KilledOther( CBaseEntity *pVictim, const CTakeDamageInfo &
 
 				float flRestoreHealthOnKill = 0.0f;
 				CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pWeapon, flRestoreHealthOnKill, restore_health_on_kill );
+				CALL_ATTRIB_HOOK_FLOAT(flRestoreHealthOnKill, restore_health_on_kill);
 				if( ( flRestoreHealthOnKill > 0 ) && ( m_Shared.GetMaxBuffedHealth() > GetHealth() ) )
 				{
 					int iHealthRestored = TakeHealth( ( ( flRestoreHealthOnKill/100 ) * GetMaxHealth() ), DMG_IGNORE_MAXHEALTH );
@@ -16857,7 +16864,7 @@ void CTFPlayer::UseActionSlotItemPressed( void )
 			}
 		}
 
-		CTFGrapplingHook *pActionWeapon = dynamic_cast< CTFGrapplingHook * >( Weapon_OwnsThisID( TF_WEAPON_GRAPPLINGHOOK ) );
+		CTFWeaponBase *pActionWeapon = dynamic_cast< CTFWeaponBase * >( GetLoadoutItem(GetPlayerClass()->GetClassIndex(), LOADOUT_POSITION_ACTION) );
 		if ( pActionWeapon )
 		{
 			Weapon_Switch( pActionWeapon );

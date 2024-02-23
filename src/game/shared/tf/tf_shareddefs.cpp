@@ -349,6 +349,8 @@ const char *g_LoadoutSlots[] =
 	"taunt",
 	"taunt",
 	"taunt",
+	"utility2",
+	"utility3",
 	"buffer"
 };
 
@@ -373,6 +375,8 @@ const char *g_LoadoutTranslations[] =
 	"#LoadoutSlot_Taunt6",
 	"#LoadoutSlot_Taunt7",
 	"#LoadoutSlot_Taunt8",
+	"#LoadoutSlot_Utility2"
+	"#LoadoutSlot_Utility3"
 	"Undefined"
 };
 
@@ -408,7 +412,7 @@ struct pszWpnEntTranslationListEntry
 	const char *weapon_civilian;
 	const char *weapon_combine;
 	const char *weapon_zombiefast;
-	const char *weapon_antlion;
+	const char *weapon_wildcard;
 };
 
 static pszWpnEntTranslationListEntry pszWpnEntTranslationList[] =

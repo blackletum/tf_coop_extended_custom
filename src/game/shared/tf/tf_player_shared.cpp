@@ -6606,11 +6606,11 @@ CWeaponMedigun *CTFPlayer::GetMedigun( void )
 //-----------------------------------------------------------------------------
 CEconEntity *CTFPlayer::GetEntityForLoadoutSlot( int iSlot )
 {
-	if ( iSlot >= LOADOUT_POSITION_HAT )
-	{
-		// Weapons don't get equipped in cosmetic slots.
-		return GetWearableForLoadoutSlot( iSlot );
-	}
+//	if ( iSlot >= LOADOUT_POSITION_HAT )
+//	{
+//		// Weapons don't get equipped in cosmetic slots.
+//		return GetWearableForLoadoutSlot( iSlot );
+//	}
 
 	int iClass = m_PlayerClass.GetClassIndex();
 

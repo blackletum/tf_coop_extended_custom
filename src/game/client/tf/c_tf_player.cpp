@@ -6217,7 +6217,7 @@ void C_TFPlayer::LoadInventory( void )
 {
 	for ( int iClass = TF_FIRST_NORMAL_CLASS; iClass <= TF_CLASS_COUNT; iClass++ )
 	{
-		for ( int iSlot = 0; iSlot < LOADOUT_POSITION_TAUNT2; iSlot++ )
+		for ( int iSlot = 0; iSlot < LOADOUT_POSITION_UTILITY3; iSlot++ )
 		{
 			if ( iSlot == LOADOUT_POSITION_UTILITY )
 				continue;
