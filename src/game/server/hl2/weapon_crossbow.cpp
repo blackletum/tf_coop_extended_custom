@@ -70,8 +70,8 @@ CCrossbowBolt *CCrossbowBolt::BoltCreate( const Vector &vecOrigin, const QAngle 
 	pBolt->SetOwnerEntity( pentOwner );
 	pBolt->ChangeTeam(pentOwner->GetTeamNumber());
 	pBolt->SetLauncher(pWeapon);
-	
-
+	pBolt->SetCrit(bCrit);
+	pBolt->SetMiniCrit(bMiniCrit);
 	return pBolt;
 }
 //
@@ -234,8 +234,17 @@ void CCrossbowBolt::BoltTouch( CBaseEntity *pOther )
 
 		if( GetOwnerEntity() && GetOwnerEntity()->IsPlayer() && pOther->IsNPC() )
 		{
-			GetOwnerEntity();
 			int iAddType = 0;
+			if (m_bMiniCrit){
+				iAddType = DMG_MINICRITICAL;
+				DevMsg("Mini-crit!");
+			}
+			if (m_bCrit){
+				iAddType = DMG_CRITICAL;
+				DevMsg("Crit!");
+			}
+			GetOwnerEntity();
+
 			if (m_hLauncher)
 			{
 				CALL_ATTRIB_HOOK_INT_ON_OTHER(m_hLauncher, iAddType, cw_add_dmgtype);
@@ -248,12 +257,7 @@ void CCrossbowBolt::BoltTouch( CBaseEntity *pOther )
 			{
 				iAddType = DMG_NEVERGIB;
 			}
-			if (m_bMiniCrit){
-				iAddType |= DMG_MINICRITICAL;
-			}
-			if (m_bCrit){
-				iAddType |= DMG_CRITICAL;
-			}
+
 			CTakeDamageInfo	dmgInfo(this, GetOwnerEntity(), GetDamage(), iAddType);
 			dmgInfo.AdjustPlayerDamageInflictedForSkillLevel();
 			CalculateMeleeDamageForce( &dmgInfo, vecNormalizedVel, tr.endpos, 0.7f );

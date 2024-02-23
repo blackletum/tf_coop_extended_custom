@@ -75,7 +75,7 @@ void CTFWearable::UpdateModelToClass(void)
 				//pOwner->AddContext(STRING(strResponseCriteria));
 
 				// This needs to also reset if there are no wearables with custom model defined.
-				if (strcmp(pItemDef->item_class, "tf_wearable_vm") && pItemDef->attach_to_hands_vm_only != '\0') {
+				if (strcmp(pItemDef->item_class, "tf_wearable_vm") && pItemDef->attach_to_hands_vm_only) {
 					SetRenderMode(kRenderNone);
 				}
 				if (pItemDef->model_world[iClass] != '\0') {

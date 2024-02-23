@@ -332,6 +332,7 @@ public:
 			GET_STRING( pItem, pDefinition, model_vision_filtered );
 			GET_STRING( pItem, pDefinition, model_world );
 			GET_STRING( pItem, pDefinition, extra_wearable );
+			GET_INT(pItem, pDefinition, extra_econ);
 
 			GET_INT( pItem, pDefinition, attach_to_hands );
 			GET_INT( pItem, pDefinition, attach_to_hands_vm_only );

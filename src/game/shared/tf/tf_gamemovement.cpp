@@ -350,7 +350,10 @@ void CTFGameMovement::PlayerMove()
 
 Vector CTFGameMovement::GetPlayerViewOffset( bool ducked ) const
 {
-	return ducked ? VEC_DUCK_VIEW_SCALED( m_pTFPlayer ) : ( m_pTFPlayer->GetClassEyeHeight() );
+	float flViewHeightMult = 1.0f;
+	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(m_pTFPlayer, flViewHeightMult, view_height_multiplier);
+
+	return ducked ? VEC_DUCK_VIEW_SCALED(m_pTFPlayer) * flViewHeightMult : (m_pTFPlayer->GetClassEyeHeight() * flViewHeightMult);
 }
 
 //-----------------------------------------------------------------------------
@@ -547,7 +550,7 @@ void CTFGameMovement::AirDash( void )
 		CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(m_pTFPlayer, flCustomAirDashSoundVol, custom_air_dash_sound_volume);
 		EmitSound_t parms;
 		parms.m_pSoundName = strCustomAirDashSound;
-		parms.m_SoundLevel = SNDLVL_25dB;
+		parms.m_SoundLevel = SNDLVL_55dB;
 		parms.m_flVolume = flCustomAirDashSoundVol;
 		parms.m_nFlags |= SND_CHANGE_PITCH | SND_CHANGE_VOL;
 		parms.m_nPitch = ( m_pTFPlayer->m_Shared.GetAirDash() * 5 ) + 100;

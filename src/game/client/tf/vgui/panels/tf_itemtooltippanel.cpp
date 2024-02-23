@@ -91,6 +91,7 @@ void CTFItemToolTipPanel::ShowToolTip( CEconItemDefinition *pItemData )
 	{
 		m_pTitle->SetText( pItemData->GenerateLocalizedFullItemName() );
 
+
 		// Set the color according to quality.	
 		const char *pszColor = EconQuality_GetColorString( pItemData->item_quality );
 
@@ -126,6 +127,7 @@ void CTFItemToolTipPanel::ShowToolTip( CEconItemDefinition *pItemData )
 
 				pLabel->SetFgColor( pScheme->GetColor( "ItemAttribNeutral", COLOR_WHITE ) );
 				pLabel->SetVisible( true );
+				pLabel->SetWrap(true);
 			}
 			else
 			{
@@ -181,6 +183,7 @@ void CTFItemToolTipPanel::ShowToolTip( CEconItemDefinition *pItemData )
 
 				pLabel->SetFgColor( attrcolor );
 				pLabel->SetCenterWrap( true );
+				pLabel->SetWrap(true);
 				pLabel->SetVisible( true );
 			}
 		}
@@ -200,6 +203,7 @@ void CTFItemToolTipPanel::AdjustToolTipSize( void )
 	int x, y;
 	m_pAttributeText->GetPos( x, y );
 
+//	int iTotalWidth = x;
 	int iTotalHeight = y;
 	for ( int i = 0; i < m_pAttributes.Count(); i++ )
 	{
@@ -213,10 +217,16 @@ void CTFItemToolTipPanel::AdjustToolTipSize( void )
 			pLabel->GetTextImage()->GetContentSize( twide, ttall );
 			pLabel->SetTall( ttall );
 
+		//	if (twide > iTotalWidth)
+		//		iTotalWidth = twide;
+
+
 			iTotalHeight += ttall;
+
 		}
 	}
 
 	// Set the tooltip size based on attribute list size.
 	SetTall( iTotalHeight + YRES( 10 ) );
+	//SetWide( iTotalWidth );
 }

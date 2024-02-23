@@ -536,23 +536,24 @@ void BaseModHybridButton::PaintButtonEx()
 		if ( textWide > availableWidth )
 		{
 			// length of 3 dots
-			int ellipsesLen = 3 * vgui::surface()->GetCharacterWidth( m_hTextFont, L'.' );
+		//	int ellipsesLen = 3 * vgui::surface()->GetCharacterWidth( m_hTextFont, L'.' );
 
-			availableWidth -= ellipsesLen;
+		//	availableWidth -= ellipsesLen;
 
-			iLabelCharsDrawn = 0;
-			int charX = x + textInsetX;
-			for ( int i=0; i < len; i++ )
-			{
-				vgui::surface()->DrawUnicodeChar( szUnicode[i] );
-				iLabelCharsDrawn++;
-
-				charX += vgui::surface()->GetCharacterWidth( m_hTextFont, szUnicode[i] );
-				if ( charX >= ( x + textInsetX + availableWidth ) )
-					break;
-			}
-			
-			vgui::surface()->DrawPrintText( L"...", 3 );
+		//	iLabelCharsDrawn = 0;
+		//	int charX = x + textInsetX;
+		//	for ( int i=0; i < len; i++ )
+		//	{
+		//		vgui::surface()->DrawUnicodeChar( szUnicode[i] );
+		///		iLabelCharsDrawn++;
+		//
+		//		charX += vgui::surface()->GetCharacterWidth( m_hTextFont, szUnicode[i] );
+		//		if ( charX >= ( x + textInsetX + availableWidth ) )
+		//			break;
+		//	}
+		//	
+		//	vgui::surface()->DrawPrintText( L"...", 3 );
+			vgui::surface()->DrawUnicodeString(szUnicode);
 		}
 		else
 		{

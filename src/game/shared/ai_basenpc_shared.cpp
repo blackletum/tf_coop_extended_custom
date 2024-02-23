@@ -888,9 +888,11 @@ void CAI_BaseNPC::OnConditionAdded( int nCond )
 
 		
 	case HGF_COND_CHILLED:
+
 		OnAddChilled();
 		break;
 	case HGF_COND_FROZEN:
+
 		OnAddFrozen();
 		break;
 #else
@@ -903,10 +905,14 @@ void CAI_BaseNPC::OnConditionAdded( int nCond )
 		break;
 
 	case HGF_COND_CHILLED:
-
+		if (!InCond(HGF_COND_CHILLED)){
+			EmitSound("Player.Chilled");
+		}
 		break;
 	case HGF_COND_FROZEN:
-
+		if (!InCond(HGF_COND_FROZEN)){
+			EmitSound("Icicle.TurnToIce");
+		}
 		break;
 	case TF_COND_RADIUSHEAL:
 		OnAddRadiusHeal();
@@ -1629,11 +1635,10 @@ void CAI_BaseNPC::OnRemoveHalloweenTiny( void )
 //-----------------------------------------------------------------------------
 void CAI_BaseNPC::OnAddChilled(void)
 {
-	if (!InCond(HGF_COND_CHILLED)){
-		SetRenderColor(150, 200, 255);
-		EmitSound("Player.Chilled");
-	}
-
+	//if (!InCond(HGF_COND_CHILLED)){
+	//	EmitSound("Player.Chilled");
+	//}
+	SetRenderColor(150, 200, 255);
 }
 void CAI_BaseNPC::OnRemoveChilled(void)
 {
@@ -1641,11 +1646,8 @@ void CAI_BaseNPC::OnRemoveChilled(void)
 }
 void CAI_BaseNPC::OnAddFrozen(void)
 {
-	
-	if (!InCond(HGF_COND_FROZEN)){
 		MaterialOverride("models/player/shared/ice_player.vmt");
-		EmitSound("Icicle.TurnToIce");
-	}
+
 
 
 }
