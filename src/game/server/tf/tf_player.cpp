@@ -2814,7 +2814,7 @@ void CTFPlayer::ManageRegularWeapons( TFPlayerClassData_t *pData )
 	for ( int iSlot = 0; iSlot < LOADOUT_POSITION_BUFFER; ++iSlot )
 	{
 		// These are special slots, we don't bother to check them.
-		if ( (iSlot == LOADOUT_POSITION_BUILDING ) || (iSlot == LOADOUT_POSITION_UTILITY ) )
+		if ( (iSlot == LOADOUT_POSITION_BUILDING )  )
 			continue;	
 
 		if ( GetEntityForLoadoutSlot( iSlot ) != NULL )
@@ -2921,7 +2921,7 @@ void CTFPlayer::ManageRegularWeaponsLegacy( TFPlayerClassData_t *pData )
 	for ( int iWeapon = 0; iWeapon < LOADOUT_POSITION_BUFFER; ++iWeapon )
 	{
 		// These are special slots, we don't bother to check them.
-		if ( (iWeapon == LOADOUT_POSITION_BUILDING ) || (iWeapon == LOADOUT_POSITION_UTILITY ) )
+		if ( (iWeapon == LOADOUT_POSITION_BUILDING ))
 			continue;	
 
 		int iWeaponID = GetTFInventory()->GetWeapon( m_PlayerClass.GetClassIndex(), iWeapon );
@@ -3009,9 +3009,7 @@ void CTFPlayer::ManageRandomWeapons( TFPlayerClassData_t *pData )
 
 	for ( int i = 0; i < TF_PLAYER_WEAPON_COUNT; ++i )
 	{
-		// Don't check this slot, it's currently unused.
-		if ( i == LOADOUT_POSITION_UTILITY )
-			continue;
+
 
 		CTFInventory *pInv = GetTFInventory();
 		Assert( pInv );

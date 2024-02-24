@@ -563,8 +563,6 @@ void CTFInventory::ResetInventory()
 		KeyValues *pClassInv = new KeyValues( g_aPlayerClassNames_NonLocalized[i] );
 		for ( int j = 0; j < LOADOUT_POSITION_BUFFER; j++ )
 		{
-			if ( j == LOADOUT_POSITION_UTILITY )
-				continue;
 
 			pClassInv->SetInt( g_LoadoutSlots[j], 0 );
 		}

@@ -5777,7 +5777,21 @@ void CTFPlayer::TeamFortress_SetSpeed()
 	{
 		maxfbspeed *= m_Shared.m_flStunMovementSpeed;
 	}
-
+	int bMoveSpeedIncreaseInjured = 0;
+	CALL_ATTRIB_HOOK_INT(bMoveSpeedIncreaseInjured, movespeed_bonus_injured);
+		if (bMoveSpeedIncreaseInjured){
+			float flFraction = (float)GetHealth() / GetMaxHealth();
+			if (flFraction > 0.8f)
+				maxfbspeed *= 1.0f;
+			else if (flFraction > 0.6f)
+				maxfbspeed *= 1.1f;
+			else if (flFraction > 0.4f)
+				maxfbspeed *= 1.2f;
+			else if (flFraction > 0.2f)
+				maxfbspeed *= 1.4f;
+			else
+				maxfbspeed *= 1.6f;
+		}
 	// if we're in bonus time because a team has won, give the winners 110% speed and the losers 90% speed
 	if ( TFGameRules()->State_Get() == GR_STATE_TEAM_WIN )
 	{
