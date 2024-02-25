@@ -194,9 +194,24 @@ void CTFWeaponBaseGun::PrimaryAttack( void )
 
 	// Set the weapon mode.
 	m_iWeaponMode = TF_WEAPON_PRIMARY_MODE;
-
+	int iSilencedAttrib = 0;
+	CALL_ATTRIB_HOOK_INT(iSilencedAttrib, mod_weapon_silenced_mode);
 #if GAME_DLL
-	CSoundEnt::InsertSound( SOUND_COMBAT, GetAbsOrigin(), SOUNDENT_VOLUME_MACHINEGUN, 0.2, GetOwner(), SOUNDENT_CHANNEL_WEAPON );
+	switch (iSilencedAttrib)
+	{
+	case 0:
+	default:
+		CSoundEnt::InsertSound(SOUND_COMBAT, GetAbsOrigin(), SOUNDENT_VOLUME_MACHINEGUN, 0.2, GetOwner(), SOUNDENT_CHANNEL_WEAPON);
+	case 1:
+		//Nothing, weapon should be completely silent
+	case 2: //Thumper, scares off antlions. Could be a cool weapon
+		CSoundEnt::InsertSound(SOUND_THUMPER, GetAbsOrigin(), SOUNDENT_VOLUME_MACHINEGUN, 0.2, GetOwner(), SOUNDENT_CHANNEL_WEAPON);
+	case 3: //The opposite, bugbait, attract antlions
+		CSoundEnt::InsertSound(SOUND_BUGBAIT, GetAbsOrigin(), SOUNDENT_VOLUME_MACHINEGUN, 0.2, GetOwner(), SOUNDENT_CHANNEL_WEAPON);
+	case 4: //Quieter, in real life silencers don't cancel *all* the sound, this could be used to go for that
+		CSoundEnt::InsertSound(SOUND_COMBAT, GetAbsOrigin(), 600, 0.2, GetOwner(), SOUNDENT_CHANNEL_WEAPON);
+	}
+	
 #endif
 
 	SendWeaponAnim( ACT_VM_PRIMARYATTACK );

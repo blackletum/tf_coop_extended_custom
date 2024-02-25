@@ -1618,7 +1618,7 @@ CPolyhedron *ClipLinkedGeometry( GeneratePolyhedronFromPlanes_UnorderedPolygonLL
 					else
 						pWorkPolygon = pTestLine->pLine->pPolygons[1 - pTestLine->iReferenceIndex];
 					
-					Assert_DumpPolyhedron( pWorkPolygon != pLastWorkPolygon );
+					//Assert_DumpPolyhedron( pWorkPolygon != pLastWorkPolygon );
 					Assert_DumpPolyhedron( (pWorkPoint == pStartPoint) ||
 											(pGapLines[0]->pLine->bCut == false) || 
 											(pWorkPolygon->bMissingASide == true) ); //if we're not done fixing, and if the shared line was cut, the next polygon must be missing a side

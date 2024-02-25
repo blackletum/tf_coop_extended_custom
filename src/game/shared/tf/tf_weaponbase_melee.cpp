@@ -250,6 +250,7 @@ void CTFWeaponBaseMelee::Swing( CTFPlayer *pPlayer )
 	}
 
 	m_flSmackTime = gpGlobals->curtime + m_pWeaponInfo->GetWeaponData( m_iWeaponMode ).m_flSmackDelay;
+	CALL_ATTRIB_HOOK_FLOAT(m_flSmackTime, mult_smackdelay);
 }
 
 //-----------------------------------------------------------------------------

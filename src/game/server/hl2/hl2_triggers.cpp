@@ -602,7 +602,15 @@ public:
 	{
 		if ( !BaseClass::PassesTriggerFilters(pOther) )
 			return false;
-
+		if (pOther->IsPlayer())
+		{
+			int iLeechIgnore = 0;
+			CALL_ATTRIB_HOOK_INT_ON_OTHER(pOther, iLeechIgnore, ignored_by_leeches);
+			if (iLeechIgnore > 0)
+			{
+				return false;
+			}
+		}
 		return (pOther->m_takedamage == DAMAGE_YES);
 	}
 
@@ -664,6 +672,16 @@ void CTriggerWateryDeath::SpawnLeeches( CBaseEntity *pOther )
 
 	if ( m_hLeeches.Count() > 0 )
 		 return;
+
+	if (pOther->IsPlayer())
+	{
+		int iLeechIgnore = 0;
+		CALL_ATTRIB_HOOK_INT_ON_OTHER(pOther, iLeechIgnore, ignored_by_leeches);
+		if (iLeechIgnore > 0)
+		{
+			return;
+		}
+	}
 
 	int iMaxLeeches = 12;
 	

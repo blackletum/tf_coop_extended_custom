@@ -1323,6 +1323,28 @@ void CTFPlayerShared::ConditionGameRulesThink( void )
 		m_flNextCritUpdate = gpGlobals->curtime + 0.5;
 	}
 
+	int iCrouchCond = -1;
+	CALL_ATTRIB_HOOK_INT_ON_OTHER(m_pOuter, iCrouchCond, mod_addcond_crouched);
+	if (iCrouchCond > -1){
+		if (m_pOuter->GetFlags() & FL_DUCKING && !InCond(iCrouchCond))
+		{
+			AddCond(iCrouchCond, -1.0f);
+		}
+		else if (InCond(iCrouchCond))
+		{
+			if (m_pOuter->GetFlags() & FL_DUCKING){
+				//Nothing
+			}
+			else
+				RemoveCond(iCrouchCond);
+		}
+		else
+		{
+			//For now, do nothing
+		}
+	}
+
+
 	int i;
 	for ( i = 0; i < TF_COND_LAST; i++ )
 	{
