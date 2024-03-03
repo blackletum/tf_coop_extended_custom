@@ -2437,7 +2437,7 @@ void CBaseCombatWeapon::PrimaryAttack( void )
 		// MUST call sound before removing a round from the clip of a CMachineGun
 		WeaponSound(SINGLE, m_flNextPrimaryAttack);
 		CALL_ATTRIB_HOOK_FLOAT( fireRate, mult_postfiredelay );
-		m_flNextPrimaryAttack = m_flNextPrimaryAttack + fireRate;
+
 		info.m_iShots++;
 		if ( !fireRate )
 			break;

@@ -53,15 +53,24 @@ void CTFWeaponCustom::PrimaryAttack()
 		return;
 	float flSecondaryAttackDelay = 0;
 	int bNoSeparatePrimaryFire = 0;
-	
+	float flPrimaryPunchMax = 0.0f;
+	float flPrimaryPunchMin = 0.0f;
+	CTFPlayer *pOwner = GetTFPlayerOwner();
+	QAngle angle = pOwner->GetPunchAngle();
+	CALL_ATTRIB_HOOK_FLOAT(flPrimaryPunchMax, cw_primaryfire_punch_maxangle);
+	CALL_ATTRIB_HOOK_FLOAT(flPrimaryPunchMin, cw_primaryfire_punch_minangle);
 	CALL_ATTRIB_HOOK_FLOAT(flSecondaryAttackDelay, secondary_atk_fire_rate);
 	CALL_ATTRIB_HOOK_INT(bNoSeparatePrimaryFire, cw_separate_primary_secondaryfire);
 	if (bNoSeparatePrimaryFire == 1){	
 		m_flNextSecondaryAttack = gpGlobals->curtime + flSecondaryAttackDelay;
-		DevMsg("Test");
-		DevMsg("(P) Secondary Fire Rate: %.2f", flSecondaryAttackDelay);
+	//	DevMsg("Test");
+		//DevMsg("(P) Secondary Fire Rate: %.2f", flSecondaryAttackDelay);
 	}
-	
+	if (flPrimaryPunchMax && flPrimaryPunchMin && pOwner)
+	{
+		angle.x -= SharedRandomInt("CWPunchAngle", (flPrimaryPunchMax), (flPrimaryPunchMin));
+		pOwner->SetPunchAngle(angle);
+	}
 	// Set the weapon mode.
 	
 
@@ -168,22 +177,22 @@ bool CTFWeaponCustom::Reload(void)
 	}
 	return BaseClass::Reload();
 }
-//float CTFWeaponCustom::GetProjectileSpeed(void)
-//{
-//	float flAttribSpeedMult = 0.0f;
-//	CALL_ATTRIB_HOOK_FLOAT(flAttribSpeedMult, mult_projectile_speed);
-//	return 100.0f * flAttribSpeedMult;
-//}
-//float CTFWeaponCustom::GetProjectileGravity(void)
-//{
-//	float flAttribGravMult = 0.0f;
-//	CALL_ATTRIB_HOOK_FLOAT(flAttribGravMult, mult_projectile_gravity);
-//	if (flAttribGravMult != 0.0f){
-//		return 0.1f * flAttribGravMult;
-//	}
-//	else
-//		return 0;
-//}
+float CTFWeaponCustom::GetProjectileSpeed(void)
+{
+	float flAttribSpeedMult = 1.0f;
+	CALL_ATTRIB_HOOK_FLOAT(flAttribSpeedMult, mult_projectile_speed);
+	return 1000.0f * flAttribSpeedMult;
+}
+float CTFWeaponCustom::GetProjectileGravity(void)
+{
+	float flAttribGravAdd = 0.0f;
+	CALL_ATTRIB_HOOK_FLOAT(flAttribGravAdd, add_projectile_gravity);
+	CALL_ATTRIB_HOOK_FLOAT(flAttribGravAdd, mult_projectile_gravity);
+	
+
+	return flAttribGravAdd;
+
+}
 void CTFWeaponCustomPrimary::Precache(void)
 {
 #ifndef CLIENT_DLL

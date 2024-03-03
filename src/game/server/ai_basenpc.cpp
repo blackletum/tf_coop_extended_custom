@@ -944,12 +944,23 @@ void CAI_BaseNPC::Event_Killed( const CTakeDamageInfo &info )
 		// Assume that player used his currently active weapon.
 		pKillerWeapon = ToTFPlayer( pKiller )->GetActiveTFWeapon();
 	}
+	CTFWeaponBase* pKillerActiveWeapon = ToTFPlayer(pKiller)->GetActiveTFWeapon();
+//	CEconItemDefinition *pActiveItemDef = pKillerActiveWeapon->GetItem()->GetStaticData();
+
 
 	if ( iWeaponID && pScorer )
 	{
 		CTFWeaponBase *pWeapon = pScorer->Weapon_OwnsThisID( iWeaponID );
 		if ( pWeapon )
 		{
+			if (pKillerActiveWeapon)
+			{
+				int iDmgTypeAttrib = 0;
+				CALL_ATTRIB_HOOK_INT_ON_OTHER(pKillerActiveWeapon, iDmgTypeAttrib, cw_add_dmgtype);
+				if (iDmgTypeAttrib > 0){
+					pWeapon = pKillerActiveWeapon; //Messing with weapons' damage types with this attribute or in general can screw up killfeed, this is a safety net to correct that!
+				}
+			}
 			CEconItemDefinition *pItemDef = pWeapon->GetItem()->GetStaticData();
 			if ( pItemDef )
 			{
@@ -958,6 +969,7 @@ void CAI_BaseNPC::Event_Killed( const CTakeDamageInfo &info )
 
 				if ( pItemDef->item_logname[0] )
 					killer_weapon_log_name = pItemDef->item_logname;
+
 			}
 		}
 	}

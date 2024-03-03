@@ -268,6 +268,28 @@ void CWeaponAR2::DelayedAttack( void )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
+float CWeaponAR2::GetFireRate(void)
+{
+	CBaseCombatCharacter *pOwner = GetOwner(); 
+	if (pOwner->IsNPC())
+	{
+		CAI_BaseNPC *pNPCOwner = dynamic_cast<CAI_BaseNPC *>(pOwner);
+		if (pNPCOwner->InCond(HGF_COND_CHILLED))
+		{
+			return 0.2f;
+
+		}
+		else
+			return 0.1f;
+	}
+	else
+		return 0.1f;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+
 void CWeaponAR2::SecondaryAttack( void )
 {
 	if ( m_bShotDelayed )

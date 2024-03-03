@@ -43,8 +43,8 @@ END_NETWORK_TABLE()
 BEGIN_PREDICTION_DATA( CPasstimeGun )
 END_PREDICTION_DATA()
 
-LINK_ENTITY_TO_CLASS( tf_weapon_passtime_gun, CPasstimeGun );
-PRECACHE_WEAPON_REGISTER( tf_weapon_passtime_gun );
+//LINK_ENTITY_TO_CLASS( tf_weapon_passtime_gun, CPasstimeGun );
+//PRECACHE_WEAPON_REGISTER( tf_weapon_passtime_gun );
 
 //=============================================================================
 //

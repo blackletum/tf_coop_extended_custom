@@ -1164,7 +1164,6 @@ void CTFGameMovement::WalkMove( void )
 	// Calculate the speed and direction of movement, then clamp the speed.
 	float flWishSpeed = VectorNormalize( vecWishDirection );
 	flWishSpeed = clamp( flWishSpeed, 0.0f, mv->m_flMaxSpeed );
-
 	Accelerate( vecWishDirection, flWishSpeed, sv_accelerate.GetFloat() );
 	Assert( mv->m_vecVelocity.z == 0.0f );
 
@@ -2764,6 +2763,7 @@ void CTFGameMovement::SetGroundEntity( trace_t *pm )
 	{
 		m_pTFPlayer->m_Shared.SetAirDash( 0 );
 		m_pTFPlayer->m_Shared.ResetAirDucks();
+		m_pTFPlayer->TeamFortress_SetSpeed();
 
 		m_pTFPlayer->m_Shared.RemoveCond( TF_COND_PARACHUTE_ACTIVE );
 		m_pTFPlayer->m_Shared.RemoveCond( TF_COND_PARACHUTE_DEPLOYED );
@@ -2798,6 +2798,7 @@ void CTFGameMovement::SetGroundEntity( trace_t *pm )
 		if ( m_pTFPlayer->GetBlastJumpFlags() != 0 )
 			m_pTFPlayer->ClearBlastJumpState();
 
+		m_pTFPlayer->TeamFortress_SetSpeed();
 		m_pTFPlayer->ClearAirblastState();
 		m_pTFPlayer->SetForceByNature( false );
 

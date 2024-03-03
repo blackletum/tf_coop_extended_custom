@@ -5879,7 +5879,17 @@ int CTFPlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 				}
 			}
 		}
-
+		if (bitsDamage & DMG_DROWN){
+			float flDrownDamageMult = 1.0f;
+			CALL_ATTRIB_HOOK_FLOAT(flDrownDamageMult, mult_dmg_drown);
+			if (flDrownDamageMult == 0)
+			{
+				flDamage = 0;
+				return 0;
+			}
+			else
+				flDamage = info.GetDamage() * flDrownDamageMult;
+		}
 		if ( bitsDamage & DMG_CRITICAL )
 		{
 			if ( bDebug )
@@ -6392,6 +6402,9 @@ int CTFPlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 	if ( bitsDamage & DMG_BLAST )
 		OnDamagedByExplosion( info );
 
+
+		
+
 	PainSound( info );
 
 	if( iAimingNoFlinch != 1 && !m_Shared.InCond( TF_COND_AIMING ) )
@@ -6429,8 +6442,16 @@ void CTFPlayer::DamageEffect(float flDamage, int fDamageType)
 	else if (fDamageType & DMG_DROWN)
 	{
 		//Blue damage indicator
-		color32 blue = {0,0,128,128};
-		UTIL_ScreenFade( this, blue, 1.0f, 0.1f, FFADE_IN );
+		float flDrownDamageMult = 1.0f;
+		CALL_ATTRIB_HOOK_FLOAT(flDrownDamageMult, mult_dmg_drown);
+		if (flDrownDamageMult >= 0)
+		{
+			return;
+		}
+		else{
+			color32 blue = { 0, 0, 128, 128 };
+			UTIL_ScreenFade(this, blue, 1.0f, 0.1f, FFADE_IN);
+		}
 	}
 	else if (fDamageType & DMG_SLASH)
 	{
@@ -6847,6 +6868,15 @@ int CTFPlayer::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 			flDamage = 0.0f;
 	}
 
+	if (info.GetDamageType() & DMG_DROWN)
+	{
+		float flDamageDrownMult = 1.0f;
+		CALL_ATTRIB_HOOK_FLOAT(flDamageDrownMult, mult_dmg_drown);
+		if (flDamageDrownMult <= 0.01f)
+			flDamage = 0.0f;
+		else
+			flDamage *= flDamageDrownMult;
+	}
 	if ( info.GetDamageType() & DMG_CLUB|DMG_SLASH )
 	{
 		float flDamageMeleeMult = 1.0f;
@@ -6855,7 +6885,14 @@ int CTFPlayer::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 			flDamageMeleeMult = 1.0f;
 		flDamage *= flDamageMeleeMult;
 	}
-
+	if (info.GetDamageType() & DMG_BULLET | DMG_BUCKSHOT | DMG_IGNITE | DMG_BLAST | DMG_SONIC)
+	{
+		float flDamageRangedMult = 1.0f;
+		CALL_ATTRIB_HOOK_FLOAT(flDamageRangedMult, dmg_from_ranged);
+		if ((nIgnoreResists == 1) && (flDamageRangedMult < 1.0f))
+			flDamageRangedMult = 1.0f;
+		flDamage *= flDamageRangedMult;
+	}
 	float flDamageAllMult = 1.0f;
 	CALL_ATTRIB_HOOK_FLOAT( flDamageAllMult, mult_dmgtaken );
 	if ( (nIgnoreResists == 1) && ( flDamageAllMult < 1.0f ) )
@@ -6873,10 +6910,11 @@ int CTFPlayer::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 
 	if ( GetActiveTFWeapon() )
 	{
-		if ( info.GetDamageType() & DMG_CLUB )
+		if ( info.GetDamageType() & (DMG_CLUB | DMG_SLASH) )
 		{
 			float flDamageClubMult = 1.0f;
 			CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( GetActiveTFWeapon(), flDamageClubMult, dmg_from_melee );
+			CALL_ATTRIB_HOOK_FLOAT(flDamageClubMult, dmg_from_melee);
 			if ( (nIgnoreResists == 1) && ( flDamageClubMult < 1.0f ) )
 				flDamageClubMult = 1.0f;
 			flDamage *= flDamageClubMult;
@@ -6886,6 +6924,7 @@ int CTFPlayer::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 		{
 			float flDamageRangedMult = 1.0f;
 			CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( GetActiveTFWeapon(), flDamageRangedMult, dmg_from_ranged );
+			CALL_ATTRIB_HOOK_FLOAT(flDamageRangedMult, dmg_from_ranged);
 			if ( (nIgnoreResists == 1) && ( flDamageRangedMult < 1.0f ) )
 				flDamageRangedMult = 1.0f;
 			flDamage *= flDamageRangedMult;
@@ -6895,6 +6934,7 @@ int CTFPlayer::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 		{
 			float flDamageFireActiveMult = 1.0f;
 			CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( GetActiveTFWeapon(), flDamageFireActiveMult, mult_dmgtaken_from_fire_active );
+			CALL_ATTRIB_HOOK_FLOAT(flDamageFireActiveMult, mult_dmgtaken_from_fire_active);
 			if ( (nIgnoreResists == 1) && ( flDamageFireActiveMult < 1.0f ) )
 				flDamageFireActiveMult = 1.0f;
 			flDamage *= flDamageFireActiveMult;
@@ -10311,8 +10351,16 @@ void CTFPlayer::PainSound( const CTakeDamageInfo &info )
 
 	if ( info.GetDamageType() & DMG_DROWN )
 	{
-		EmitSound( "TFPlayer.Drown" );
-		return;
+			float flDrownDamageMult = 1.0f;
+			CALL_ATTRIB_HOOK_FLOAT(flDrownDamageMult, mult_dmg_drown);
+			if (flDrownDamageMult >= 0)
+			{
+				return;
+			}
+			else{
+				EmitSound("TFPlayer.Drown");
+				return;
+			}
 	}
 
 	if ( info.GetDamageType() & DMG_BURN )
@@ -13182,12 +13230,11 @@ void CTFPlayer::ModifyOrAppendCriteria( AI_CriteriaSet& criteriaSet )
 		if ( GetPlayerClass() )
 		{
 			criteriaSet.AppendCriteria( "playerclass", g_aPlayerClassNames_NonLocalized[ GetPlayerClass()->GetClassIndex() ] );
-			string_t plmodel = GetModelName();
-			const char *cstr = plmodel.ToCStr(); // Hey Cstrs!!!!!!! - James Charles (real)
-			if (strcmp(cstr, "/0") != 0)
+			const char *plmodel = m_iszCustomModel.Get();
+			if (strcmp(plmodel, "/0") != 0)
 			{
-				criteriaSet.AppendCriteria("playermodel", cstr, 0);
-				DevMsg(cstr);
+				criteriaSet.AppendCriteria("playermodel", plmodel, 0);
+				DevMsg(plmodel);
 			}
 		}
 	}

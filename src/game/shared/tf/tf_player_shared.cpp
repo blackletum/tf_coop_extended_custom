@@ -5678,6 +5678,9 @@ void CTFPlayer::TeamFortress_SetSpeed()
 
 	CTFWeaponBase *pWeapon = GetActiveTFWeapon();
 
+	if (GetWaterLevel() > WL_NotInWater)
+		CALL_ATTRIB_HOOK_FLOAT(maxfbspeed, mult_player_movespeed_water);
+
 	if ( IsAlive() && pWeapon )
 		CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pWeapon, maxfbspeed, mult_player_movespeed_active );
 

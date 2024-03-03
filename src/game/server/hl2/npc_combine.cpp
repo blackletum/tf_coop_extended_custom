@@ -993,7 +993,16 @@ void CNPC_Combine::StartTask( const Task_t *pTask )
 			if ( GetActiveWeapon() )
 			{
 				m_nShots = GetActiveWeapon()->GetRandomBurst();
-				m_flShotDelay = GetActiveWeapon()->GetFireRate();
+				if (InCond(HGF_COND_CHILLED)){
+				
+					m_flShotDelay = GetActiveWeapon()->GetFireRate() * 2;
+				}
+				else if (InCond(HGF_COND_FROZEN)){
+
+					m_flShotDelay = GetActiveWeapon()->GetFireRate() * 20;
+				}
+				else
+					m_flShotDelay = GetActiveWeapon()->GetFireRate();
 			}
 
 			m_flNextAttack = gpGlobals->curtime + m_flShotDelay - 0.1;
