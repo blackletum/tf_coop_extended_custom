@@ -16914,6 +16914,7 @@ void CTFPlayer::UseActionSlotItemPressed( void )
 		{
 			Weapon_Switch( pActionWeapon );
 		}
+
 	}
 
 	if ( TFGameRules()->CanPlayerStopSearchSpawn() )

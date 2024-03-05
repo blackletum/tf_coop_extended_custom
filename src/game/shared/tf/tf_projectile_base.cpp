@@ -44,6 +44,11 @@ END_DATADESC()
 
 #endif
 
+#ifdef CLIENT_DLL
+ConVar  lfe_cl_fake_syringe("lfe_cl_fake_syringe", "1", FCVAR_NONE, "If zero, disables TF2's fake syringe effects. Syringes will look a lot more choppy but won't be messed up by viewmodel offsets.");
+#endif
+
+
 //-----------------------------------------------------------------------------
 // Purpose: Constructor.
 //-----------------------------------------------------------------------------
@@ -162,9 +167,8 @@ CTFBaseProjectile *CTFBaseProjectile::Create( const char *pszClassname, const Ve
 	pProjectile->ChangeTeam( pOwner->GetTeamNumber() );
 
 	// Hide the projectile and create a fake one on the client
-	pProjectile->AddEffects( EF_NODRAW );
+	
 #endif 
-
 	if ( pszDispatchEffect )
 	{
 		/*/ we'd like to just send this projectile to a person in the shooter's PAS. However 
@@ -271,9 +275,13 @@ void CTFBaseProjectile::PostDataUpdate( DataUpdateType_t type )
 //-----------------------------------------------------------------------------
 int CTFBaseProjectile::DrawModel( int flags )
 {
-	// During the first 0.2 seconds of our life, don't draw ourselves.
-	if ( gpGlobals->curtime - m_flSpawnTime < 0.1f )
+	// During the first 0.06 seconds of our life, don't draw ourselves.
+	if ( gpGlobals->curtime - m_flSpawnTime < 0.07f )
 		return 0;
+	if (lfe_cl_fake_syringe.GetBool())
+	{
+		return 0;
+	}
 
 	return BaseClass::DrawModel( flags );
 }

@@ -24,11 +24,15 @@
 #include "ai_basenpc.h"
 #include "bone_setup.h"
 #endif
-
+extern ConVar lfe_cl_fake_syringe;
 //=============================================================================
 //
 // TF Syringe Projectile functions (Server specific).
 //
+#ifdef CLIENT_DLL
+
+#endif
+
 #define SYRINGE_MODEL				"models/weapons/w_models/w_syringe_proj.mdl"
 #define SYRINGE_DISPATCH_EFFECT		"ClientProjectile_Syringe"
 #define SYRINGE_GRAVITY	0.3f
@@ -99,6 +103,10 @@ void ClientsideProjectileSyringeCallback( const CEffectData &data )
 	C_TFPlayer *pPlayer = dynamic_cast<C_TFPlayer*>( ClientEntityList().GetBaseEntityFromHandle( data.m_hEntity ) );
 	if ( pPlayer )
 	{
+		if (lfe_cl_fake_syringe.GetBool())
+		{
+
+
 		C_LocalTempEntity *pSyringe = ClientsideProjectileCallback( data, SYRINGE_GRAVITY );
 		if ( pSyringe )
 		{
@@ -115,6 +123,11 @@ void ClientsideProjectileSyringeCallback( const CEffectData &data )
 			pSyringe->AddParticleEffect( GetSyringeTrailParticleName( pPlayer->GetTeamNumber(), bCritical ) );
 			pSyringe->AddEffects( EF_NOSHADOW );
 			pSyringe->flags |= FTENT_USEFASTCOLLISIONS;
+		}
+		}
+		else
+		{
+			
 		}
 	}
 }

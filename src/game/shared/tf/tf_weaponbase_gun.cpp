@@ -241,6 +241,16 @@ void CTFWeaponBaseGun::PrimaryAttack( void )
 	}
 
 	m_flNextPrimaryAttack = gpGlobals->curtime + flFireDelay;
+	QAngle angle = pPlayer->GetPunchAngle();
+	float flPrimaryPunchMax = 0.0f;
+	float flPrimaryPunchMin = 0.0f;
+	CALL_ATTRIB_HOOK_FLOAT(flPrimaryPunchMax, cw_primaryfire_punch_maxangle);
+	CALL_ATTRIB_HOOK_FLOAT(flPrimaryPunchMin, cw_primaryfire_punch_minangle);
+	if (flPrimaryPunchMax && flPrimaryPunchMin && pPlayer)
+	{
+		angle.x -= SharedRandomInt("CWPunchAngle", (flPrimaryPunchMax), (flPrimaryPunchMin));
+		pPlayer->SetPunchAngle(angle);
+	}
 
 	// Don't push out secondary attack, because our secondary fire
 	// systems are all separate from primary fire (sniper zooming, demoman pipebomb detonating, etc)
@@ -858,44 +868,36 @@ CBaseEntity *CTFWeaponBaseGun::FireFlare( CTFPlayer *pPlayer )
 //-----------------------------------------------------------------------------
 // Purpose: Fire an Arrow
 //-----------------------------------------------------------------------------
-CBaseEntity *CTFWeaponBaseGun::FireArrow( CTFPlayer *pPlayer, ProjectileType_t eType )
+CBaseEntity *CTFWeaponBaseGun::FireArrow(CTFPlayer *pPlayer, ProjectileType_t eType)
 {
 	PlayWeaponShootSound();
 
 #ifdef GAME_DLL
-
-
 	Vector vecSrc;
 	QAngle angForward;
-
-	GetProjectileFireSetup(pPlayer, Vector(16, 6, -8), &vecSrc, &angForward);
-
-	float flSpread = 1.5;
-	CALL_ATTRIB_HOOK_FLOAT(flSpread, projectile_spread_angle);
-
-
-	CTFProjectile_Arrow *pProjectile = NULL;
-	switch (eType)
+	Vector vecOffset(-16.0f, 10.0f, -6.0f);
+	if (pPlayer->GetFlags() & FL_DUCKING)
 	{
-	case TF_PROJECTILETYPE_ARROW:
-		GetProjectileFireSetup(pPlayer, Vector(16, 6, -8), &vecSrc, &angForward);
+		vecOffset.z = 4.0f;
+	}
+
+	GetProjectileFireSetup(pPlayer, vecOffset, &vecSrc, &angForward, false, true);
+
+	// Add attribute spread.
+	float flSpread = 0;
+	CALL_ATTRIB_HOOK_FLOAT(flSpread, projectile_spread_angle);
+	if (flSpread != 0)
+	{
 		angForward.x += RandomFloat(-flSpread, flSpread);
 		angForward.y += RandomFloat(-flSpread, flSpread);
-		pProjectile = CTFProjectile_Arrow::Create(vecSrc, angForward, 100, 0, eType, pPlayer, this);
-		break;
-	default:
-		Assert(0);
 	}
 
+	CTFProjectile_Arrow *pProjectile = CTFProjectile_Arrow::Create(vecSrc, angForward, GetProjectileSpeed(), GetProjectileGravity(), eType, pPlayer, this);
 	if (pProjectile)
 	{
-	//	pProjectile->SetWeaponID(GetWeaponID());
 		pProjectile->SetCritical(IsCurrentAttackACrit());
-#ifdef GAME_DLL
 		pProjectile->SetDamage(GetProjectileDamage());
-#endif
 	}
-
 	return pProjectile;
 #endif
 

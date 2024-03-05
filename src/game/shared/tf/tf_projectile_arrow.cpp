@@ -1372,9 +1372,21 @@ CTFProjectile_HealingBolt::~CTFProjectile_HealingBolt()
 //-----------------------------------------------------------------------------
 void CTFProjectile_HealingBolt::InitArrow( const QAngle &vecAngles, float flSpeed, float flGravity, ProjectileType_t eType, CBaseEntity *pOwner, CBaseEntity *pWeapon )
 {
-	BaseClass::InitArrow( vecAngles, flSpeed, flGravity, eType, pOwner, pWeapon );
+	
 
-	SetModelScale( 3.0f );
+	float flAttribProjectileModelScale = 1.0f;
+	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pWeapon, flAttribProjectileModelScale, projectile_model_scale);
+	string_t strAttribCustomProjModel = NULL_STRING;
+	CALL_ATTRIB_HOOK_STRING_ON_OTHER(pWeapon, strAttribCustomProjModel, custom_projectile_model);
+	if (strAttribCustomProjModel != NULL_STRING)
+	{
+		SetModel(STRING(strAttribCustomProjModel));
+	}
+	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pWeapon, flGravity, mult_projectile_gravity);
+	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pWeapon, flSpeed, mult_projectile_speed);
+
+	BaseClass::InitArrow(vecAngles, flSpeed, flGravity, eType, pOwner, pWeapon);
+	SetModelScale( 3.0f * flAttribProjectileModelScale );
 }
 
 
@@ -1383,7 +1395,12 @@ void CTFProjectile_HealingBolt::InitArrow( const QAngle &vecAngles, float flSpee
 //-----------------------------------------------------------------------------
 bool CTFProjectile_HealingBolt::CanHeadshot( void )
 {
-	return false;
+	int iCanHeadshot = 0;
+	CALL_ATTRIB_HOOK_INT_ON_OTHER(m_hLauncher, iCanHeadshot, can_headshot);
+	if (iCanHeadshot != 0)
+		return true;
+	else
+		return false;
 }
 
 //-----------------------------------------------------------------------------

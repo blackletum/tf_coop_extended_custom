@@ -53,12 +53,12 @@ void CTFWeaponCustom::PrimaryAttack()
 		return;
 	float flSecondaryAttackDelay = 0;
 	int bNoSeparatePrimaryFire = 0;
-	float flPrimaryPunchMax = 0.0f;
-	float flPrimaryPunchMin = 0.0f;
-	CTFPlayer *pOwner = GetTFPlayerOwner();
-	QAngle angle = pOwner->GetPunchAngle();
-	CALL_ATTRIB_HOOK_FLOAT(flPrimaryPunchMax, cw_primaryfire_punch_maxangle);
-	CALL_ATTRIB_HOOK_FLOAT(flPrimaryPunchMin, cw_primaryfire_punch_minangle);
+	//float flPrimaryPunchMax = 0.0f;
+	//float flPrimaryPunchMin = 0.0f;
+	//CTFPlayer *pOwner = GetTFPlayerOwner();
+	//QAngle angle = pOwner->GetPunchAngle();
+	//CALL_ATTRIB_HOOK_FLOAT(flPrimaryPunchMax, cw_primaryfire_punch_maxangle);
+	//CALL_ATTRIB_HOOK_FLOAT(flPrimaryPunchMin, cw_primaryfire_punch_minangle);
 	CALL_ATTRIB_HOOK_FLOAT(flSecondaryAttackDelay, secondary_atk_fire_rate);
 	CALL_ATTRIB_HOOK_INT(bNoSeparatePrimaryFire, cw_separate_primary_secondaryfire);
 	if (bNoSeparatePrimaryFire == 1){	
@@ -66,11 +66,11 @@ void CTFWeaponCustom::PrimaryAttack()
 	//	DevMsg("Test");
 		//DevMsg("(P) Secondary Fire Rate: %.2f", flSecondaryAttackDelay);
 	}
-	if (flPrimaryPunchMax && flPrimaryPunchMin && pOwner)
-	{
-		angle.x -= SharedRandomInt("CWPunchAngle", (flPrimaryPunchMax), (flPrimaryPunchMin));
-		pOwner->SetPunchAngle(angle);
-	}
+	//if (flPrimaryPunchMax && flPrimaryPunchMin && pOwner)
+	//{
+	//	angle.x -= SharedRandomInt("CWPunchAngle", (flPrimaryPunchMax), (flPrimaryPunchMin));
+	//	pOwner->SetPunchAngle(angle);
+	//}
 	// Set the weapon mode.
 	
 

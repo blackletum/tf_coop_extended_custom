@@ -1306,16 +1306,52 @@ void CPlayerPickupController::Use( CBaseEntity *pActivator, CBaseEntity *pCaller
 				CProp_Portal* pHeldPortal = ((CTFPlayer*)m_pPlayer)->GetHeldObjectPortal();
 				UTIL_Portal_VectorTransform(pHeldPortal->MatrixThisToLinked(), vecLaunch, vecLaunch);
 			}
-
+			
 			( ToTFPlayer( m_pPlayer ) )->SetHeldObjectOnOppositeSideOfPortal( false );
+			CTFPlayer *mTFPlayer = ToTFPlayer(m_pPlayer);
+			float playerClassFactor = 1.0f;
+			switch (mTFPlayer->GetPlayerClass()->GetClassIndex())
+			{
 
+			case TF_CLASS_HEAVYWEAPONS:
+				playerClassFactor = 7.5f;
+				break;
+			case TF_CLASS_SOLDIER:
+				playerClassFactor = 5.0f;
+				break;
+			case TF_CLASS_PYRO:
+				playerClassFactor = 3.8f;
+				break;
+			case TF_CLASS_DEMOMAN:
+				playerClassFactor = 3.8f;
+				break;
+			case TF_CLASS_SNIPER:
+				playerClassFactor = 2.5f;
+				break;
+			case TF_CLASS_ENGINEER:
+				playerClassFactor = 2.5f;
+				break;
+			case TF_CLASS_SPY:
+				playerClassFactor = 1.5f;
+				break;
+			case TF_CLASS_MEDIC:
+				playerClassFactor = 1.8f;
+				break;
+			case TF_CLASS_SCOUT:
+				playerClassFactor = 0.9f;
+				break;
+			default:
+				playerClassFactor = 1.0f;
+				break;
+			}
 			// JAY: Scale this with mass because some small objects really go flying
+			
+
 			float massFactor = pPhys ? clamp( pPhys->GetMass(), 0.5, 15 ) : 7.5;
 			massFactor = RemapVal( massFactor, 0.5, 15, 0.5, 4 );
-			vecLaunch *= player_throwforce.GetFloat() * massFactor;
-
+			vecLaunch *= player_throwforce.GetFloat() * playerClassFactor * massFactor;
 			pPhys->ApplyForceCenter( vecLaunch );
-			AngularImpulse aVel = RandomAngularImpulse( -10, 10 ) * massFactor;
+			AngularImpulse aVel = RandomAngularImpulse(-10, 10) * massFactor;
 			pPhys->ApplyTorqueCenter( aVel );
 			return;
 		}

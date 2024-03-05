@@ -29,9 +29,14 @@ IPhysicsObject *GetWorldPhysObject( void );
 
 extern ITempEnts* tempents;
 
-void CreateCrossbowBoltTF( const Vector &vecOrigin, const Vector &vecDirection, int iType, byte nSkin )
+void CreateCrossbowBoltTF( const Vector &vecOrigin, const Vector &vecDirection, int iType, byte nSkin)
 {
 	model_t *pModel = (model_t *)engine->LoadModel( g_pszArrowModels[iType] );
+//	if (strModelName)
+//	{
+//		pModel = (model_t *)engine->LoadModel();
+//
+//	}
 
 	QAngle vAngles;
 
@@ -80,6 +85,8 @@ void StickRagdollNowTF( const Vector &vecOrigin, const Vector &vecDirection, Cli
 			pPhysics->EnableMotion( false );
 		}
 	}
+
+	//string_t strModelName = pModel->GetModelName();
 
 	UTIL_ImpactTrace( &tr, DMG_GENERIC );
 	CreateCrossbowBoltTF( vecOrigin, vecDirection, iProjType, nSkin );

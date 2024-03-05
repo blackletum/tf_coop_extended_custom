@@ -58,6 +58,7 @@ ConVar  lfe_autojump( "lfe_autojump", "0", FCVAR_NOTIFY | FCVAR_REPLICATED, "Aut
 ConVar  lfe_duckjump( "lfe_duckjump", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Toggles jumping while ducked" );
 ConVar  lfe_groundspeed_cap("lfe_groundspeed_cap", "1", FCVAR_REPLICATED, "Toggles the max speed cap imposed when a player is standing on the ground" );
 
+
 ConVar	tf_parachute_aircontrol( "tf_parachute_aircontrol", "2.5f", FCVAR_REPLICATED, "Multiplier for how much air control players have when Parachute is deployed" );
 ConVar	tf_parachute_deploy_toggle_allowed( "tf_parachute_deploy_toggle_allowed", "0", FCVAR_REPLICATED );
 ConVar	tf_parachute_gravity( "tf_parachute_gravity", "0.2f", FCVAR_REPLICATED, "Gravity while parachute is deployed" );

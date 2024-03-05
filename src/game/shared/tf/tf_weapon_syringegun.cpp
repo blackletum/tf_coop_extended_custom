@@ -48,6 +48,29 @@ void CTFCrossBow::Precache( void )
 //-----------------------------------------------------------------------------
 void CTFCrossBow::SecondaryAttack( void )
 {
+	int iAttribModCrossbowAddZoom = 0;
+	CALL_ATTRIB_HOOK_INT(iAttribModCrossbowAddZoom, mod_crossbow_secondaryfire);
+	CTFPlayer *pOwner = ToTFPlayer(GetOwner());
+	if (!pOwner){
+		DevMsg("CTFCrossBow has no owner yet is trying to secondary fire! \n");
+		return;
+	}
+		
+
+
+	if (iAttribModCrossbowAddZoom == 1 && m_flNextSecondaryAttack <= gpGlobals->curtime){
+		if (pOwner->m_Shared.InCond(TF_COND_ZOOMED))
+		{
+			ZoomOut();
+			pOwner->m_Shared.RemoveCond(TF_COND_AIMING);
+		}
+		else{
+			ZoomIn();
+			pOwner->m_Shared.AddCond(TF_COND_AIMING);
+		}
+		m_flNextSecondaryAttack = gpGlobals->curtime + 0.5;
+	}
+
 	BaseClass::SecondaryAttack();
 }
 
@@ -80,7 +103,15 @@ bool CTFCrossBow::Holster( CBaseCombatWeapon *pSwitchingTo )
 
 		IncrementAmmo();
 	}
-
+	CTFPlayer *pOwner = ToTFPlayer(GetOwner());
+	if (!pOwner){
+		DevMsg("CTFCrossBow has no owner yet is trying to holster! \n");
+	}
+	if (pOwner->m_Shared.InCond(TF_COND_ZOOMED))
+	{
+		ZoomOut();
+		pOwner->m_Shared.RemoveCond(TF_COND_AIMING);
+	}
 	return BaseClass::Holster( pSwitchingTo );
 }
 

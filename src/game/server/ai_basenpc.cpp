@@ -939,12 +939,13 @@ void CAI_BaseNPC::Event_Killed( const CTakeDamageInfo &info )
 	{
 		pKillerWeapon = dynamic_cast<CTFWeaponBase *>( info.GetWeapon() );
 	}
-	else if ( pKiller && pKiller->IsPlayer() )
+	else if ( pKiller && pKiller->IsPlayer() && ToTFPlayer(pKiller) )
 	{
 		// Assume that player used his currently active weapon.
 		pKillerWeapon = ToTFPlayer( pKiller )->GetActiveTFWeapon();
 	}
-	CTFWeaponBase* pKillerActiveWeapon = ToTFPlayer(pKiller)->GetActiveTFWeapon();
+
+
 //	CEconItemDefinition *pActiveItemDef = pKillerActiveWeapon->GetItem()->GetStaticData();
 
 
@@ -953,8 +954,9 @@ void CAI_BaseNPC::Event_Killed( const CTakeDamageInfo &info )
 		CTFWeaponBase *pWeapon = pScorer->Weapon_OwnsThisID( iWeaponID );
 		if ( pWeapon )
 		{
-			if (pKillerActiveWeapon)
+			if (pKiller->IsPlayer() && (iWeaponID == TF_WEAPON_CUSTOM || iWeaponID == TF_WEAPON_CUSTOM_PRIMARY))
 			{
+				CTFWeaponBase* pKillerActiveWeapon = ToTFPlayer(pKiller)->GetActiveTFWeapon();
 				int iDmgTypeAttrib = 0;
 				CALL_ATTRIB_HOOK_INT_ON_OTHER(pKillerActiveWeapon, iDmgTypeAttrib, cw_add_dmgtype);
 				if (iDmgTypeAttrib > 0){
@@ -1757,7 +1759,6 @@ int CAI_BaseNPC::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 		{
 			bitsDamage &= ~( DMG_CRITICAL | DMG_MINICRITICAL | DMG_CLUB | DMG_SLASH );
 			StunNPC( 3.0f, 0.0f, 0.0f, TF_STUNFLAGS_BIGBONK, pTFAttacker );// we don't laugh, just get a little confuse
-			info.SetDamage( 0 );
 		}
 
 		int nCritNoDamage = 0;
@@ -1766,6 +1767,14 @@ int CAI_BaseNPC::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 		{
 			bitsDamage &= ~( DMG_CRITICAL );
 			info.SetDamage( 0 );
+		}
+
+
+		float flCritDamageMult = 1.0f;
+		CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pWeapon, flCritDamageMult, critical_damage_mult);
+		if (flCritDamageMult && (bitsDamage & DMG_CRITICAL))
+		{
+			info.SetDamage(info.GetDamage() * flCritDamageMult);
 		}
 
 		int iCritBecomeMiniCrits = 0;
