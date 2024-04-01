@@ -1544,9 +1544,13 @@ bool CTFWeaponBase::ReloadSingly( void )
 
 				int nModUseMetalAmmoType = 0;
 				CALL_ATTRIB_HOOK_INT( nModUseMetalAmmoType, mod_use_metal_ammo_type );
+				int nModUseLfeGrenadeAmmoType = 0;
+				CALL_ATTRIB_HOOK_INT(nModUseLfeGrenadeAmmoType, mod_use_lfegrenade_ammo_type);
 
 				if ( nModUseMetalAmmoType )
 					pPlayer->RemoveAmmo( iAmmoPerShot, TF_AMMO_METAL );
+				if (nModUseLfeGrenadeAmmoType)
+					pPlayer->RemoveAmmo(iAmmoPerShot, LFE_AMMO_GRENADES1);
 				else
 					pPlayer->RemoveAmmo( iAmmoPerShot, m_iPrimaryAmmoType );
 			}
@@ -1624,9 +1628,13 @@ void CTFWeaponBase::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatCh
 
 					int nModUseMetalAmmoType = 0;
 					CALL_ATTRIB_HOOK_INT( nModUseMetalAmmoType, mod_use_metal_ammo_type );
+					int nModUseLfeGrenadeAmmoType = 0;
+					CALL_ATTRIB_HOOK_INT(nModUseLfeGrenadeAmmoType, mod_use_lfegrenade_ammo_type);
 
 					if ( nModUseMetalAmmoType )
 						pOperator->RemoveAmmo( iAmmoPerShot, TF_AMMO_METAL );
+					if (nModUseLfeGrenadeAmmoType)
+						pOperator->RemoveAmmo(iAmmoPerShot, LFE_AMMO_GRENADES1);
 					else
 						pOperator->RemoveAmmo( iAmmoPerShot, m_iPrimaryAmmoType );
 				}
@@ -4790,9 +4798,13 @@ bool CTFWeaponBase::OnFireEvent( C_BaseViewModel *pViewModel, const Vector& orig
 
 				int nModUseMetalAmmoType = 0;
 				CALL_ATTRIB_HOOK_INT( nModUseMetalAmmoType, mod_use_metal_ammo_type );
+				int nModUseLfeGrenadeAmmoType = 0;
+				CALL_ATTRIB_HOOK_INT(nModUseLfeGrenadeAmmoType, mod_use_lfegrenade_ammo_type);
 
-				if ( nModUseMetalAmmoType )
-					pPlayer->RemoveAmmo( iAmmoPerShot, TF_AMMO_METAL );
+				if (nModUseMetalAmmoType)
+					pPlayer->RemoveAmmo(iAmmoPerShot, TF_AMMO_METAL);
+				if (nModUseLfeGrenadeAmmoType)
+					pPlayer->RemoveAmmo(iAmmoPerShot, LFE_AMMO_GRENADES1);
 				else
 					pPlayer->RemoveAmmo( iAmmoPerShot, m_iPrimaryAmmoType );
 			}

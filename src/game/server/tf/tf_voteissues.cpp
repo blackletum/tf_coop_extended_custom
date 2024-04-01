@@ -450,7 +450,14 @@ void CChangeMapAddIssue::ExecuteCommand()
 	if ( FStrEq( m_szDetailsString, "#Lfe_vote_no_mapadd" ) )
 		return;
 	if (strchr(m_szDetailsString, ';') == NULL){
-		engine->ServerCommand(UTIL_VarArgs("lfe_mapadd_file %s\n", m_szDetailsString));
+		char szFullName[256];
+		char szAddName[128];
+		Q_snprintf(szFullName, sizeof(szFullName), "maps/mapadd/%s", STRING(gpGlobals->mapname)); //Get the mapadd's base map file name...
+		Q_snprintf(szAddName, sizeof(szAddName), "_%s", m_szDetailsString); //then what to add to the base map name...
+		Q_strcat(szFullName, szAddName, sizeof(szFullName)); //then add the two together...
+		Q_strcat(szFullName, ".txt", sizeof(szFullName)); //then add the file extension.
+		engine->ServerCommand(UTIL_VarArgs("lfe_mapadd_file %s\n", szFullName));
+
 	}
 	mp_restartgame_immediate.SetValue( 1 );
 }

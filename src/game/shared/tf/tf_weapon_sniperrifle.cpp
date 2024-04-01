@@ -558,7 +558,11 @@ int	CTFSniperRifle::GetDamageType( void ) const
 {
 	// Only do hit location damage if we're zoomed
 	CTFPlayer *pPlayer = ToTFPlayer( GetPlayerOwner() );
-	if ( pPlayer && pPlayer->m_Shared.InCond( TF_COND_ZOOMED ) )
+	int bSniperHeadshotNoScope = 0;
+	CALL_ATTRIB_HOOK_INT(bSniperHeadshotNoScope, sniper_crit_no_scope); 
+	int bSniperNoCritNotFullCharged = 0;
+	CALL_ATTRIB_HOOK_INT(bSniperNoCritNotFullCharged, sniper_no_headshot_without_full_charge);
+	if ( pPlayer && (pPlayer->m_Shared.InCond( TF_COND_ZOOMED ) || bSniperHeadshotNoScope != 0)  )
 		return BaseClass::GetDamageType();
 
 	return ( BaseClass::GetDamageType() & ~DMG_USE_HITLOCATIONS );
@@ -946,8 +950,9 @@ int CSniperDot::DrawModel( int flags )
 	float flChargePerSec = TF_WEAPON_SNIPERRIFLE_CHARGE_PER_SEC;
 
 	CTFSniperRifle *pSniperRifle = dynamic_cast<CTFSniperRifle*>( pPlayer->Weapon_GetSlot( LOADOUT_POSITION_PRIMARY ) );
-	if ( pSniperRifle )
+	if (pSniperRifle){
 		flChargePerSec = pSniperRifle->SniperRifleChargeRateMod();
+	}
 
 	float flLifeTime = gpGlobals->curtime - m_flChargeStartTime;
 	float flStrength = RemapValClamped( flLifeTime, 0.0, TF_WEAPON_SNIPERRIFLE_DAMAGE_MAX / flChargePerSec, 0.1, 1.0 );

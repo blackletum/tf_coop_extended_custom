@@ -330,13 +330,13 @@ void CClassLoadoutPanel::SetSelectedItemPanel( CItemModelPanel* pPanel )
 	}
 
 	const char *pszModel = pPanel->GetItem()->GetWorldDisplayModel( m_iClass );
-	if ( pszModel[0] != '\0' )
+	if ( pszModel && pszModel[0] != '\0' )
 	{
 		m_pTFModelPanel->SetMergeMDL( pszModel );
 	}
 
 	const char *pszExtraWearableModel = pPanel->GetItem()->GetStaticData()->extra_wearable;
-	if ( pszExtraWearableModel[0] != '\0' )
+	if (pszExtraWearableModel && pszExtraWearableModel[0] != '\0')
 	{
 		m_pTFModelPanel->SetMergeMDL( pszExtraWearableModel );
 	}
@@ -358,7 +358,7 @@ void CClassLoadoutPanel::SetSelectedItemPanel( CItemModelPanel* pPanel )
 	{
 		m_pTFModelPanel->SetVCD( pPanel->GetItem()->GetStaticData()->custom_taunt_scene_per_class[m_iClass] );
 	}*/
-	
+	return;
 }
 
 void CClassLoadoutPanel::OnItemPanelEntered( Panel* pPanel )

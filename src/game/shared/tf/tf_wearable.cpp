@@ -116,16 +116,22 @@ int C_TFWearable::InternalDrawModel( int flags )
 
 	int ret = BaseClass::InternalDrawModel( flags );
 
-	if (!bNotViewModel && pOwner->IsLocalPlayer())
-		SetRenderMode(kRenderNormal);
-	else;
-		SetRenderMode(kRenderNone);
+
 	if ( bUseInvulnMaterial )
 		modelrender->ForcedMaterialOverride( NULL );
 	if (GetItem()->GetStaticData()) {
 
 		CEconItemDefinition *pItemDef = GetItem()->GetStaticData();
 		int iClass = pOwner->m_Shared.GetDesiredPlayerClassIndex();
+
+		if (pItemDef->attach_to_hands_vm_only && pItemDef->attach_to_hands_vm_only > 0)
+		{
+			if (!bNotViewModel && pOwner->IsLocalPlayer())
+				SetRenderMode(kRenderNormal);
+			else
+				SetRenderMode(kRenderNone);
+
+		}
 
 		if (pItemDef->model_world[iClass] != '\0') {
 			Q_snprintf(pOwner->m_iszCustomModel, MAX_PATH, pItemDef->model_world);

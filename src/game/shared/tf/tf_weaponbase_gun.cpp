@@ -244,14 +244,16 @@ void CTFWeaponBaseGun::PrimaryAttack( void )
 	QAngle angle = pPlayer->GetPunchAngle();
 	float flPrimaryPunchMax = 0.0f;
 	float flPrimaryPunchMin = 0.0f;
+	float flPrimaryPunchExponent = 0.0f;
 	CALL_ATTRIB_HOOK_FLOAT(flPrimaryPunchMax, cw_primaryfire_punch_maxangle);
 	CALL_ATTRIB_HOOK_FLOAT(flPrimaryPunchMin, cw_primaryfire_punch_minangle);
+	CALL_ATTRIB_HOOK_FLOAT(flPrimaryPunchExponent, cw_primaryfire_punch_exponent);
 	if (flPrimaryPunchMax && flPrimaryPunchMin && pPlayer)
 	{
 		angle.x -= SharedRandomInt("CWPunchAngle", (flPrimaryPunchMax), (flPrimaryPunchMin));
-		pPlayer->SetPunchAngle(angle);
+		pPlayer->SetPunchAngle(angle * flPrimaryPunchExponent);
 	}
-
+	
 	// Don't push out secondary attack, because our secondary fire
 	// systems are all separate from primary fire (sniper zooming, demoman pipebomb detonating, etc)
 	//m_flNextSecondaryAttack = gpGlobals->curtime + m_pWeaponInfo->GetWeaponData( m_iWeaponMode ).m_flTimeFireDelay;
@@ -293,7 +295,9 @@ CBaseEntity *CTFWeaponBaseGun::FireProjectile( CTFPlayer *pPlayer )
 	CBaseEntity *pProjectile = NULL;
 
 	string_t strProjectileEntityName = NULL_STRING;
+	int iProjectileEntityFlags = 0;
 	CALL_ATTRIB_HOOK_STRING( strProjectileEntityName, projectile_entity_name );
+	CALL_ATTRIB_HOOK_INT(iProjectileEntityFlags, projectile_entity_spawnflags);
 	if ( strProjectileEntityName != NULL_STRING )
 	{
 		pProjectile = CreateEntityByName( STRING( strProjectileEntityName ) );
@@ -305,11 +309,27 @@ CBaseEntity *CTFWeaponBaseGun::FireProjectile( CTFPlayer *pPlayer )
 			if ( pPlayer->GetFlags() & FL_DUCKING )
 				vecOffset.z = 8.0f;
 
+			Vector vecAiming = pPlayer->GetAutoaimVector(AUTOAIM_SCALE_DEFAULT);
+			Vector vecVelocity = vecAiming * 1000.0f;
+			float flProjSpeed = 1.0f;
+			float flProjGrav = 1.0f;
+			CALL_ATTRIB_HOOK_FLOAT(flProjSpeed, mult_projectile_speed);
+			CALL_ATTRIB_HOOK_FLOAT(flProjGrav, mult_projectile_gravity);
+			if (flProjSpeed != 0)
+			{
+				vecVelocity *= flProjSpeed;
+			}
+			if (flProjGrav)
+			{
+				pProjectile->SetGravity(flProjGrav);
+			}
 			GetProjectileFireSetup( pPlayer, vecOffset, &vecSrc, &angForward, false, false );
 
 			pProjectile->SetAbsOrigin( vecSrc );
 			pProjectile->SetOwnerEntity( pPlayer );
 			pProjectile->SetAbsAngles( angForward );
+			pProjectile->AddFlag(iProjectileEntityFlags);
+			pProjectile->SetAbsVelocity(vecVelocity);
 #ifdef GAME_DLL
 			DispatchSpawn( pProjectile );
 #endif
@@ -602,7 +622,7 @@ void CTFWeaponBaseGun::GetProjectileFireSetup( CTFPlayer *pPlayer, Vector vecOff
 	// If we're seeing another player shooting the projectile, move their start point to the weapon origin
 	if ( pPlayer )
 	{
-		if ( !UsingViewModel() )
+		if (!UsingViewModel() || strcmp(GetClassname(), "tf_weapon_syringegun") == 0)
 		{
 			GetAttachment( "muzzle", *vecSrc );
 		}
@@ -1392,9 +1412,13 @@ void CTFWeaponBaseGun::RemoveAmmo( CTFPlayer *pPlayer )
 		{
 			int nModUseMetalAmmoType = 0;
 			CALL_ATTRIB_HOOK_INT( nModUseMetalAmmoType, mod_use_metal_ammo_type );
+			int nModUseLFEGrenadeAmmoType = 0;
+			CALL_ATTRIB_HOOK_INT( nModUseLFEGrenadeAmmoType, mod_use_lfegrenade_ammo_type );
 
 			if ( nModUseMetalAmmoType )
 				pPlayer->RemoveAmmo( GetAmmoPerShot(), TF_AMMO_METAL );
+			if ( nModUseLFEGrenadeAmmoType )
+				pPlayer->RemoveAmmo( GetAmmoPerShot(), LFE_AMMO_GRENADES1 );
 			else
 				pPlayer->RemoveAmmo( GetAmmoPerShot(), m_iPrimaryAmmoType );
 

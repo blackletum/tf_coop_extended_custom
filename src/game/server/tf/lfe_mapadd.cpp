@@ -75,7 +75,7 @@ void CTFMapAddSystem::CalculateMapAddState( void )
 	Q_snprintf(szFullName,sizeof(szFullName), "maps/mapadd/%s.txt", STRING( gpGlobals->mapname) );
 	if ( !filesystem->FileExists( szFullName ) )
 	{
-		//ConColorMsg( Color( 77, 116, 85, 255 ), "[MapAdd] Cannot find mapadd data: %s. \n", szFullName );
+		ConColorMsg( Color( 77, 116, 85, 255 ), "[MapAdd] Cannot find mapadd data: %s. \n", szFullName );
 	}
 }
 

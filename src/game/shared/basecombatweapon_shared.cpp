@@ -272,6 +272,14 @@ void CBaseCombatWeapon::Precache( void )
 			// Ammo override
 			int iModUseMetalOverride = 0;
 			CALL_ATTRIB_HOOK_INT( iModUseMetalOverride, mod_use_metal_ammo_type );
+			int nModUseLfeGrenadeAmmoType = 0;
+			CALL_ATTRIB_HOOK_INT(nModUseLfeGrenadeAmmoType, mod_use_lfegrenade_ammo_type);
+
+
+			if (nModUseLfeGrenadeAmmoType)
+			{
+				m_iPrimaryAmmoType = (int)LFE_AMMO_GRENADES1;
+			}
 			if ( iModUseMetalOverride )
 			{
 				m_iPrimaryAmmoType = (int)TF_AMMO_METAL;
@@ -1378,7 +1386,8 @@ bool CBaseCombatWeapon::UsesPrimaryAmmo( void )
 
 	int iNotRegularAmmo = 0;
 	CALL_ATTRIB_HOOK_INT( iNotRegularAmmo, energy_weapon_no_ammo );
-	CALL_ATTRIB_HOOK_INT( iNotRegularAmmo, mod_use_metal_ammo_type );
+	CALL_ATTRIB_HOOK_INT(iNotRegularAmmo, mod_use_metal_ammo_type); 
+	CALL_ATTRIB_HOOK_INT(iNotRegularAmmo, mod_use_lfegrenade_ammo_type);
 
 	if ( iNotRegularAmmo > 0 )
 		return false;
@@ -1397,7 +1406,7 @@ bool CBaseCombatWeapon::UsesSecondaryAmmo( void )
 	int iNotRegularAmmo = 0;
 	CALL_ATTRIB_HOOK_INT( iNotRegularAmmo, energy_weapon_no_ammo );
 	CALL_ATTRIB_HOOK_INT( iNotRegularAmmo, mod_use_metal_ammo_type );
-
+	CALL_ATTRIB_HOOK_INT(iNotRegularAmmo, mod_use_lfegrenade_ammo_type);
 	if ( iNotRegularAmmo > 0 )
 		return false;
 
@@ -2446,9 +2455,13 @@ void CBaseCombatWeapon::PrimaryAttack( void )
 	int iPrimaryAmmoType = m_iPrimaryAmmoType;
 
 	int iMetalUseMetalAmmoType = 0;
+	int iUseAmmoTypeLfeGrenade1 = 0;
 	CALL_ATTRIB_HOOK_INT( iMetalUseMetalAmmoType, mod_use_metal_ammo_type );
+	CALL_ATTRIB_HOOK_INT(iUseAmmoTypeLfeGrenade1, mod_use_lfegrenade_ammo_type);
 	if ( iMetalUseMetalAmmoType > 0 )
 		iPrimaryAmmoType = (int)TF_AMMO_METAL;
+	if (iUseAmmoTypeLfeGrenade1 > 0)
+		iPrimaryAmmoType = (int)LFE_AMMO_GRENADES1;
 
 	// Make sure we don't fire more than the amount in the clip
 	if ( UsesClipsForAmmo1() )
@@ -2534,9 +2547,13 @@ void CBaseCombatWeapon::FireFullClipAtOnce( void )
 	int iPrimaryAmmoType = m_iPrimaryAmmoType;
 
 	int iMetalUseMetalAmmoType = 0;
+	int iUseAmmoTypeLfeGrenade1 = 0;
 	CALL_ATTRIB_HOOK_INT( iMetalUseMetalAmmoType, mod_use_metal_ammo_type );
-	if ( iMetalUseMetalAmmoType > 0 )
+	CALL_ATTRIB_HOOK_INT(iUseAmmoTypeLfeGrenade1, mod_use_lfegrenade_ammo_type);
+	if (iMetalUseMetalAmmoType > 0)
 		iPrimaryAmmoType = (int)TF_AMMO_METAL;
+	if (iUseAmmoTypeLfeGrenade1 > 0)
+		iPrimaryAmmoType = (int)LFE_AMMO_GRENADES1;
 
 	// Make sure we don't fire more than the amount in the clip
 	if ( UsesClipsForAmmo1() )

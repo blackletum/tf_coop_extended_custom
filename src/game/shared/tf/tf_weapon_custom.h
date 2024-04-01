@@ -16,6 +16,7 @@
 #if defined( CLIENT_DLL )
 #define CTFWeaponCustom C_TFWeaponCustom
 #define CTFWeaponCustomPrimary C_TFWeaponCustomPrimary
+#define CTFWeaponCustomSlot3 C_TFWeaponCustomSlot3
 #endif
 
 
@@ -57,7 +58,15 @@ public:
 	void	Precache();
 };
 
+class CTFWeaponCustomSlot3 : public CTFWeaponCustom
+{
+public:
+	DECLARE_CLASS(CTFWeaponCustomSlot3, CTFWeaponCustom);
+	DECLARE_NETWORKCLASS();
+	DECLARE_PREDICTABLE();
 
+	void	Precache();
+};
 
 
 

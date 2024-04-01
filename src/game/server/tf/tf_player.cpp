@@ -866,6 +866,9 @@ void CTFPlayer::RegenThink( void )
 	int iAmmoRegen = 0;
 	CALL_ATTRIB_HOOK_INT( iAmmoRegen, addperc_ammo_regen );
 
+	int iPrimaryAmmoRegenAimed = 0;
+	CALL_ATTRIB_HOOK_INT(iPrimaryAmmoRegenAimed, primary_ammo_regen_while_not_aimed);
+
 	int iMetalRegen = 0;
 	CALL_ATTRIB_HOOK_INT( iMetalRegen, add_metal_regen );
 
@@ -915,7 +918,10 @@ void CTFPlayer::RegenThink( void )
 					GiveAmmo( iAmmoRegen, iAmmo, false, TF_AMMO_SOURCE_RESUPPLY );
 				}
 			}
-
+			if (iPrimaryAmmoRegenAimed && !m_Shared.InCond(TF_COND_AIMING))
+			{
+				GiveAmmo(iPrimaryAmmoRegenAimed, TF_AMMO_PRIMARY, true, TF_AMMO_SOURCE_RESUPPLY);
+			}
 			if ( iMetalRegen )
 			{
 				GiveAmmo( iMetalRegen, TF_AMMO_METAL, false, TF_AMMO_SOURCE_RESUPPLY );
@@ -17037,7 +17043,13 @@ bool CTFPlayer::CanGetWet( void ) const
 //-----------------------------------------------------------------------------
 bool CTFPlayer::CanBreatheUnderwater( void ) const
 {
-	return false;
+	int iDrownDisable = 1;
+	CALL_ATTRIB_HOOK_INT(iDrownDisable, mult_dmg_drown);
+	if (iDrownDisable == 0){
+		return true;
+	}
+	else
+		return false;
 }
 
 //-----------------------------------------------------------------------------

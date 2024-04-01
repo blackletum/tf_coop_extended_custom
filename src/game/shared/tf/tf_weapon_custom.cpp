@@ -23,6 +23,7 @@
 
 CREATE_SIMPLE_WEAPON_TABLE(TFWeaponCustom, tf_weapon_custom)
 CREATE_SIMPLE_WEAPON_TABLE(TFWeaponCustomPrimary, tf_weapon_custom_primary)
+CREATE_SIMPLE_WEAPON_TABLE(TFWeaponCustomSlot3, tf_weapon_custom_slot3)
 // Custom Weapon Functions
 CTFWeaponCustom::CTFWeaponCustom()
 {
@@ -198,6 +199,16 @@ void CTFWeaponCustomPrimary::Precache(void)
 #ifndef CLIENT_DLL
 	// Set the proper classname so it loads the correct script file.
 	SetClassname("tf_weapon_custom_primary");
+#endif
+
+	BaseClass::Precache();
+
+}
+void CTFWeaponCustomSlot3::Precache(void)
+{
+#ifndef CLIENT_DLL
+	// Set the proper classname so it loads the correct script file.
+	SetClassname("tf_weapon_custom_slot3");
 #endif
 
 	BaseClass::Precache();

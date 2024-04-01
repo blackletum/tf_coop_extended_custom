@@ -95,7 +95,7 @@
 #define MAX_PACKEDENTITY_PROPS	(4096)
 
 // a client can have up to 4 customization files (logo, sounds, models, txt).
-#define MAX_CUSTOM_FILES		4		// max 4 files
+#define MAX_CUSTOM_FILES		8		// max 4 files
 #define MAX_CUSTOM_FILE_SIZE	524288	// Half a megabyte
 
 //
